@@ -1,0 +1,133 @@
+erDiagram
+	direction TB
+
+	Account {
+		id uuid
+	}
+
+	Account ||--|| AdminAccount : "subtype"
+	Account ||--|| UserAccount : "subtype"
+
+	UserAccount {
+		id uuid
+		email string 
+		password_hash string  
+		name string
+		birth_date date   
+		birth_place string  
+		nik string
+		ktp file  
+		profile_img file
+		verification_state enum 
+		verification_state_changed_date datetime
+	}
+
+	UserAdrress {
+		id uuid  
+		lat double  
+		lng double 
+        provinsi string
+        kabupaten string
+        kecamatan string
+		alamat string
+	}
+
+	UserAdrress ||--|{ Product : "has"
+
+	Product {
+		id uuid 
+		created_at datetime  
+		price int  
+		description string
+		stock int  
+		dendda_keterlambatan int
+		vector vector
+	}
+
+	Review {
+		id uuid 
+        created_at datetime
+		star int
+		content string  
+	}
+
+	UserAccount ||--|{ ChatMessage : "has" 
+
+	UserAccount ||--|{ Wishlist : "has"
+	Wishlist {
+		created_at datetime
+	}
+	Wishlist ||--|| Product : "has"
+
+	UserAccount ||--|{ ViewLog : "has"
+	ViewLog {
+		created_at datetime
+	}
+	ViewLog ||--|| Product : "has"
+
+	UserAccount ||--|{ RefreshToken : "has"
+	RefreshToken {
+		expires_at datetime
+		token_hash string
+	}
+
+	ChatMessage {
+		id uuid
+        created_at datetime
+		message string 
+	}
+
+	ChatMessage ||--|| Product : "has context"
+
+	Rent {
+		id uuid
+		created_at datetime
+		start_date date  
+		end_date date  
+		rent_price int  
+		quantity int
+		request_state enum "pending,accepted,rejected"
+	}
+
+	Payment {
+		id uuid  
+		amount int  
+		is_paid bool  
+		external_id uuid
+	}
+
+	PaymentRent {
+
+	}
+
+	PaymentReturn {
+
+	}
+
+	RentReturn {
+		date date  
+		denda int
+		request_state enum "pending,accepted,rejected"
+		rent_note string
+	}
+
+	ProductCategory {
+		id uuid  ""  
+		name string  ""  
+	}
+
+
+
+	UserAccount ||--|{ UserAdrress : "has"
+    Review }|--|| Product : "has"
+	UserAccount ||--|{ Review : "has"
+	Payment ||--|| PaymentRent : "subtype"
+	Payment ||--|| PaymentReturn : "subtype"
+	PaymentRent ||--|| Rent : "has"
+	PaymentReturn ||--|| RentReturn : "has"
+	UserAccount ||--|{ Product : "has"
+    ProductCategory ||--|{ Product : "has"
+	Rent ||--|| RentReturn : "has"
+	UserAccount ||--|{ Rent : "has"
+    Product ||--|{ Rent : "has"
+
