@@ -3,6 +3,9 @@ erDiagram
 
 	Account {
 		id uuid
+		email string 
+		password_hash string  
+		name string
 	}
 
 	Account ||--|| AdminAccount : "subtype"
@@ -10,9 +13,6 @@ erDiagram
 
 	UserAccount {
 		id uuid
-		email string 
-		password_hash string  
-		name string
 		birth_date date   
 		birth_place string  
 		nik string
