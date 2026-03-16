@@ -21,3 +21,27 @@ func GetSession(c *echo.Context) (*sessions.Session, error) {
 	}
 	return store.Get(c.Request(), "session")
 }
+
+type UserSession struct {
+	ID   uint
+	Role string
+}
+
+const (
+	userIdKey   = "user_id"
+	userRoleKey = "user_role"
+)
+
+func SetUserSession(session *sessions.Session, user UserSession) {
+	session.Values[userIdKey] = user.ID
+	session.Values[userRoleKey] = user.Role
+}
+
+func GetUserSession(session *sessions.Session) (UserSession, bool) {
+	id, hasId := session.Values[userIdKey].(uint)
+	role, hasRole := session.Values[userRoleKey].(string)
+	return UserSession{
+		ID:   id,
+		Role: role,
+	}, hasId && hasRole
+}

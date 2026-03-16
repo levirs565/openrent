@@ -65,7 +65,7 @@ func RegisterRoutes(e *echo.Echo, s *Service) {
 			return err
 		}
 
-		if _, hasUserId := session.Values["user_id"]; hasUserId {
+		if _, hasUser := core.GetUserSession(session); hasUser {
 			return echo.NewHTTPError(http.StatusForbidden, "you are logged in")
 		}
 
@@ -78,8 +78,11 @@ func RegisterRoutes(e *echo.Echo, s *Service) {
 			return err
 		}
 
-		session.Values["user_id"] = result.ID
-		session.Values["user_role"] = result.Role
+		core.SetUserSession(session, core.UserSession{
+			ID:   result.ID,
+			Role: result.Role,
+		})
+
 		if err := session.Save(c.Request(), c.Response()); err != nil {
 			return err
 		}
@@ -93,12 +96,12 @@ func RegisterRoutes(e *echo.Echo, s *Service) {
 			return err
 		}
 
-		userId, hasUserId := session.Values["user_id"].(uint)
-		if !hasUserId {
+		user, hasUser := core.GetUserSession(session)
+		if !hasUser {
 			return c.JSON(200, nil)
 		}
 
-		response, err := s.GetUserState(c.Request().Context(), userId)
+		response, err := s.GetUserState(c.Request().Context(), user.ID)
 
 		return c.JSON(200, response)
 	})
@@ -109,7 +112,7 @@ func RegisterRoutes(e *echo.Echo, s *Service) {
 			return err
 		}
 
-		if _, hasUserId := session.Values["user_id"]; !hasUserId {
+		if _, hasUser := core.GetUserSession(session); !hasUser {
 			return echo.NewHTTPError(http.StatusForbidden, "you are not logged in")
 		}
 
