@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -10,6 +12,8 @@ import (
 	"openrent-server/auth"
 	"openrent-server/core"
 	"openrent-server/models"
+
+	"github.com/wader/gormstore/v2"
 )
 
 func main() {
@@ -23,16 +27,20 @@ func main() {
 
 	db.AutoMigrate(&models.AdminAccount{}, &models.UserAccount{}, &models.Account{})
 
+	store := gormstore.New(db, []byte("secret"))
+	quit := make(chan struct{})
+	go store.PeriodicCleanup(1*time.Hour, quit)
+
 	e := echo.New()
 	e.Use(middleware.RequestLogger())
-	e.Use(core.RegisterAppContext(&core.AppContext{
-		DB: db,
-	}))
+	e.Use(core.NewSessionMiddleware(store))
+
 	e.Validator = &core.Validator{
 		Validator: validator.New(),
 	}
 
-	auth.RegisterRoutes(e)
+	authService := auth.NewService(db)
+	auth.RegisterRoutes(e, authService)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
