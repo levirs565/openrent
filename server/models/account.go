@@ -27,6 +27,8 @@ type UserAccount struct {
 	BirthDate  datatypes.Date `gorm:"not null"`
 	BirthPlace string         `gorm:"not null"`
 	NIK        string         `gorm:"not null"`
+
+	UserAddresses []UserAddress
 }
 
 type AdminAccount struct {

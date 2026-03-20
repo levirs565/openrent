@@ -22,17 +22,18 @@ erDiagram
 		verification_state_changed_date datetime
 	}
 
-	UserAdrress {
+	UserAddress {
 		id uuid  
+		name string
 		lat double  
 		lng double 
-        provinsi string
-        kabupaten string
-        kecamatan string
-		alamat string
+        province string
+        regency string
+        district string
+		address_detail string
 	}
 
-	UserAdrress ||--|{ Product : "has"
+	UserAddress ||--|{ Product : "has"
 
 	Product {
 		id uuid 
@@ -118,7 +119,7 @@ erDiagram
 
 
 
-	UserAccount ||--|{ UserAdrress : "has"
+	UserAccount ||--|{ UserAddress : "has"
     Review }|--|| Product : "has"
 	UserAccount ||--|{ Review : "has"
 	Payment ||--|| PaymentRent : "subtype"

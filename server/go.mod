@@ -11,6 +11,11 @@ require (
 )
 
 require (
+	github.com/restayway/gogis v1.0.1 // indirect
+	github.com/samber/lo v1.53.0 // indirect
+)
+
+require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/alexedwards/argon2id v1.0.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.12 // indirect

@@ -9,6 +9,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"openrent-server/address"
 	"openrent-server/auth"
 	"openrent-server/core"
 	"openrent-server/models"
@@ -25,13 +26,14 @@ func main() {
 		panic("cannot connect to database")
 	}
 
-	db.AutoMigrate(&models.AdminAccount{}, &models.UserAccount{}, &models.Account{})
+	db.AutoMigrate(&models.AdminAccount{}, &models.UserAccount{}, &models.Account{}, &models.UserAddress{})
 
 	store := gormstore.New(db, []byte("secret"))
 	quit := make(chan struct{})
 	go store.PeriodicCleanup(1*time.Hour, quit)
 
 	e := echo.New()
+	e.Pre(middleware.AddTrailingSlash())
 	e.Use(middleware.RequestLogger())
 	e.Use(core.NewSessionMiddleware(store))
 
@@ -40,7 +42,13 @@ func main() {
 	}
 
 	authService := auth.NewService(db)
-	auth.RegisterRoutes(e, authService)
+	addressService := address.NewService(db)
+
+	authController := auth.NewController(authService)
+	auth.RegisterRoutes(e, authController)
+
+	addressController := address.NewController(addressService)
+	address.RegisterRoutes(e, addressController)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
