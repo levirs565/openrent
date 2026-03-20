@@ -30,6 +30,26 @@ func (ct *Controller) getAll(c *echo.Context) error {
 	return c.JSON(200, result)
 }
 
+func (ct *Controller) getById(c *echo.Context) error {
+	payload := GetByIdRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	user := core.GetUserSession(c)
+
+	result, err := ct.service.GetById(context.Background(), user.ID, payload.ID)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		}
+		return err
+	}
+
+	return c.JSON(201, result)
+}
+
 func (ct *Controller) add(c *echo.Context) error {
 	payload := AddRequest{}
 
@@ -64,7 +84,7 @@ func (ct *Controller) update(c *echo.Context) error {
 		return err
 	}
 
-	return c.JSON(201, result)
+	return c.JSON(200, result)
 }
 
 func (ct *Controller) delete(c *echo.Context) error {
@@ -84,7 +104,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 		return err
 	}
 
-	return c.JSON(201, core.CreateActionResponse(true))
+	return c.JSON(200, core.CreateActionResponse(true))
 }
 
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
@@ -92,8 +112,9 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
-	g.GET("/", ct.getAll)
-	g.POST("/", ct.add)
-	g.PUT("/:id/", ct.update)
-	g.DELETE("/:id/", ct.delete)
+	g.GET("", ct.getAll)
+	g.GET("/:id", ct.getById)
+	g.POST("", ct.add)
+	g.PUT("/:id", ct.update)
+	g.DELETE("/:id", ct.delete)
 }

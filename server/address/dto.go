@@ -35,6 +35,10 @@ func modelToResponse(model models.UserAddress) ResponseItem {
 	}
 }
 
+type GetByIdRequest struct {
+	ID uint `param:"id"`
+}
+
 type AddRequest struct {
 	Name          string  `json:"name" validate:"required"`
 	Province      string  `json:"province" validate:"required"`

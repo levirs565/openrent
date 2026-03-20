@@ -36,6 +36,21 @@ func (s *Service) GetByUserId(ctx context.Context, userId uint) ([]ResponseItem,
 	}), nil
 }
 
+func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseItem, error) {
+	item, err := gorm.G[models.UserAddress](s.db).
+		Where("user_account_id = ? AND id = ?", userId, id).
+		First(ctx)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ResponseItem{}, ErrNotFound
+		}
+		return ResponseItem{}, err
+	}
+
+	return modelToResponse(item), nil
+}
+
 func (s *Service) Add(ctx context.Context, userId uint, item AddRequest) (ResponseItem, error) {
 	model := addRequestToResponse(item)
 	model.UserAccountID = userId

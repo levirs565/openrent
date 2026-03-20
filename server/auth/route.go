@@ -109,8 +109,8 @@ func (ct *Controller) logout(c *echo.Context) error {
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g := e.Group("/auth")
 
-	g.POST("/register/", ct.register, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
-	g.POST("/login/", ct.login, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
-	g.GET("/state/", ct.getState)
-	g.POST("/logout/", ct.logout, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.POST("/register", ct.register, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
+	g.POST("/login", ct.login, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
+	g.GET("/state", ct.getState)
+	g.POST("/logout", ct.logout, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 }

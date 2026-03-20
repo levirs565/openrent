@@ -33,7 +33,7 @@ func main() {
 	go store.PeriodicCleanup(1*time.Hour, quit)
 
 	e := echo.New()
-	e.Pre(middleware.AddTrailingSlash())
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.RequestLogger())
 	e.Use(core.NewSessionMiddleware(store))
 
