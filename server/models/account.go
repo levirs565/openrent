@@ -29,6 +29,7 @@ type UserAccount struct {
 	NIK        string         `gorm:"not null"`
 
 	UserAddresses []UserAddress
+	Product       []Product
 }
 
 type AdminAccount struct {

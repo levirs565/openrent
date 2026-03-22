@@ -13,6 +13,7 @@ import (
 	"openrent-server/auth"
 	"openrent-server/core"
 	"openrent-server/models"
+	"openrent-server/product"
 
 	"github.com/wader/gormstore/v2"
 )
@@ -26,7 +27,11 @@ func main() {
 		panic("cannot connect to database")
 	}
 
-	db.AutoMigrate(&models.AdminAccount{}, &models.UserAccount{}, &models.Account{}, &models.UserAddress{})
+	db.AutoMigrate(
+		&models.AdminAccount{}, &models.UserAccount{}, &models.Account{},
+		&models.UserAddress{},
+		&models.Product{},
+	)
 
 	store := gormstore.New(db, []byte("secret"))
 	quit := make(chan struct{})
@@ -43,12 +48,16 @@ func main() {
 
 	authService := auth.NewService(db)
 	addressService := address.NewService(db)
+	productService := product.NewService(db)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
 
 	addressController := address.NewController(addressService)
 	address.RegisterRoutes(e, addressController)
+
+	productController := product.NewController(productService)
+	product.RegisterRoutes(e, productController)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

@@ -40,13 +40,14 @@ type GetByIdRequest struct {
 }
 
 type AddRequest struct {
-	Name          string  `json:"name" validate:"required"`
-	Province      string  `json:"province" validate:"required"`
-	Regency       string  `json:"regency" validate:"required"`
-	District      string  `json:"district" validate:"required"`
-	AddressDetail string  `json:"detail" validate:"required"`
-	Lat           float64 `json:"lat"`
-	Lng           float64 `json:"lng"`
+	Name          string `json:"name" validate:"required"`
+	Province      string `json:"province" validate:"required"`
+	Regency       string `json:"regency" validate:"required"`
+	District      string `json:"district" validate:"required"`
+	AddressDetail string `json:"detail" validate:"required"`
+	// TODO: Fix This
+	Lat float64 `json:"lat"`
+	Lng float64 `json:"lng"`
 }
 
 func addRequestToResponse(item AddRequest) models.UserAddress {

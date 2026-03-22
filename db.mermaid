@@ -3,8 +3,8 @@ erDiagram
 
 	Account {
 		id uuid
-		email string 
-		password_hash string  
+		email string
+		password_hash string
 		name string
 	}
 
@@ -13,20 +13,20 @@ erDiagram
 
 	UserAccount {
 		id uuid
-		birth_date date   
-		birth_place string  
+		birth_date date
+		birth_place string
 		nik string
-		ktp file  
+		ktp file
 		profile_img file
-		verification_state enum 
+		verification_state enum
 		verification_state_changed_date datetime
 	}
 
 	UserAddress {
-		id uuid  
+		id uuid
 		name string
-		lat double  
-		lng double 
+		lat double
+		lng double
         province string
         regency string
         district string
@@ -35,24 +35,27 @@ erDiagram
 
 	UserAddress ||--|{ Product : "has"
 
+    // TODO: Image
 	Product {
-		id uuid 
-		created_at datetime  
-		price int  
+		id uuid
+		created_at datetime
+		updated_at datetime
+		name string
+		price_per_day int
+		late_fee_per_day int
+		stock int
 		description string
-		stock int  
-		dendda_keterlambatan int
-		vector vector
+		description_vector vector
 	}
 
 	Review {
-		id uuid 
+		id uuid
         created_at datetime
 		star int
-		content string  
+		content string
 	}
 
-	UserAccount ||--|{ ChatMessage : "has" 
+	UserAccount ||--|{ ChatMessage : "has"
 
 	UserAccount ||--|{ Wishlist : "has"
 	Wishlist {
@@ -75,7 +78,7 @@ erDiagram
 	ChatMessage {
 		id uuid
         created_at datetime
-		message string 
+		message string
 	}
 
 	ChatMessage ||--|| Product : "has context"
@@ -83,17 +86,17 @@ erDiagram
 	Rent {
 		id uuid
 		created_at datetime
-		start_date date  
-		end_date date  
-		rent_price int  
+		start_date date
+		end_date date
+		rent_price int
 		quantity int
 		request_state enum "pending,accepted,rejected"
 	}
 
 	Payment {
-		id uuid  
-		amount int  
-		is_paid bool  
+		id uuid
+		amount int
+		is_paid bool
 		external_id uuid
 	}
 
@@ -106,15 +109,15 @@ erDiagram
 	}
 
 	RentReturn {
-		date date  
+		date date
 		denda int
 		request_state enum "pending,accepted,rejected"
 		rent_note string
 	}
 
 	ProductCategory {
-		id uuid  ""  
-		name string  ""  
+		id uuid  ""
+		name string  ""
 	}
 
 
@@ -131,4 +134,3 @@ erDiagram
 	Rent ||--|| RentReturn : "has"
 	UserAccount ||--|{ Rent : "has"
     Product ||--|{ Rent : "has"
-
