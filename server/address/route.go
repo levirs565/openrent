@@ -108,7 +108,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 }
 
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
-	g := e.Group("/address")
+	g := e.Group("/addresses")
 
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
