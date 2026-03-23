@@ -25,7 +25,7 @@ func NewService(db *gorm.DB) *Service {
 
 func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest) ([]ResponseItemShort, error) {
 	// TODO: Paging
-	q := s.db.WithContext(ctx).Debug().
+	q := s.db.WithContext(ctx).
 		Model(&models.Product{}).
 		Select(
 			"products.id", "products.created_at", "products.updated_at",
@@ -35,6 +35,22 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 		Joins("UserAccount.Account", s.db.Select("name")).
 		Joins("UserAddress", s.db.Select("regency", "location"))
 
+	if len(parameters.Regions) > 0 {
+		q = q.Where(
+			`"UserAddress".regency IN ? OR "UserAddress".province IN ?`,
+			parameters.Regions, parameters.Regions,
+		)
+	}
+	if parameters.Lat != 0 && parameters.Lng != 0 && parameters.RadiusKM != 0 {
+		q = q.Where(
+			`ST_DWithin(
+				"UserAddress".location::geography,
+				ST_SetSRID(ST_Point(?, ?), 4326)::geography,
+				?
+			)`,
+			parameters.Lng, parameters.Lat, parameters.RadiusKM*1000,
+		)
+	}
 	if parameters.Owner {
 		q = q.Where("user_account_id = ?", userId)
 	}

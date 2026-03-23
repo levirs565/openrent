@@ -29,7 +29,7 @@ func (ct *Controller) list(c *echo.Context) error {
 	user := core.GetUserSession(c)
 
 	payload := ListRequest{}
-	if err := c.Bind(&payload); err != nil {
+	if err := core.BindAndValidate(c, &payload); err != nil {
 		return err
 	}
 

@@ -6,8 +6,12 @@ import (
 )
 
 type ListRequest struct {
-	Owner bool   `query:"owner"`
-	Query string `query:"q"`
+	Owner    bool     `query:"owner"`
+	Query    string   `query:"q"`
+	Regions  []string `query:"regions"`
+	Lat      float64  `query:"lat"`
+	Lng      float64  `query:"lng" validate:"required_with=Lat"`
+	RadiusKM int      `query:"radius_km" validate:"required_with=Lng"`
 }
 
 type UserData struct {
