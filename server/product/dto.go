@@ -6,12 +6,13 @@ import (
 )
 
 type ListRequest struct {
-	Owner    bool     `query:"owner"`
-	Query    string   `query:"q"`
-	Regions  []string `query:"regions"`
-	Lat      float64  `query:"lat"`
-	Lng      float64  `query:"lng" validate:"required_with=Lat"`
-	RadiusKM int      `query:"radius_km" validate:"required_with=Lng"`
+	Owner           bool     `query:"owner"`
+	Query           string   `query:"q"`
+	DisableAISearch bool     `query:"no_ai_search"`
+	Regions         []string `query:"regions"`
+	Lat             float64  `query:"lat"`
+	Lng             float64  `query:"lng" validate:"required_with=Lat"`
+	RadiusKM        int      `query:"radius_km" validate:"required_with=Lng"`
 }
 
 type UserData struct {
@@ -105,6 +106,11 @@ func modelToResponse(model models.Product) ResponseItem {
 		Stock:         model.Stock,
 		Description:   model.Description,
 	}
+}
+
+type ResponseItemDetail struct {
+	ResponseItem
+	Recommendations []ResponseItemShort `json:"recommendations"`
 }
 
 type GetByIdRequest struct {

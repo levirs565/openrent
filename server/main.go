@@ -1,9 +1,11 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"gorm.io/driver/postgres"
@@ -12,6 +14,7 @@ import (
 	"openrent-server/address"
 	"openrent-server/auth"
 	"openrent-server/core"
+	"openrent-server/embedding"
 	"openrent-server/models"
 	"openrent-server/product"
 
@@ -19,6 +22,11 @@ import (
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Print("Cannot load dotenv", err)
+	}
+
 	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/openrent"), &gorm.Config{
 		TranslateError: true,
 	})
@@ -37,6 +45,11 @@ func main() {
 	quit := make(chan struct{})
 	go store.PeriodicCleanup(1*time.Hour, quit)
 
+	embedder, err := embedding.NewGeminiEmbedder("gemini-embedding-001")
+	if err != nil {
+		log.Panic("Cannot create embedder", err)
+	}
+
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.RequestLogger())
@@ -48,7 +61,7 @@ func main() {
 
 	authService := auth.NewService(db)
 	addressService := address.NewService(db)
-	productService := product.NewService(db)
+	productService := product.NewService(db, &embedder)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)

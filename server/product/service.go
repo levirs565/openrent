@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/embedding"
 	"openrent-server/models"
 
+	"github.com/pgvector/pgvector-go"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -14,12 +16,14 @@ import (
 var ErrNotFound = errors.New("Product not found")
 
 type Service struct {
-	db *gorm.DB
+	db       *gorm.DB
+	embedder embedding.AIEmbedder
 }
 
-func NewService(db *gorm.DB) *Service {
+func NewService(db *gorm.DB, embedder *embedding.AIEmbedder) *Service {
 	return &Service{
-		db: db,
+		db:       db,
+		embedder: *embedder,
 	}
 }
 
@@ -55,8 +59,18 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 		q = q.Where("user_account_id = ?", userId)
 	}
 	if len(parameters.Query) > 0 {
-		pattern := fmt.Sprintf("%%%s%%", parameters.Query)
-		q = q.Where("name ILIKE ? OR description ILIKE ?", pattern, pattern)
+		if parameters.DisableAISearch {
+			pattern := fmt.Sprintf("%%%s%%", parameters.Query)
+			q = q.Where("name ILIKE ? OR description ILIKE ?", pattern, pattern)
+		} else {
+			content := fmt.Sprintf("Product search: %s", parameters.Query)
+			vector, err := s.embedder.Embed(ctx, content)
+			if err != nil {
+				return []ResponseItemShort{}, err
+			}
+
+			q = q.Where("(embedding <=> ?) < 0.3", pgvector.NewVector(vector))
+		}
 	}
 
 	var products []models.Product
@@ -72,13 +86,18 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 	return mapped, nil
 }
 
-func (s *Service) GetById(ctx context.Context, id uint) (ResponseItem, error) {
+func (s *Service) embedProduct(ctx context.Context, name string, description string) ([]float32, error) {
+	content := fmt.Sprintf("Product: %s, Description: %s", name, description)
+	return s.embedder.Embed(ctx, content)
+}
+
+func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, error) {
 	model, err := gorm.G[models.Product](s.db).
 		Select(
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id",
+			"products.user_address_id", "products.embedding",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},
@@ -98,12 +117,48 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItem, error) {
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return ResponseItem{}, ErrNotFound
+			return ResponseItemDetail{}, ErrNotFound
 		}
-		return ResponseItem{}, err
+		return ResponseItemDetail{}, err
 	}
 
-	return modelToResponse(model), nil
+	recomendations, err := gorm.G[models.Product](s.db.Debug()).
+		Select(
+			"products.id", "products.created_at", "products.updated_at",
+			"products.name", "products.price_per_day", "products.stock",
+			"products.user_account_id", "products.user_address_id",
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAccount.Account"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("name")
+				return nil
+			},
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAddress"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("regency", "location")
+				return nil
+			},
+		).
+		Where("(products.embedding <=> ?) < 0.2", model.Embedding).
+		Where("products.id <> ?", model.ID).
+		Order(clause.OrderBy{
+			Expression: gorm.Expr("(products.embedding <=> ?) ASC", model.Embedding),
+		}).
+		Limit(10).
+		Find(ctx)
+	if err != nil {
+		return ResponseItemDetail{}, err
+	}
+
+	return ResponseItemDetail{
+		ResponseItem: modelToResponse(model),
+		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
+			return modelToResponseShort(item)
+		}),
+	}, nil
 }
 
 func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (ResponseItem, error) {
@@ -111,7 +166,13 @@ func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (Res
 	model.UserAccountID = userId
 	// Check address is deleted or not
 
-	err := gorm.G[models.Product](s.db).Create(ctx, &model)
+	embed, err := s.embedProduct(ctx, model.Name, model.Description)
+	if err != nil {
+		return ResponseItem{}, err
+	}
+	model.Embedding = pgvector.NewVector(embed)
+
+	err = gorm.G[models.Product](s.db).Create(ctx, &model)
 	if err != nil {
 		return ResponseItem{}, err
 	}
@@ -150,6 +211,12 @@ func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest
 	model := addRequestToModel(product.AddRequest)
 	model.UserAccountID = userId
 	model.ID = product.ID
+
+	embed, err := s.embedProduct(ctx, model.Name, model.Description)
+	if err != nil {
+		return ResponseItem{}, err
+	}
+	model.Embedding = pgvector.NewVector(embed)
 
 	rows, err := gorm.G[models.Product](s.db).
 		Where("user_account_id = ? AND id = ?", userId, product.ID).

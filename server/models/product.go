@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"github.com/pgvector/pgvector-go"
+	"gorm.io/gorm"
+)
 
 // TODO: Support more currency
 type Product struct {
@@ -14,4 +17,5 @@ type Product struct {
 	LateFeePerDay int
 	Stock         int
 	Description   string
+	Embedding     pgvector.Vector `gorm:"type:vector(768)"`
 }
