@@ -10,8 +10,14 @@ type ListRequest struct {
 	Query string `query:"q"`
 }
 
+type UserData struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
 type ResponseItemShort struct {
 	ID          uint      `json:"id"`
+	User        UserData  `json:"user"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 	Name        string    `json:"name"`
@@ -21,7 +27,11 @@ type ResponseItemShort struct {
 
 func modelToResponseShort(model models.Product) ResponseItemShort {
 	return ResponseItemShort{
-		ID:          model.ID,
+		ID: model.ID,
+		User: UserData{
+			ID:   model.UserAccountID,
+			Name: model.UserAccount.Account.Name,
+		},
 		CreatedAt:   model.CreatedAt,
 		UpdatedAt:   model.UpdatedAt,
 		Name:        model.Name,
@@ -32,6 +42,7 @@ func modelToResponseShort(model models.Product) ResponseItemShort {
 
 type ResponseItem struct {
 	ID            uint      `json:"id"`
+	User          UserData  `json:"user"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	Name          string    `json:"name"`
@@ -43,7 +54,11 @@ type ResponseItem struct {
 
 func modelToResponse(model models.Product) ResponseItem {
 	return ResponseItem{
-		ID:            model.ID,
+		ID: model.ID,
+		User: UserData{
+			ID:   model.UserAccountID,
+			Name: model.UserAccount.Account.Name,
+		},
 		CreatedAt:     model.CreatedAt,
 		UpdatedAt:     model.UpdatedAt,
 		Name:          model.Name,

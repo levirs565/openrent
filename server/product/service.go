@@ -25,7 +25,14 @@ func NewService(db *gorm.DB) *Service {
 
 func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest) ([]ResponseItemShort, error) {
 	// TODO: Paging
-	q := s.db.WithContext(ctx).Model(&models.Product{})
+	q := s.db.WithContext(ctx).
+		Model(&models.Product{}).
+		Select(
+			"products.id", "products.created_at", "products.updated_at",
+			"products.name", "products.price_per_day", "products.stock",
+			"products.user_account_id",
+		).
+		Joins("UserAccount.Account", s.db.Select("name"))
 
 	if parameters.Owner {
 		q = q.Where("user_account_id = ?", userId)
@@ -49,7 +56,20 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 }
 
 func (s *Service) GetById(ctx context.Context, id uint) (ResponseItem, error) {
-	model, err := gorm.G[models.Product](s.db).Where("id = ?", id).First(ctx)
+	model, err := gorm.G[models.Product](s.db).
+		Select(
+			"products.id", "products.created_at", "products.updated_at",
+			"products.name", "products.price_per_day", "products.late_fee_per_day",
+			"products.stock", "products.description", "products.user_account_id",
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAccount.Account"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("name")
+				return nil
+			},
+		).
+		Where("products.id = ?", id).First(ctx)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
