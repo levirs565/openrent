@@ -1,13 +1,19 @@
 package models
 
 import (
+	"time"
+
 	"github.com/restayway/gogis"
 	"gorm.io/gorm"
 )
 
+// TODO: Primary address
 type UserAddress struct {
-	gorm.Model
-	UserAccountID uint
+	ID            uint `gorm:"primarykey;index:idx_address,unique"`
+	UserAccountID uint `gorm:"index:idx_address,unique"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 	Name          string
 	Province      string
 	Regency       string

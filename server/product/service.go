@@ -25,14 +25,15 @@ func NewService(db *gorm.DB) *Service {
 
 func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest) ([]ResponseItemShort, error) {
 	// TODO: Paging
-	q := s.db.WithContext(ctx).
+	q := s.db.WithContext(ctx).Debug().
 		Model(&models.Product{}).
 		Select(
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.stock",
-			"products.user_account_id",
+			"products.user_account_id", "products.user_address_id",
 		).
-		Joins("UserAccount.Account", s.db.Select("name"))
+		Joins("UserAccount.Account", s.db.Select("name")).
+		Joins("UserAddress", s.db.Select("regency", "location"))
 
 	if parameters.Owner {
 		q = q.Where("user_account_id = ?", userId)
@@ -61,11 +62,19 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItem, error) {
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_account_id",
+			"products.user_address_id",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
 				db.Select("name")
+				return nil
+			},
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAddress"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("province", "regency", "district", "address_detail", "location")
 				return nil
 			},
 		).
@@ -84,8 +93,36 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItem, error) {
 func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (ResponseItem, error) {
 	model := addRequestToModel(product)
 	model.UserAccountID = userId
+	// Check address is deleted or not
 
 	err := gorm.G[models.Product](s.db).Create(ctx, &model)
+	if err != nil {
+		return ResponseItem{}, err
+	}
+
+	model, err = gorm.G[models.Product](s.db).
+		Select(
+			"products.id", "products.created_at", "products.updated_at",
+			"products.name", "products.price_per_day", "products.late_fee_per_day",
+			"products.stock", "products.description", "products.user_account_id",
+			"products.user_address_id",
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAccount.Account"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("name")
+				return nil
+			},
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAddress"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("province", "regency", "district", "address_detail", "location")
+				return nil
+			},
+		).
+		Where("products.id = ?", model.ID).First(ctx)
+
 	if err != nil {
 		return ResponseItem{}, err
 	}
@@ -98,21 +135,41 @@ func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest
 	model.UserAccountID = userId
 	model.ID = product.ID
 
-	updates := []models.Product{}
-	result := s.db.WithContext(ctx).
-		Model(&updates).
-		Clauses(clause.Returning{}).
+	rows, err := gorm.G[models.Product](s.db).
 		Where("user_account_id = ? AND id = ?", userId, product.ID).
-		Updates(model)
+		Updates(ctx, model)
 
-	if result.Error != nil {
-		return ResponseItem{}, result.Error
+	if err != nil {
+		return ResponseItem{}, err
 	}
-	if result.RowsAffected == 0 {
+	if rows == 0 {
 		return ResponseItem{}, ErrNotFound
 	}
 
-	return modelToResponse(updates[0]), nil
+	model, err = gorm.G[models.Product](s.db).
+		Select(
+			"products.id", "products.created_at", "products.updated_at",
+			"products.name", "products.price_per_day", "products.late_fee_per_day",
+			"products.stock", "products.description", "products.user_account_id",
+			"products.user_address_id",
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAccount.Account"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("name")
+				return nil
+			},
+		).
+		Joins(
+			clause.JoinTarget{Association: "UserAddress"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("province", "regency", "district", "address_detail", "location")
+				return nil
+			},
+		).
+		Where("products.id = ?", model.ID).First(ctx)
+
+	return modelToResponse(model), nil
 }
 
 func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
