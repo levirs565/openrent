@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -27,7 +28,7 @@ func main() {
 		log.Print("Cannot load dotenv", err)
 	}
 
-	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/openrent"), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(os.Getenv("DB_URL")), &gorm.Config{
 		TranslateError: true,
 	})
 
