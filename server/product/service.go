@@ -9,21 +9,23 @@ import (
 
 	"github.com/pgvector/pgvector-go"
 	"github.com/samber/lo"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 var ErrNotFound = errors.New("Product not found")
+var ErrStockUnavailable = errors.New("Stock unavailable")
 
 type Service struct {
 	db       *gorm.DB
 	embedder embedding.AIEmbedder
 }
 
-func NewService(db *gorm.DB, embedder *embedding.AIEmbedder) *Service {
+func NewService(db *gorm.DB, embedder embedding.AIEmbedder) *Service {
 	return &Service{
 		db:       db,
-		embedder: *embedder,
+		embedder: embedder,
 	}
 }
 
@@ -122,7 +124,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
-	recomendations, err := gorm.G[models.Product](s.db.Debug()).
+	recomendations, err := gorm.G[models.Product](s.db).
 		Select(
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.stock",
@@ -266,4 +268,63 @@ func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
 		return ErrNotFound
 	}
 	return nil
+}
+
+func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) error {
+	// TODO: Buffern?
+	// TODO: Cron expired rent
+	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		model, err := gorm.G[models.Product](tx.Clauses(clause.Locking{Strength: "UPDATE"})).
+			Select("stock").
+			Where("products.id = ?", request.ID).
+			First(ctx)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrNotFound
+			}
+			return err
+		}
+
+		var reservedStock int
+		err = gorm.G[models.Rent](tx).
+			Where("rents.product_id = ?", request.ID).
+			Where(
+				"rents.state NOT IN ?",
+				[]models.RentState{
+					models.RentStateAwaitingFinalPayment,
+					models.RentStateCompleted,
+					models.RentStateCancelled,
+				},
+			).
+			Where(clause.Or(
+				clause.And(
+					gorm.Expr("rents.start_date <= ?", datatypes.Date(request.EndDate)),
+					gorm.Expr("rents.end_date >= ?", datatypes.Date(request.StartDate)),
+				),
+				gorm.Expr("rents.end_date < CURRENT_DATE"),
+			)).
+			Select("COALESCE(SUM(rents.quantity), 0)").
+			Scan(ctx, &reservedStock)
+		if err != nil {
+			return err
+		}
+		if request.Quantity+reservedStock > model.Stock {
+			return ErrStockUnavailable
+		}
+		rentModel := models.Rent{
+			ProductID:     request.ID,
+			UserAccountID: userId,
+			State:         models.RentStatePendingApproval,
+			StartDate:     datatypes.Date(request.StartDate),
+			EndDate:       datatypes.Date(request.EndDate),
+			Quantity:      request.Quantity,
+		}
+		err = gorm.G[models.Rent](tx).Create(ctx, &rentModel)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

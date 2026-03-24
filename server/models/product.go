@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: Support more currency
+// TODO: Support more currency, vector index
 type Product struct {
 	gorm.Model
 	UserAccountID uint
@@ -18,4 +18,5 @@ type Product struct {
 	Stock         int
 	Description   string
 	Embedding     pgvector.Vector `gorm:"type:vector(768)"`
+	Rent          []Rent
 }

@@ -30,6 +30,7 @@ type UserAccount struct {
 
 	UserAddresses []UserAddress
 	Product       []Product
+	Rent          []Rent
 }
 
 type AdminAccount struct {

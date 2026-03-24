@@ -40,6 +40,7 @@ func main() {
 		&models.AdminAccount{}, &models.UserAccount{}, &models.Account{},
 		&models.UserAddress{},
 		&models.Product{},
+		&models.Rent{},
 	)
 
 	store := gormstore.New(db, []byte("secret"))
@@ -62,7 +63,7 @@ func main() {
 
 	authService := auth.NewService(db)
 	addressService := address.NewService(db)
-	productService := product.NewService(db, &embedder)
+	productService := product.NewService(db, embedder)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)

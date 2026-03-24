@@ -19,7 +19,7 @@ func NewController(s *Service) *Controller {
 }
 
 func (ct *Controller) mapError(err error) error {
-	if errors.Is(err, ErrNotFound) {
+	if errors.Is(err, ErrNotFound) || errors.Is(err, ErrStockUnavailable) {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 	return err
@@ -100,6 +100,21 @@ func (ct *Controller) delete(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
+func (ct *Controller) rent(c *echo.Context) error {
+	payload := RentRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	user := core.GetUserSession(c)
+	err := ct.service.Rent(c.Request().Context(), user.ID, payload)
+	if err != nil {
+		return ct.mapError(err)
+	}
+
+	return c.JSON(200, core.CreateActionResponse(true))
+}
+
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g := e.Group("/products")
 
@@ -110,4 +125,5 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g.GET("/:id", ct.getById)
 	g.PUT("/:id", ct.update)
 	g.DELETE("/:id", ct.delete)
+	g.POST("/:id/rent", ct.rent)
 }

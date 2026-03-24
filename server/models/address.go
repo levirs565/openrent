@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: Primary address
+// TODO: Primary address, location index?
 type UserAddress struct {
 	ID            uint `gorm:"primarykey;index:idx_address,unique"`
 	UserAccountID uint `gorm:"index:idx_address,unique"`

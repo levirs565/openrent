@@ -145,3 +145,11 @@ type UpdateRequest struct {
 type DeleteRequest struct {
 	ID uint `param:"id"`
 }
+
+// TODO: Validate EndDate > StartDate
+type RentRequest struct {
+	ID        uint      `param:"id"`
+	StartDate time.Time `json:"start_date" validate:"required"`
+	EndDate   time.Time `json:"end_date" validate:"required"`
+	Quantity  int       `json:"quantity" validate:"required"`
+}
