@@ -204,7 +204,7 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 
 	rowsAffected, err := gorm.G[models.Rent](s.db).
 		Where("rents.id = ?", request.ID).
-		Where("rents.state = ?", models.RentStatePendingApproval).
+		Where("rents.state = ?", models.RentStateOnRent).
 		Select("CancelReason", "CancelReasonNote", "State").Updates(ctx, model)
 
 	if rowsAffected == 0 {

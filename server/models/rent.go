@@ -22,6 +22,7 @@ const (
 	RentStatePendingApproval            RentState = "pending"
 	RentStateAwaitingInitialPayment     RentState = "initial_payment"
 	RentStateReadyForPickup             RentState = "ready"
+	RentStateAwaitingHandover           RentState = "handover_pending"
 	RentStateOnRent                     RentState = "on_rent"
 	RentStateAwaitingReturnConfirmation RentState = "return_pending"
 	RentStateAwaitingFinalPayment       RentState = "final_payment"

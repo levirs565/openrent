@@ -1,0 +1,99 @@
+package rents
+
+import (
+	"context"
+	"errors"
+	"openrent-server/models"
+
+	"github.com/samber/lo"
+	"gorm.io/gorm"
+)
+
+var ErrNotFound = errors.New("Rent not found")
+var ErrNotReady = errors.New("Rent is not ready")
+
+type Service struct {
+	db *gorm.DB
+}
+
+func NewService(db *gorm.DB) *Service {
+	return &Service{
+		db: db,
+	}
+}
+
+func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error) {
+	result, err := gorm.G[models.Rent](s.db).
+		Select(
+			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
+			"rents.quantity", "rents.product_id", "rents.user_account_id",
+			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+		).
+		Where(`user_account_id = ?`, userId).
+		Find(ctx)
+
+	if err != nil {
+		return []ResponseItem{}, err
+	}
+
+	list := lo.Map(result, func(item models.Rent, index int) ResponseItem {
+		return modelToResponseItem(item)
+	})
+	return list, nil
+}
+
+func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseItemDetails, error) {
+	result, err := gorm.G[models.Rent](s.db).
+		Select(
+			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
+			"rents.quantity", "rents.product_id", "rents.user_account_id",
+			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+		).
+		Where("rents.id = ?", id).
+		Where(`user_account_id = ?`, userId).
+		First(ctx)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ResponseItemDetails{}, ErrNotFound
+		}
+		return ResponseItemDetails{}, err
+	}
+
+	return modelToResponseItemDetails(result), nil
+}
+
+func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
+	data, err := gorm.G[models.Rent](s.db).
+		Select("rents.state").
+		Where("rents.id = ?", id).
+		Where(`user_account_id = ?`, userId).
+		First(ctx)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrNotFound
+		}
+		return err
+	}
+	if data.State != models.RentStateReadyForPickup {
+		return ErrNotReady
+	}
+
+	model := models.Rent{}
+	model.State = models.RentStateAwaitingHandover
+
+	rowsAffected, err := gorm.G[models.Rent](s.db).
+		Where("rents.id = ?", id).
+		Where("rents.state = ?", models.RentStateReadyForPickup).
+		Select("State").
+		Updates(ctx, model)
+	if rowsAffected == 0 {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	// TODO: Notification
+	return nil
+}
