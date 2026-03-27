@@ -11,6 +11,7 @@ import (
 
 var ErrNotFound = errors.New("Rent not found")
 var ErrNotReady = errors.New("Rent is not ready")
+var ErrNotActive = errors.New("Rent is not active")
 
 type Service struct {
 	db *gorm.DB
@@ -85,6 +86,41 @@ func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 	rowsAffected, err := gorm.G[models.Rent](s.db).
 		Where("rents.id = ?", id).
 		Where("rents.state = ?", models.RentStateReadyForPickup).
+		Select("State").
+		Updates(ctx, model)
+	if rowsAffected == 0 {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	// TODO: Notification
+	return nil
+}
+
+func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error {
+	data, err := gorm.G[models.Rent](s.db).
+		Select("rents.state").
+		Where("rents.id = ?", id).
+		Where(`user_account_id = ?`, userId).
+		First(ctx)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrNotFound
+		}
+		return err
+	}
+	if data.State != models.RentStateOnRent {
+		return ErrNotActive
+	}
+
+	model := models.Rent{}
+	model.State = models.RentStateAwaitingReturnConfirmation
+
+	rowsAffected, err := gorm.G[models.Rent](s.db).
+		Where("rents.id = ?", id).
+		Where("rents.state = ?", models.RentStateOnRent).
 		Select("State").
 		Updates(ctx, model)
 	if rowsAffected == 0 {

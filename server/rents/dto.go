@@ -85,3 +85,7 @@ func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
 type ReceiveRequest struct {
 	ID uint `param:"id"`
 }
+
+type RequestReturnRequest struct {
+	ID uint `param:"id"`
+}
