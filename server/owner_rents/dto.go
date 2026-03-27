@@ -99,3 +99,7 @@ type CancelRequest struct {
 type HandoverRequest struct {
 	ID uint `param:"id"`
 }
+
+type ConfirmReturnRequest struct {
+	ID uint `param:"id"`
+}

@@ -15,6 +15,7 @@ var ErrNotFound = errors.New("Rent not found")
 var ErrNotPending = errors.New("Rent is not waiting approval")
 var ErrNotReady = errors.New("Rent is not ready")
 var ErrCannotHandover = errors.New("Cannot handover rent")
+var ErrReturnNotRequested = errors.New("Return is not requested")
 
 type Service struct {
 	db *gorm.DB
@@ -246,6 +247,50 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 	rowsAffected, err := gorm.G[models.Rent](s.db).
 		Where("rents.id = ?", id).
 		Where("rents.state = ?", models.RentStateAwaitingHandover).
+		Select("State").
+		Updates(ctx, model)
+	if rowsAffected == 0 {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	// TODO: Notification
+	return nil
+}
+
+func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error {
+	data, err := gorm.G[models.Rent](s.db).
+		Select("rents.state").
+		Joins(
+			clause.JoinTarget{Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("")
+				return nil
+			},
+		).
+		Where("rents.id = ?", id).
+		Where(`"Product".user_account_id = ?`, userId).
+		First(ctx)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrNotFound
+		}
+		return err
+	}
+	if data.State != models.RentStateAwaitingReturnConfirmation {
+		return ErrReturnNotRequested
+	}
+
+	// TODO: Payment
+	model := models.Rent{}
+	model.State = models.RentStateCompleted
+
+	// TODO: Wait payment
+	rowsAffected, err := gorm.G[models.Rent](s.db).
+		Where("rents.id = ?", id).
+		Where("rents.state = ?", models.RentStateAwaitingReturnConfirmation).
 		Select("State").
 		Updates(ctx, model)
 	if rowsAffected == 0 {
