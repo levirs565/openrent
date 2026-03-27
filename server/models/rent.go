@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/restayway/gogis"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -38,15 +39,41 @@ const (
 	RentCancelReasonUserCancelled         RentCancelReason = "user_cancelled"
 )
 
-// TODO: Price, Product Snapshot?, Payment?
+type RentAddressSnapshot struct {
+	Province      string      `json:"province"`
+	Regency       string      `json:"regency"`
+	District      string      `json:"district"`
+	AddressDetail string      `json:"detail"`
+	Location      gogis.Point `json:"location"`
+}
+
+type RentProductDetailsSnapshot struct {
+	Description string              `json:"description"`
+	UserAddress RentAddressSnapshot `json:"address"`
+}
+
+type RentProductSnapshot struct {
+	Name          string
+	PricePerDay   int
+	LateFeePerDay int
+	Details       datatypes.JSONType[RentProductDetailsSnapshot]
+}
+
+// TODO: Price, Payment?, Log?
 type Rent struct {
 	gorm.Model
-	ProductID     uint
-	UserAccountID uint
-	State         RentState
-	StartDate     datatypes.Date
-	EndDate       datatypes.Date
-	Quantity      int
-	ApprovedAt    *time.Time
-	CancelReason  *RentCancelReason
+	ProductID          uint
+	Product            Product
+	UserAccountID      uint
+	UserAccount        UserAccount
+	ProductSnapshot    RentProductSnapshot `gorm:"embedded;embeddedPrefix:product_snapshot_"`
+	RenterSnapshotName string
+	OwnerSnapshotName  string
+	State              RentState
+	StartDate          datatypes.Date
+	EndDate            datatypes.Date
+	Quantity           int
+	ApprovedAt         *time.Time
+	CancelReason       *RentCancelReason
+	CancelReasonNote   *string
 }

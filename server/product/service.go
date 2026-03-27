@@ -16,6 +16,7 @@ import (
 
 var ErrNotFound = errors.New("Product not found")
 var ErrStockUnavailable = errors.New("Stock unavailable")
+var ErrCannotRentOwnedProduct = errors.New("Cannnot rent owned product")
 
 type Service struct {
 	db       *gorm.DB
@@ -275,15 +276,21 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	// TODO: Cron expired rent
 	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
 	return s.db.Transaction(func(tx *gorm.DB) error {
-		model, err := gorm.G[models.Product](tx.Clauses(clause.Locking{Strength: "UPDATE"})).
-			Select("stock").
-			Where("products.id = ?", request.ID).
-			First(ctx)
+		model := models.Product{}
+		err := tx.WithContext(ctx).
+			Model(&model).
+			Clauses(clause.Locking{Strength: "UPDATE"}).
+			Select("stock", "user_account_id").
+			First(&model, request.ID).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return ErrNotFound
 			}
 			return err
+		}
+
+		if model.UserAccountID == userId {
+			return ErrCannotRentOwnedProduct
 		}
 
 		var reservedStock int
@@ -309,16 +316,68 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 		if err != nil {
 			return err
 		}
+
 		if request.Quantity+reservedStock > model.Stock {
 			return ErrStockUnavailable
 		}
+
+		model, err = gorm.G[models.Product](tx).
+			Select(
+				"products.name", "products.price_per_day",
+				"products.late_fee_per_day", "products.description",
+			).
+			Joins(
+				clause.JoinTarget{Association: "UserAddress"},
+				func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+					db.Select("province", "regency", "district", "address_detail", "location")
+					return nil
+				},
+			).
+			Joins(
+				clause.JoinTarget{Association: "UserAccount.Account"},
+				func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+					db.Select("name")
+					return nil
+				},
+			).
+			Where("products.id", request.ID).
+			First(ctx)
+		if err != nil {
+			return err
+		}
+
+		userData, err := gorm.G[models.Account](tx).
+			Select("name").
+			Where("id = ?", userId).
+			First(ctx)
+		if err != nil {
+			return err
+		}
+
 		rentModel := models.Rent{
 			ProductID:     request.ID,
 			UserAccountID: userId,
 			State:         models.RentStatePendingApproval,
-			StartDate:     datatypes.Date(request.StartDate),
-			EndDate:       datatypes.Date(request.EndDate),
-			Quantity:      request.Quantity,
+			ProductSnapshot: models.RentProductSnapshot{
+				Name:          model.Name,
+				PricePerDay:   model.PricePerDay,
+				LateFeePerDay: model.LateFeePerDay,
+				Details: datatypes.NewJSONType(models.RentProductDetailsSnapshot{
+					Description: model.Description,
+					UserAddress: models.RentAddressSnapshot{
+						Province:      model.UserAddress.Province,
+						Regency:       model.UserAddress.Regency,
+						District:      model.UserAddress.District,
+						AddressDetail: model.UserAddress.AddressDetail,
+						Location:      model.UserAddress.Location,
+					},
+				}),
+			},
+			OwnerSnapshotName:  model.UserAccount.Account.Name,
+			RenterSnapshotName: userData.Name,
+			StartDate:          datatypes.Date(request.StartDate),
+			EndDate:            datatypes.Date(request.EndDate),
+			Quantity:           request.Quantity,
 		}
 		err = gorm.G[models.Rent](tx).Create(ctx, &rentModel)
 		if err != nil {

@@ -20,6 +20,7 @@ type Account struct {
 	Admin *AdminAccount
 }
 
+// TODO: Image, Rating, JoinAt, Verification, Name != LegalName
 type UserAccount struct {
 	AccountID uint `gorm:"primaryKey"`
 	Account   *Account

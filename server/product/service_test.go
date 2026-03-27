@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 	"openrent-server/embedding"
@@ -115,7 +116,7 @@ func TestRentRace(t *testing.T) {
 	}
 
 	sqlDB, _ := db.db.DB()
-	sqlDB.SetMaxOpenConns(1)
+	sqlDB.SetMaxOpenConns(0)
 
 	err := gorm.G[models.Account](db.db).Create(context.Background(), &models.Account{
 		ID:           1,
@@ -132,7 +133,25 @@ func TestRentRace(t *testing.T) {
 		},
 	})
 	if err != nil {
-		t.Error("Cannot create User", err)
+		t.Error("Cannot create owner User", err)
+		return
+	}
+	err = gorm.G[models.Account](db.db).Create(context.Background(), &models.Account{
+		ID:           2,
+		Email:        "renter@rent.com",
+		Name:         "renter",
+		PasswordHash: "has-no-password",
+		Role:         string(models.AccountRoleUser),
+		User: &models.UserAccount{
+			UserAddresses: []models.UserAddress{
+				models.UserAddress{
+					ID: 2,
+				},
+			},
+		},
+	})
+	if err != nil {
+		t.Error("Cannot create renter User", err)
 		return
 	}
 	var embeddings [768]float32
@@ -164,7 +183,7 @@ func TestRentRace(t *testing.T) {
 	for i := 1; i <= requestCount; i++ {
 		wg.Go(func() {
 			<-start
-			err := service.Rent(context.Background(), 1, RentRequest{
+			err := service.Rent(context.Background(), 2, RentRequest{
 				StartDate: startDate,
 				EndDate:   endDate,
 				ID:        1,
@@ -172,6 +191,8 @@ func TestRentRace(t *testing.T) {
 			})
 			if err == nil {
 				atomic.AddInt32(&usedStock, 1)
+			} else if !errors.Is(err, ErrStockUnavailable) {
+				t.Log(err)
 			}
 		})
 	}
@@ -179,8 +200,8 @@ func TestRentRace(t *testing.T) {
 	close(start)
 	wg.Wait()
 
-	if usedStock > stock {
-		t.Errorf("Error used stock, Expected: less than or equal %d, Actual: %d", stock, usedStock)
+	if usedStock != stock {
+		t.Errorf("Error used stock, Expected: %d, Actual: %d", stock, usedStock)
 		return
 	}
 }
