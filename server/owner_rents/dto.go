@@ -95,3 +95,7 @@ type CancelRequest struct {
 	ID   uint   `param:"id"`
 	Note string `json:"note" validate:"required"`
 }
+
+type HandoverRequest struct {
+	ID uint `param:"id"`
+}

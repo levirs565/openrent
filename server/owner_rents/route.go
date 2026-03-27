@@ -22,7 +22,8 @@ func (ct *Controller) mapError(err error) error {
 	if errors.Is(err, ErrNotFound) {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
-	if errors.Is(err, ErrNotPending) || errors.Is(err, ErrNotReady) {
+	if errors.Is(err, ErrNotPending) || errors.Is(err, ErrNotReady) ||
+		errors.Is(err, ErrCannotHandover) {
 		return echo.NewHTTPError(http.StatusConflict, err.Error())
 	}
 	return err
@@ -93,6 +94,20 @@ func (ct *Controller) cancel(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
+func (ct *Controller) handover(c *echo.Context) error {
+	payload := HandoverRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	userId := core.GetUserSession(c).ID
+	err := ct.service.handover(c.Request().Context(), userId, payload.ID)
+	if err != nil {
+		return ct.mapError(err)
+	}
+	return c.JSON(200, core.CreateActionResponse(true))
+}
+
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g := e.Group("/owner/rents")
 
@@ -103,4 +118,5 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g.POST("/:id/approve", ct.approve)
 	g.POST("/:id/reject", ct.reject)
 	g.POST("/:id/cancel", ct.cancel)
+	g.POST("/:id/handover", ct.handover)
 }
