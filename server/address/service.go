@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var ErrNotFound = errors.New("Address not found")
+var ErrNotFound = errors.New("address not found")
 
 type Service struct {
 	db *gorm.DB

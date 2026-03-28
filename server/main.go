@@ -38,13 +38,16 @@ func main() {
 		panic("cannot connect to database")
 	}
 
-	db.AutoMigrate(
+	err = db.AutoMigrate(
 		&models.AdminAccount{}, &models.UserAccount{}, &models.Account{},
 		&models.UserAddress{},
 		&models.Product{},
 		&models.Rent{},
 		&models.Review{},
 	)
+	if err != nil {
+		log.Panic("Cannot auto migrate", err)
+	}
 
 	store := gormstore.New(db, []byte("secret"))
 	quit := make(chan struct{})

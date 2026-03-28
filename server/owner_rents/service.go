@@ -11,11 +11,11 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var ErrNotFound = errors.New("Rent not found")
-var ErrNotPending = errors.New("Rent is not waiting approval")
-var ErrNotReady = errors.New("Rent is not ready")
-var ErrCannotHandover = errors.New("Cannot handover rent")
-var ErrReturnNotRequested = errors.New("Return is not requested")
+var ErrNotFound = errors.New("rent not found")
+var ErrNotPending = errors.New("rent is not waiting approval")
+var ErrNotReady = errors.New("rent is not ready")
+var ErrCannotHandover = errors.New("cannot handover rent")
+var ErrReturnNotRequested = errors.New("return is not requested")
 
 type Service struct {
 	db *gorm.DB

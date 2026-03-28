@@ -14,9 +14,9 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var ErrNotFound = errors.New("Product not found")
-var ErrStockUnavailable = errors.New("Stock unavailable")
-var ErrCannotRentOwnedProduct = errors.New("Cannnot rent owned product")
+var ErrNotFound = errors.New("product not found")
+var ErrStockUnavailable = errors.New("stock unavailable")
+var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 
 type Service struct {
 	db       *gorm.DB
@@ -169,6 +169,9 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		Limit(5).
 		Find(ctx)
 	// TODO Sort by AI
+	if err != nil {
+		return ResponseItemDetail{}, err
+	}
 
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
@@ -271,6 +274,9 @@ func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest
 			},
 		).
 		Where("products.id = ?", model.ID).First(ctx)
+	if err != nil {
+		return ResponseItem{}, err
+	}
 
 	return modelToResponse(model), nil
 }

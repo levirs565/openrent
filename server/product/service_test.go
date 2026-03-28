@@ -87,8 +87,11 @@ func cleanupTestDb(t *testing.T, src *testDb) {
 		sqlDB, err := db.DB()
 		if err != nil {
 			t.Error("Cannot close DB", err)
-		} else {
-			sqlDB.Close()
+			return
+		}
+		err = sqlDB.Close()
+		if err != nil {
+			t.Log("Cannot close DB", err)
 		}
 	}
 
