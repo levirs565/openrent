@@ -27,6 +27,9 @@ func (s *Service) Update(ctx context.Context, userId uint, request UpdateReviewR
 		Where("reviews.id = ?", request.ID).
 		Where(`"Rent".user_account_id = ?`, userId).
 		Count(ctx, "*")
+	if err != nil {
+		return err
+	}
 	if count == 0 {
 		return ErrNotFound
 	}
@@ -50,6 +53,9 @@ func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
 		Where("reviews.id = ?", id).
 		Where(`"Rent".user_account_id = ?`, userId).
 		Count(ctx, "*")
+	if err != nil {
+		return err
+	}
 	if count == 0 {
 		return ErrNotFound
 	}
