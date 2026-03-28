@@ -16,10 +16,15 @@ type UserShort struct {
 	Name string `json:"name"`
 }
 
+type ReviewShort struct {
+	ID uint `json:"id"`
+}
+
 type ResponseItem struct {
 	ID        uint             `json:"id"`
 	Product   ProductShort     `json:"product"`
 	User      UserShort        `json:"user"`
+	Review    *ReviewShort     `json:"review"`
 	State     models.RentState `json:"state"`
 	StartDate datatypes.Date   `json:"start_date"`
 	EndDate   datatypes.Date   `json:"end_date"`
@@ -27,6 +32,12 @@ type ResponseItem struct {
 }
 
 func modelToResponseItem(model models.Rent) ResponseItem {
+	var review *ReviewShort = nil
+	if model.Review != nil {
+		review = &ReviewShort{
+			ID: model.ID,
+		}
+	}
 	return ResponseItem{
 		ID: model.ID,
 		Product: ProductShort{
@@ -37,6 +48,7 @@ func modelToResponseItem(model models.Rent) ResponseItem {
 			ID:   model.UserAccountID,
 			Name: model.OwnerSnapshotName,
 		},
+		Review:    review,
 		State:     model.State,
 		StartDate: model.StartDate,
 		EndDate:   model.EndDate,
@@ -54,10 +66,17 @@ type UserDetails struct {
 	Name string `json:"name"`
 }
 
+type ReviewDetails struct {
+	ID      uint   `json:"id"`
+	Rating  uint   `json:"rating"`
+	Content string `json:"content"`
+}
+
 type ResponseItemDetails struct {
 	ID        uint             `json:"id"`
 	Product   ProductShort     `json:"product"`
 	User      UserDetails      `json:"user"`
+	Review    *ReviewDetails   `json:"review"`
 	State     models.RentState `json:"state"`
 	StartDate datatypes.Date   `json:"start_date"`
 	EndDate   datatypes.Date   `json:"end_date"`
@@ -65,6 +84,14 @@ type ResponseItemDetails struct {
 }
 
 func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
+	var review *ReviewDetails = nil
+	if model.Review != nil {
+		review = &ReviewDetails{
+			ID:      model.Review.ID,
+			Rating:  model.Review.Rating,
+			Content: model.Review.Content,
+		}
+	}
 	return ResponseItemDetails{
 		ID: model.ID,
 		Product: ProductShort{
@@ -75,6 +102,7 @@ func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
 			ID:   model.UserAccountID,
 			Name: model.OwnerSnapshotName,
 		},
+		Review:    review,
 		State:     model.State,
 		StartDate: model.StartDate,
 		EndDate:   model.EndDate,
@@ -88,4 +116,10 @@ type ReceiveRequest struct {
 
 type RequestReturnRequest struct {
 	ID uint `param:"id"`
+}
+
+type AddReviewRequest struct {
+	ID      uint   `param:"id"`
+	Rating  uint   `json:"rating" validate:"required,min=1,max=5"`
+	Content string `json:"content" validate:"required"`
 }

@@ -67,6 +67,7 @@ type Rent struct {
 	Product            Product
 	UserAccountID      uint
 	UserAccount        UserAccount
+	Review             *Review
 	ProductSnapshot    RentProductSnapshot `gorm:"embedded;embeddedPrefix:product_snapshot_"`
 	RenterSnapshotName string
 	OwnerSnapshotName  string

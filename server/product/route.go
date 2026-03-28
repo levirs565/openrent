@@ -118,6 +118,21 @@ func (ct *Controller) rent(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
+func (ct *Controller) listReview(c *echo.Context) error {
+	payload := ListReviewRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	user := core.GetUserSession(c)
+	result, err := ct.service.ListReview(c.Request().Context(), user.ID, payload)
+	if err != nil {
+		return ct.mapError(err)
+	}
+
+	return c.JSON(200, result)
+}
+
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g := e.Group("/products")
 
@@ -129,4 +144,5 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g.PUT("/:id", ct.update)
 	g.DELETE("/:id", ct.delete)
 	g.POST("/:id/rent", ct.rent)
+	g.GET("/:id/reviews", ct.listReview)
 }

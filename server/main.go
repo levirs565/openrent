@@ -43,6 +43,7 @@ func main() {
 		&models.UserAddress{},
 		&models.Product{},
 		&models.Rent{},
+		&models.Review{},
 	)
 
 	store := gormstore.New(db, []byte("secret"))

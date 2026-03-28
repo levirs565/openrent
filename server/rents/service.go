@@ -7,11 +7,14 @@ import (
 
 	"github.com/samber/lo"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var ErrNotFound = errors.New("Rent not found")
 var ErrNotReady = errors.New("Rent is not ready")
 var ErrNotActive = errors.New("Rent is not active")
+var ErrNotCompleted = errors.New("Rent is not completed")
+var ErrReviewDuplicated = errors.New("Review is duplicated")
 
 type Service struct {
 	db *gorm.DB
@@ -29,6 +32,13 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
 			"rents.quantity", "rents.product_id", "rents.user_account_id",
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+		).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("id")
+				return nil
+			},
 		).
 		Where(`user_account_id = ?`, userId).
 		Find(ctx)
@@ -49,6 +59,13 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
 			"rents.quantity", "rents.product_id", "rents.user_account_id",
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+		).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("id", "rating", "content")
+				return nil
+			},
 		).
 		Where("rents.id = ?", id).
 		Where(`user_account_id = ?`, userId).
@@ -131,5 +148,37 @@ func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error
 	}
 
 	// TODO: Notification
+	return nil
+}
+
+func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRequest) error {
+	data, err := gorm.G[models.Rent](s.db).
+		Select("state").
+		Where("id = ?", reqest.ID).
+		Where("user_account_id = ?", userId).
+		First(ctx)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrNotFound
+		}
+		return err
+	}
+	if data.State != models.RentStateCompleted {
+		return ErrNotCompleted
+	}
+	model := models.Review{
+		RentID:  reqest.ID,
+		Rating:  reqest.Rating,
+		Content: reqest.Content,
+	}
+	err = gorm.G[models.Review](s.db).Create(ctx, &model)
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return ErrReviewDuplicated
+		}
+		return err
+	}
+	// Notification, cancelled need review?, AI sort
 	return nil
 }

@@ -156,10 +156,27 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
+	reviews, err := gorm.G[models.Review](s.db).
+		Select("reviews.id", "reviews.rating", "reviews.content").
+		Joins(
+			clause.JoinTarget{Association: "Rent"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id", "renter_snapshot_name")
+				return nil
+			},
+		).
+		Where(`"Rent".product_id = ?`, id).
+		Limit(5).
+		Find(ctx)
+	// TODO Sort by AI
+
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
 		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
 			return modelToResponseShort(item)
+		}),
+		TopReviews: lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
+			return modelToReviewDetail(item)
 		}),
 	}, nil
 }
@@ -386,4 +403,26 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 
 		return nil
 	})
+}
+
+func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]ReviewDetail, error) {
+	reviews, err := gorm.G[models.Review](s.db).
+		Select("reviews.id", "reviews.rating", "reviews.content").
+		Joins(
+			clause.JoinTarget{Association: "Rent"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id", "renter_snapshot_name")
+				return nil
+			},
+		).
+		Where(`"Rent".product_id = ?`, request.ID).
+		Find(ctx)
+
+	if err != nil {
+		return []ReviewDetail{}, nil
+	}
+
+	return lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
+		return modelToReviewDetail(item)
+	}), nil
 }

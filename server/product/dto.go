@@ -108,9 +108,29 @@ func modelToResponse(model models.Product) ResponseItem {
 	}
 }
 
+type ReviewDetail struct {
+	ID      uint     `json:"id"`
+	User    UserData `json:"user"`
+	Rating  uint     `json:"rating"`
+	Content string   `json:"content"`
+}
+
+func modelToReviewDetail(item models.Review) ReviewDetail {
+	return ReviewDetail{
+		ID: item.ID,
+		User: UserData{
+			ID:   item.Rent.UserAccountID,
+			Name: item.Rent.RenterSnapshotName,
+		},
+		Rating:  item.Rating,
+		Content: item.Content,
+	}
+}
+
 type ResponseItemDetail struct {
 	ResponseItem
 	Recommendations []ResponseItemShort `json:"recommendations"`
+	TopReviews      []ReviewDetail      `json:"top_reviews"`
 }
 
 type GetByIdRequest struct {
@@ -153,3 +173,9 @@ type RentRequest struct {
 	EndDate   time.Time `json:"end_date" validate:"required"`
 	Quantity  int       `json:"quantity" validate:"required"`
 }
+
+type ListReviewRequest struct {
+	ID uint `param:"id"`
+}
+
+// TODO: Sort by, ASC or DES, Paging?
