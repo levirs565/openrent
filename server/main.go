@@ -20,6 +20,7 @@ import (
 	"openrent-server/owner_rents"
 	"openrent-server/product"
 	"openrent-server/rents"
+	"openrent-server/review"
 
 	"github.com/wader/gormstore/v2"
 )
@@ -72,6 +73,7 @@ func main() {
 	productService := product.NewService(db, embedder)
 	ownerRentsService := owner_rents.NewService(db)
 	rentsService := rents.NewService(db)
+	reviwsService := review.NewService(db)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
@@ -87,6 +89,9 @@ func main() {
 
 	rentsController := rents.NewController(rentsService)
 	rents.RegisterRoutes(e, rentsController)
+
+	reivewController := review.NewController(reviwsService)
+	review.RegisterRoutes(e, reivewController)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

@@ -35,7 +35,7 @@ func modelToResponseItem(model models.Rent) ResponseItem {
 	var review *ReviewShort = nil
 	if model.Review != nil {
 		review = &ReviewShort{
-			ID: model.ID,
+			ID: model.Review.ID,
 		}
 	}
 	return ResponseItem{

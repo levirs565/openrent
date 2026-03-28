@@ -175,9 +175,24 @@ func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRe
 	err = gorm.G[models.Review](s.db).Create(ctx, &model)
 	if err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return ErrReviewDuplicated
+			rows, err := gorm.G[models.Review](s.db.Debug()).
+				Scopes(func(db *gorm.Statement) {
+					db.Unscoped = true
+				}).
+				Select("*").
+				Omit("id").
+				Where("rent_id = ?", reqest.ID).
+				Where("deleted_at IS NOT NULL").
+				Updates(ctx, model)
+			if err != nil {
+				return err
+			}
+			if rows == 0 {
+				return ErrReviewDuplicated
+			}
+		} else {
+			return err
 		}
-		return err
 	}
 	// Notification, cancelled need review?, AI sort
 	return nil
