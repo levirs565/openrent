@@ -36,11 +36,7 @@ func (ct *Controller) register(c *echo.Context) error {
 		return err
 	}
 
-	err := ct.service.CreateUserAccount(c.Request().Context(), CreateUserInput{
-		Email:    payload.Email,
-		Name:     payload.Name,
-		Password: payload.Password,
-	})
+	err := ct.service.CreateUserAccount(c.Request().Context(), CreateUserInput(payload))
 
 	if err != nil {
 		if errors.Is(err, ErrEmailDuplicated) {

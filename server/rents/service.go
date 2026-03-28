@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var ErrNotFound = errors.New("Rent not found")
-var ErrNotReady = errors.New("Rent is not ready")
-var ErrNotActive = errors.New("Rent is not active")
-var ErrNotCompleted = errors.New("Rent is not completed")
-var ErrReviewDuplicated = errors.New("Review is duplicated")
+var ErrNotFound = errors.New("rent not found")
+var ErrNotReady = errors.New("rent is not ready")
+var ErrNotActive = errors.New("rent is not active")
+var ErrNotCompleted = errors.New("rent is not completed")
+var ErrReviewDuplicated = errors.New("review is duplicated")
 
 type Service struct {
 	db *gorm.DB
