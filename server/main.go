@@ -17,6 +17,7 @@ import (
 	"openrent-server/chat"
 	"openrent-server/core"
 	"openrent-server/embedding"
+	"openrent-server/message"
 	"openrent-server/models"
 	"openrent-server/owner_rents"
 	"openrent-server/product"
@@ -77,6 +78,7 @@ func main() {
 	rentsService := rents.NewService(db)
 	reviwsService := review.NewService(db)
 	chatService := chat.NewService(db)
+	messageService := message.NewService(db)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
@@ -98,6 +100,9 @@ func main() {
 
 	chatController := chat.NewController(chatService)
 	chat.RegisterRoutes(e.Group("/chats"), chatController)
+
+	messageController := message.NewController(messageService)
+	message.RegisterRoutes(e.Group("/messages"), messageController)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

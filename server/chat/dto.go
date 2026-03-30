@@ -44,9 +44,3 @@ type ParticipantResponseItem struct {
 	Name     string           `json:"name"`
 	LastChat ChatResponseItem `json:"last_chat"`
 }
-
-type UpdateChatRequest struct {
-	ReceiverID uint   `param:"id"`
-	ChatID     uint   `param:"chat_id"`
-	Message    string `json:"message" validate:"required"`
-}
