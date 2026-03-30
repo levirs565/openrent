@@ -41,8 +41,11 @@ func (s *Service) send(ctx context.Context, userId uint, request SendChatRequest
 
 func (s *Service) list(ctx context.Context, userId uint, otherUserId uint) ([]ChatResponseItem, error) {
 	model, err := gorm.G[models.Chat](s.db).
+		Scopes(func(db *gorm.Statement) {
+			db.Unscoped = true
+		}).
 		Select(
-			"id", "created_at", "updated_at", "message", "sender_id",
+			"id", "created_at", "deleted_at", "updated_at", "message", "sender_id",
 		).
 		Where(clause.Or(
 			gorm.Expr("sender_id = ? AND receiver_id = ?", userId, otherUserId),
@@ -68,15 +71,17 @@ func (s *Service) listParticipants(ctx context.Context, userId uint) ([]Particip
 	}
 
 	var model []participantModel
-	err := s.db.WithContext(ctx).Table(
+
+	err := s.db.Unscoped().WithContext(ctx).Table(
 		"(?) as c",
-		s.db.Model(&models.Chat{}).
+		s.db.Unscoped().Model(&models.Chat{}).
 			Select(
 				"(CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END) AS other_id, *",
 				userId,
 			),
 	).Select(`
-		DISTINCT ON (other_id) c.id, c.created_at, c.updated_at, c.message, c.other_id, c.sender_id
+		DISTINCT ON (other_id) c.id, c.created_at, c.deleted_at, c.updated_at, c.message, c.other_id,
+		c.sender_id
 	`).
 		Order(clause.OrderBy{Expression: gorm.Expr("other_id, created_at DESC")}).
 		Joins("OtherUser.Account", s.db.Select("name")).
