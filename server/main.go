@@ -84,7 +84,7 @@ func main() {
 	auth.RegisterRoutes(e, authController)
 
 	addressController := address.NewController(addressService)
-	address.RegisterRoutes(e, addressController)
+	addressController.RegisterRoutes(e.Group("/addresses"))
 
 	productController := product.NewController(productService)
 	product.RegisterRoutes(e, productController)

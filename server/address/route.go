@@ -22,7 +22,7 @@ func NewController(service *Service) *Controller {
 func (ct *Controller) getAll(c *echo.Context) error {
 	user := core.GetUserSession(c)
 
-	result, err := ct.service.GetByUserId(context.Background(), user.ID)
+	result, err := ct.service.List(context.Background(), user.ID)
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (ct *Controller) getById(c *echo.Context) error {
 
 	user := core.GetUserSession(c)
 
-	result, err := ct.service.GetById(context.Background(), user.ID, payload.ID)
+	result, err := ct.service.Get(context.Background(), user.ID, payload.ID)
 	if err != nil {
 		if errors.Is(err, ErrNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -107,9 +107,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
-func RegisterRoutes(e *echo.Echo, ct *Controller) {
-	g := e.Group("/addresses")
-
+func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.GET("", ct.getAll)

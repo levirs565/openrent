@@ -22,7 +22,7 @@ func NewService(db *gorm.DB) *Service {
 	}
 }
 
-func (s *Service) GetByUserId(ctx context.Context, userId uint) ([]ResponseItem, error) {
+func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItem, error) {
 	list, err := gorm.G[models.UserAddress](s.db).
 		Where("user_account_id = ?", userId).
 		Order("name ASC").Find(ctx)
@@ -36,7 +36,7 @@ func (s *Service) GetByUserId(ctx context.Context, userId uint) ([]ResponseItem,
 	}), nil
 }
 
-func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseItem, error) {
+func (s *Service) Get(ctx context.Context, userId uint, id uint) (ResponseItem, error) {
 	item, err := gorm.G[models.UserAddress](s.db).
 		Where("user_account_id = ? AND id = ?", userId, id).
 		First(ctx)
