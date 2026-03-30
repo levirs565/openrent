@@ -14,6 +14,7 @@ import (
 
 	"openrent-server/address"
 	"openrent-server/auth"
+	"openrent-server/chat"
 	"openrent-server/core"
 	"openrent-server/embedding"
 	"openrent-server/models"
@@ -45,6 +46,7 @@ func main() {
 		&models.Product{},
 		&models.Rent{},
 		&models.Review{},
+		&models.Chat{},
 	)
 	if err != nil {
 		log.Panic("Cannot auto migrate", err)
@@ -74,6 +76,7 @@ func main() {
 	ownerRentsService := owner_rents.NewService(db)
 	rentsService := rents.NewService(db)
 	reviwsService := review.NewService(db)
+	chatService := chat.NewService(db)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
@@ -92,6 +95,9 @@ func main() {
 
 	reivewController := review.NewController(reviwsService)
 	review.RegisterRoutes(e, reivewController)
+
+	chatController := chat.NewController(chatService)
+	chat.RegisterRoutes(e.Group("/chats"), chatController)
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

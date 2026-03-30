@@ -32,6 +32,8 @@ type UserAccount struct {
 	UserAddresses []UserAddress
 	Product       []Product
 	Rent          []Rent
+	ChatSent      []Chat `gorm:"foreignKey:SenderID"`
+	ChatReceived  []Chat `gorm:"foreignKey:ReceiverID"`
 }
 
 type AdminAccount struct {
