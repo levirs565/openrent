@@ -53,7 +53,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
-func RegisterRoutes(g *echo.Group, ct *Controller) {
+func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.PUT("/:id", ct.update)

@@ -87,22 +87,22 @@ func main() {
 	addressController.RegisterRoutes(e.Group("/addresses"))
 
 	productController := product.NewController(productService)
-	product.RegisterRoutes(e, productController)
+	productController.RegisterRoutes(e.Group("/products"))
 
-	ownerRentsController := owner_rents.NewController(ownerRentsService)
-	owner_rents.RegisterRoutes(e, ownerRentsController)
+	ownerRentController := owner_rents.NewController(ownerRentsService)
+	ownerRentController.RegisterRoutes(e.Group("/owner/rents"))
 
-	rentsController := rents.NewController(rentsService)
-	rents.RegisterRoutes(e, rentsController)
+	rentController := rents.NewController(rentsService)
+	rentController.RegisterRoutes(e.Group("/rents"))
 
-	reivewController := review.NewController(reviwsService)
-	review.RegisterRoutes(e, reivewController)
+	reviewController := review.NewController(reviwsService)
+	reviewController.RegisterRoutes(e.Group("/reviews"))
 
 	chatController := chat.NewController(chatService)
 	chatController.RegisterRoutes(e.Group("/chats"))
 
 	messageController := message.NewController(messageService)
-	message.RegisterRoutes(e.Group("/messages"), messageController)
+	messageController.RegisterRoutes(e.Group("/messages"))
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

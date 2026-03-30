@@ -133,9 +133,7 @@ func (ct *Controller) listReview(c *echo.Context) error {
 	return c.JSON(200, result)
 }
 
-func RegisterRoutes(e *echo.Echo, ct *Controller) {
-	g := e.Group("/products")
-
+func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.GET("", ct.list)

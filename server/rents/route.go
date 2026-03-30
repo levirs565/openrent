@@ -94,9 +94,7 @@ func (ct *Controller) addReview(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
-func RegisterRoutes(e *echo.Echo, ct *Controller) {
-	g := e.Group("/rents")
-
+func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.GET("", ct.list)
