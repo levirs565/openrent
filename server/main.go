@@ -19,9 +19,9 @@ import (
 	"openrent-server/embedding"
 	"openrent-server/message"
 	"openrent-server/models"
-	"openrent-server/owner_rents"
+	"openrent-server/owner_rent"
 	"openrent-server/product"
-	"openrent-server/rents"
+	"openrent-server/rent"
 	"openrent-server/review"
 
 	"github.com/wader/gormstore/v2"
@@ -74,8 +74,8 @@ func main() {
 	authService := auth.NewService(db)
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder)
-	ownerRentsService := owner_rents.NewService(db)
-	rentsService := rents.NewService(db)
+	ownerRentsService := owner_rent.NewService(db)
+	rentsService := rent.NewService(db)
 	reviwsService := review.NewService(db)
 	chatService := chat.NewService(db)
 	messageService := message.NewService(db)
@@ -89,10 +89,10 @@ func main() {
 	productController := product.NewController(productService)
 	productController.RegisterRoutes(e.Group("/products"))
 
-	ownerRentController := owner_rents.NewController(ownerRentsService)
+	ownerRentController := owner_rent.NewController(ownerRentsService)
 	ownerRentController.RegisterRoutes(e.Group("/owner/rents"))
 
-	rentController := rents.NewController(rentsService)
+	rentController := rent.NewController(rentsService)
 	rentController.RegisterRoutes(e.Group("/rents"))
 
 	reviewController := review.NewController(reviwsService)

@@ -1,4 +1,4 @@
-package rents
+package rent
 
 import (
 	"context"

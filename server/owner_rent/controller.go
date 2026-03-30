@@ -1,4 +1,4 @@
-package owner_rents
+package owner_rent
 
 import (
 	"errors"
