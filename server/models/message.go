@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type Chat struct {
+type Message struct {
 	gorm.Model
 	SenderID   uint
 	ReceiverID uint

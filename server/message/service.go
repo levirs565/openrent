@@ -21,11 +21,11 @@ func NewService(db *gorm.DB) *Service {
 }
 
 func (s *Service) Update(ctx context.Context, userId uint, request UpdateRequest) error {
-	rows, err := gorm.G[models.Chat](s.db).
+	rows, err := gorm.G[models.Message](s.db).
 		Select("message").
 		Where("id = ?", request.ID).
 		Where("sender_id = ?", userId).
-		Updates(ctx, models.Chat{
+		Updates(ctx, models.Message{
 			Message: request.Message,
 		})
 	if err != nil {
@@ -38,7 +38,7 @@ func (s *Service) Update(ctx context.Context, userId uint, request UpdateRequest
 }
 
 func (s *Service) Delete(ctx context.Context, userId uint, messageId uint) error {
-	rows, err := gorm.G[models.Chat](s.db).
+	rows, err := gorm.G[models.Message](s.db).
 		Where("id = ?", messageId).
 		Where("sender_id = ?", userId).
 		Delete(ctx)

@@ -47,7 +47,7 @@ func main() {
 		&models.Product{},
 		&models.Rent{},
 		&models.Review{},
-		&models.Chat{},
+		&models.Message{},
 	)
 	if err != nil {
 		log.Panic("Cannot auto migrate", err)

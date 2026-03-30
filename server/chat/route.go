@@ -26,13 +26,13 @@ func (ct *Controller) mapError(err error) error {
 }
 
 func (ct *Controller) send(c *echo.Context) error {
-	payload := SendChatRequest{}
+	payload := SendMessageRequest{}
 	if err := core.BindAndValidate(c, &payload); err != nil {
 		return err
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.send(c.Request().Context(), userId, payload)
+	err := ct.service.Send(c.Request().Context(), userId, payload)
 	if err != nil {
 		return ct.mapError(err)
 	}
@@ -41,7 +41,7 @@ func (ct *Controller) send(c *echo.Context) error {
 
 func (ct *Controller) listParticipants(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
-	result, err := ct.service.listParticipants(c.Request().Context(), userId)
+	result, err := ct.service.ListChats(c.Request().Context(), userId)
 	if err != nil {
 		return ct.mapError(err)
 	}
@@ -49,13 +49,13 @@ func (ct *Controller) listParticipants(c *echo.Context) error {
 }
 
 func (ct *Controller) list(c *echo.Context) error {
-	payload := ListChatRequest{}
+	payload := ListMessagesRequest{}
 	if err := core.BindAndValidate(c, &payload); err != nil {
 		return err
 	}
 
 	userId := core.GetUserSession(c).ID
-	result, err := ct.service.list(c.Request().Context(), userId, payload.ID)
+	result, err := ct.service.ListMessages(c.Request().Context(), userId, payload.ID)
 	if err != nil {
 		return ct.mapError(err)
 	}

@@ -5,27 +5,27 @@ import (
 	"time"
 )
 
-type SendChatRequest struct {
+type SendMessageRequest struct {
 	ReceiverID uint   `param:"id"`
 	Message    string `json:"message" validate:"required"`
 }
 
-func sendChatRequestToModel(request SendChatRequest) models.Chat {
-	return models.Chat{
+func sendMessageRequestToModel(request SendMessageRequest) models.Message {
+	return models.Message{
 		ReceiverID: request.ReceiverID,
 		Message:    request.Message,
 	}
 }
 
-type ListChatRequest struct {
+type ListMessagesRequest struct {
 	ID uint `param:"id"`
 }
 
-type ChatResponseItem interface {
+type MessageResponseItem interface {
 	IsChat() bool
 }
 
-type ActiveChatResponseItem struct {
+type ActiveMessageResponseItem struct {
 	ID          uint      `json:"id"`
 	CurrentUser bool      `json:"current_user"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -33,37 +33,37 @@ type ActiveChatResponseItem struct {
 	Message     string    `json:"message"`
 }
 
-var _ ChatResponseItem = (*ActiveChatResponseItem)(nil)
+var _ MessageResponseItem = (*ActiveMessageResponseItem)(nil)
 
-// IsChat implements [ChatResponseItem].
-func (a *ActiveChatResponseItem) IsChat() bool {
-	panic("unimplemented")
+// IsChat implements [MessageResponseItem].
+func (a *ActiveMessageResponseItem) IsChat() bool {
+	return true
 }
 
-type DeleteChatResponseItem struct {
+type DeletedMessageResponseItem struct {
 	ID          uint      `json:"id"`
 	CurrentUser bool      `json:"current_user"`
 	CreatedAt   time.Time `json:"created_at"`
 	DeletedAt   time.Time `json:"deleted_at"`
 }
 
-var _ ChatResponseItem = (*DeleteChatResponseItem)(nil)
+var _ MessageResponseItem = (*DeletedMessageResponseItem)(nil)
 
-// IsChat implements [ChatResponseItem].
-func (d *DeleteChatResponseItem) IsChat() bool {
-	panic("unimplemented")
+// IsChat implements [MessageResponseItem].
+func (d *DeletedMessageResponseItem) IsChat() bool {
+	return true
 }
 
-func modelToResponseItem(model models.Chat, userId uint) ChatResponseItem {
+func modelToResponseItem(model models.Message, userId uint) MessageResponseItem {
 	if model.DeletedAt.Valid {
-		return &DeleteChatResponseItem{
+		return &DeletedMessageResponseItem{
 			ID:          model.ID,
 			CurrentUser: model.SenderID == userId,
 			CreatedAt:   model.CreatedAt,
 			DeletedAt:   model.DeletedAt.Time,
 		}
 	}
-	return &ActiveChatResponseItem{
+	return &ActiveMessageResponseItem{
 		ID:          model.ID,
 		CurrentUser: model.SenderID == userId,
 		CreatedAt:   model.CreatedAt,
@@ -72,8 +72,8 @@ func modelToResponseItem(model models.Chat, userId uint) ChatResponseItem {
 	}
 }
 
-type ParticipantResponseItem struct {
-	ID       uint             `json:"id"`
-	Name     string           `json:"name"`
-	LastChat ChatResponseItem `json:"last_chat"`
+type ChatResponseItem struct {
+	ID          uint                `json:"id"`
+	Name        string              `json:"name"`
+	LastMessage MessageResponseItem `json:"last_message"`
 }

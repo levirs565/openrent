@@ -22,15 +22,15 @@ func NewService(db *gorm.DB) *Service {
 	}
 }
 
-func (s *Service) send(ctx context.Context, userId uint, request SendChatRequest) error {
+func (s *Service) Send(ctx context.Context, userId uint, request SendMessageRequest) error {
 	if userId == request.ReceiverID {
 		return ErrCannotSendToSelf
 	}
 
-	model := sendChatRequestToModel(request)
+	model := sendMessageRequestToModel(request)
 	model.SenderID = userId
 
-	err := gorm.G[models.Chat](s.db).
+	err := gorm.G[models.Message](s.db).
 		Create(ctx, &model)
 	if err != nil {
 		return err
@@ -39,8 +39,8 @@ func (s *Service) send(ctx context.Context, userId uint, request SendChatRequest
 	return nil
 }
 
-func (s *Service) list(ctx context.Context, userId uint, otherUserId uint) ([]ChatResponseItem, error) {
-	model, err := gorm.G[models.Chat](s.db).
+func (s *Service) ListMessages(ctx context.Context, userId uint, otherUserId uint) ([]MessageResponseItem, error) {
+	model, err := gorm.G[models.Message](s.db).
 		Scopes(func(db *gorm.Statement) {
 			db.Unscoped = true
 		}).
@@ -54,18 +54,18 @@ func (s *Service) list(ctx context.Context, userId uint, otherUserId uint) ([]Ch
 		Order("created_at DESC").
 		Find(ctx)
 	if err != nil {
-		return []ChatResponseItem{}, err
+		return []MessageResponseItem{}, err
 	}
 
-	result := lo.Map(model, func(item models.Chat, index int) ChatResponseItem {
+	result := lo.Map(model, func(item models.Message, index int) MessageResponseItem {
 		return modelToResponseItem(item, userId)
 	})
 	return result, nil
 }
 
-func (s *Service) listParticipants(ctx context.Context, userId uint) ([]ParticipantResponseItem, error) {
+func (s *Service) ListChats(ctx context.Context, userId uint) ([]ChatResponseItem, error) {
 	type participantModel struct {
-		models.Chat
+		models.Message
 		OtherID   uint
 		OtherUser models.UserAccount `gorm:"foreignKey:AccountID;references:OtherID"`
 	}
@@ -74,7 +74,7 @@ func (s *Service) listParticipants(ctx context.Context, userId uint) ([]Particip
 
 	err := s.db.Unscoped().WithContext(ctx).Table(
 		"(?) as c",
-		s.db.Unscoped().Model(&models.Chat{}).
+		s.db.Unscoped().Model(&models.Message{}).
 			Select(
 				"(CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END) AS other_id, *",
 				userId,
@@ -87,14 +87,14 @@ func (s *Service) listParticipants(ctx context.Context, userId uint) ([]Particip
 		Joins("OtherUser.Account", s.db.Select("name")).
 		Find(&model).Error
 	if err != nil {
-		return []ParticipantResponseItem{}, err
+		return []ChatResponseItem{}, err
 	}
 
-	result := lo.Map(model, func(item participantModel, index int) ParticipantResponseItem {
-		return ParticipantResponseItem{
-			ID:       item.OtherID,
-			Name:     item.OtherUser.Account.Name,
-			LastChat: modelToResponseItem(item.Chat, userId),
+	result := lo.Map(model, func(item participantModel, index int) ChatResponseItem {
+		return ChatResponseItem{
+			ID:          item.OtherID,
+			Name:        item.OtherUser.Account.Name,
+			LastMessage: modelToResponseItem(item.Message, userId),
 		}
 	})
 
