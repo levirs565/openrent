@@ -62,7 +62,7 @@ func (ct *Controller) list(c *echo.Context) error {
 	return c.JSON(200, result)
 }
 
-func RegisterRoutes(g *echo.Group, ct *Controller) {
+func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.GET("", ct.listParticipants)

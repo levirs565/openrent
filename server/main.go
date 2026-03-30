@@ -99,7 +99,7 @@ func main() {
 	review.RegisterRoutes(e, reivewController)
 
 	chatController := chat.NewController(chatService)
-	chat.RegisterRoutes(e.Group("/chats"), chatController)
+	chatController.RegisterRoutes(e.Group("/chats"))
 
 	messageController := message.NewController(messageService)
 	message.RegisterRoutes(e.Group("/messages"), messageController)
