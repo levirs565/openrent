@@ -2,8 +2,6 @@ package address
 
 import (
 	"context"
-	"errors"
-	"net/http"
 	"openrent-server/core"
 
 	"github.com/labstack/echo/v5"
@@ -41,9 +39,6 @@ func (ct *Controller) getById(c *echo.Context) error {
 
 	result, err := ct.service.Get(context.Background(), user.ID, payload.ID)
 	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		}
 		return err
 	}
 
@@ -78,9 +73,6 @@ func (ct *Controller) update(c *echo.Context) error {
 
 	result, err := ct.service.Update(context.Background(), user.ID, payload.ID, payload.AddRequest)
 	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		}
 		return err
 	}
 
@@ -98,9 +90,6 @@ func (ct *Controller) delete(c *echo.Context) error {
 
 	err := ct.service.Delete(context.Background(), user.ID, payload.ID)
 	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		}
 		return err
 	}
 

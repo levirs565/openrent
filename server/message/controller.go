@@ -1,8 +1,6 @@
 package message
 
 import (
-	"errors"
-	"net/http"
 	"openrent-server/core"
 
 	"github.com/labstack/echo/v5"
@@ -18,13 +16,6 @@ func NewController(s *Service) *Controller {
 	}
 }
 
-func (ct *Controller) mapError(err error) error {
-	if errors.Is(err, ErrNotFound) {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-	return err
-}
-
 func (ct *Controller) update(c *echo.Context) error {
 	payload := UpdateRequest{}
 	if err := core.BindAndValidate(c, &payload); err != nil {
@@ -34,7 +25,7 @@ func (ct *Controller) update(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.Update(c.Request().Context(), userId, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }
@@ -48,7 +39,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.Delete(c.Request().Context(), userId, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }

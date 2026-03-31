@@ -66,6 +66,7 @@ func main() {
 	e.Use(middleware.RequestLogger())
 	e.Use(core.NewSessionMiddleware(store))
 
+	e.HTTPErrorHandler = NewErrorHandler()
 	e.Validator = core.NewValidator()
 
 	authService := auth.NewService(db)

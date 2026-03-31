@@ -1,8 +1,6 @@
 package owner_rent
 
 import (
-	"errors"
-	"net/http"
 	"openrent-server/core"
 
 	"github.com/labstack/echo/v5"
@@ -16,17 +14,6 @@ func NewController(s *Service) *Controller {
 	return &Controller{
 		service: s,
 	}
-}
-
-func (ct *Controller) mapError(err error) error {
-	if errors.Is(err, ErrNotFound) {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-	if errors.Is(err, ErrNotPending) || errors.Is(err, ErrNotReady) ||
-		errors.Is(err, ErrCannotHandover) || errors.Is(err, ErrReturnNotRequested) {
-		return echo.NewHTTPError(http.StatusConflict, err.Error())
-	}
-	return err
 }
 
 func (ct *Controller) list(c *echo.Context) error {
@@ -47,7 +34,7 @@ func (ct *Controller) getById(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	result, err := ct.service.getById(c.Request().Context(), userId, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, result)
 }
@@ -61,7 +48,7 @@ func (ct *Controller) approve(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.approve(c.Request().Context(), userId, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }
@@ -75,7 +62,7 @@ func (ct *Controller) reject(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.reject(c.Request().Context(), userId, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }
@@ -89,7 +76,7 @@ func (ct *Controller) cancel(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.cancel(c.Request().Context(), userId, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }
@@ -103,7 +90,7 @@ func (ct *Controller) handover(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.handover(c.Request().Context(), userId, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }
@@ -117,7 +104,7 @@ func (ct *Controller) confirmReturn(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
 	err := ct.service.confirmReturn(c.Request().Context(), userId, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 	return c.JSON(200, core.CreateActionResponse(true))
 }

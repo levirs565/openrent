@@ -1,8 +1,6 @@
 package product
 
 import (
-	"errors"
-	"net/http"
 	"openrent-server/core"
 
 	"github.com/labstack/echo/v5"
@@ -16,16 +14,6 @@ func NewController(s *Service) *Controller {
 	return &Controller{
 		service: s,
 	}
-}
-
-func (ct *Controller) mapError(err error) error {
-	if errors.Is(err, ErrNotFound) {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-	if errors.Is(err, ErrCannotRentOwnedProduct) || errors.Is(err, ErrStockUnavailable) {
-		return echo.NewHTTPError(http.StatusConflict, err.Error())
-	}
-	return err
 }
 
 func (ct *Controller) list(c *echo.Context) error {
@@ -52,7 +40,7 @@ func (ct *Controller) getById(c *echo.Context) error {
 
 	result, err := ct.service.GetById(c.Request().Context(), payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, result)
@@ -67,7 +55,7 @@ func (ct *Controller) add(c *echo.Context) error {
 	user := core.GetUserSession(c)
 	result, err := ct.service.Add(c.Request().Context(), user.ID, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, result)
@@ -82,7 +70,7 @@ func (ct *Controller) update(c *echo.Context) error {
 	user := core.GetUserSession(c)
 	result, err := ct.service.Update(c.Request().Context(), user.ID, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, result)
@@ -97,7 +85,7 @@ func (ct *Controller) delete(c *echo.Context) error {
 	user := core.GetUserSession(c)
 	err := ct.service.Delete(c.Request().Context(), user.ID, payload.ID)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, core.CreateActionResponse(true))
@@ -112,7 +100,7 @@ func (ct *Controller) rent(c *echo.Context) error {
 	user := core.GetUserSession(c)
 	err := ct.service.Rent(c.Request().Context(), user.ID, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, core.CreateActionResponse(true))
@@ -127,7 +115,7 @@ func (ct *Controller) listReview(c *echo.Context) error {
 	user := core.GetUserSession(c)
 	result, err := ct.service.ListReview(c.Request().Context(), user.ID, payload)
 	if err != nil {
-		return ct.mapError(err)
+		return err
 	}
 
 	return c.JSON(200, result)

@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"errors"
-	"net/http"
 	"openrent-server/core"
 
 	"github.com/labstack/echo/v5"
@@ -39,9 +37,6 @@ func (ct *Controller) register(c *echo.Context) error {
 	err := ct.service.CreateUserAccount(c.Request().Context(), CreateUserInput(payload))
 
 	if err != nil {
-		if errors.Is(err, ErrEmailDuplicated) {
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		}
 		return err
 	}
 
@@ -59,9 +54,6 @@ func (ct *Controller) login(c *echo.Context) error {
 	result, err := ct.service.Login(c.Request().Context(), payload.Email, payload.Password)
 
 	if err != nil {
-		if errors.Is(err, ErrEmailNotFound) || errors.Is(err, ErrPasswordNotMatch) {
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		}
 		return err
 	}
 
