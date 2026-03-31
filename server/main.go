@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -67,9 +66,7 @@ func main() {
 	e.Use(middleware.RequestLogger())
 	e.Use(core.NewSessionMiddleware(store))
 
-	e.Validator = &core.Validator{
-		Validator: validator.New(),
-	}
+	e.Validator = core.NewValidator()
 
 	authService := auth.NewService(db)
 	addressService := address.NewService(db)
