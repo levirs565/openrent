@@ -12,6 +12,11 @@ import (
 
 var ErrCannotSendToSelf = errors.New("cannot send to self")
 
+// TODO: Chat must have entity
+// Msybe {id, user1_id, user2_id} with user1_id < user2_id
+// Delete chat will only hide from current user and all message will show when other user send message again
+// Maybe donot need update dan deleted message
+
 type Service struct {
 	db *gorm.DB
 }
