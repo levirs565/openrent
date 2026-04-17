@@ -63,6 +63,10 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:8080"},
+		AllowCredentials: true,
+	}))
 	e.Use(middleware.RequestLogger())
 	e.Use(core.NewSessionMiddleware(store))
 
