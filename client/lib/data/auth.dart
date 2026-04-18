@@ -33,16 +33,6 @@ abstract interface class AuthRepository {
   void dispose();
 }
 
-Result<T> mapDioErrorToResult<T>(Object e) {
-  if (e is DioException) {
-    if (e.error is ErrorResponse) {
-      return ResultError((e.error as ErrorResponse).message);
-    }
-    return ResultError(e.error.toString());
-  }
-  return ResultError(e.toString());
-}
-
 class AuthDataSource implements AuthRepository {
   final AuthService service;
   Resource<AuthUserState?> _lastState = ResourceLoading();

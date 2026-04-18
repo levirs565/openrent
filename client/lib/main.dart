@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/auth.dart';
+import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/login/page.dart';
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<AuthRepository>(
           create: (_) => AuthDataSource(service: authService),
           dispose: (repository) => repository.dispose(),
+        ),
+        RepositoryProvider<ProductRepository>(
+          create: (_) => ProductDataSource(service: productService),
         ),
       ],
       child: BlocProvider(

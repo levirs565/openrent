@@ -3,6 +3,7 @@ import 'package:dio/browser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:openrent_client/data/remote/auth.dart';
 import 'package:openrent_client/data/remote/error.dart';
+import 'package:openrent_client/data/remote/product.dart';
 
 Dio createDio() {
   final dio = Dio(BaseOptions(
@@ -17,3 +18,4 @@ Dio createDio() {
 
 final dioInstance = createDio();
 final authService = AuthService(dioInstance);
+final productService = ProductService(dioInstance);

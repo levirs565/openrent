@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:openrent_client/data/remote/error.dart';
+
 sealed class Resource<T> {
   const Resource();
 }
@@ -26,4 +29,14 @@ class ResultSuccess<T> extends Result<T> {
 class ResultError<T> extends Result<T> {
   final String message;
   const ResultError(this.message);
+}
+
+Result<T> mapDioErrorToResult<T>(Object e) {
+  if (e is DioException) {
+    if (e.error is ErrorResponse) {
+      return ResultError((e.error as ErrorResponse).message);
+    }
+    return ResultError(e.error.toString());
+  }
+  return ResultError(e.toString());
 }

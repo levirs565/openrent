@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/ui/profile/page.dart';
+import 'package:openrent_client/ui/search/page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  List<Widget> _widgetOptions = <Widget>[Text("Home"), ProfilePage()];
+  List<Widget> _widgetOptions = <Widget>[SearchPage(), ProfilePage()];
 
   void _onItemTapped(int index) {
     setState(() {
