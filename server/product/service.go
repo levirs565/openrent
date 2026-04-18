@@ -59,12 +59,12 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 		)
 	}
 	if parameters.Owner {
-		q = q.Where("user_account_id = ?", userId)
+		q = q.Where("products.user_account_id = ?", userId)
 	}
 	if len(parameters.Query) > 0 {
 		if parameters.DisableAISearch {
 			pattern := fmt.Sprintf("%%%s%%", parameters.Query)
-			q = q.Where("name ILIKE ? OR description ILIKE ?", pattern, pattern)
+			q = q.Where("products.name ILIKE ? OR products.description ILIKE ?", pattern, pattern)
 		} else {
 			content := fmt.Sprintf("Product search: %s", parameters.Query)
 			vector, err := s.embedder.Embed(ctx, content)
@@ -72,7 +72,7 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 				return []ResponseItemShort{}, err
 			}
 
-			q = q.Where("(embedding <=> ?) < 0.3", pgvector.NewVector(vector))
+			q = q.Where("(products.embedding <=> ?) < 0.3", pgvector.NewVector(vector))
 		}
 	}
 
