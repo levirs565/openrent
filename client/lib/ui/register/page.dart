@@ -5,6 +5,9 @@ import 'package:openrent_client/ui/register/state.dart';
 
 import '../login/page.dart';
 
+/* TODO: AI Search, Location Filter, Map View, Filter by Location
+    Filter by Date, Sort*/
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 

@@ -22,6 +22,8 @@ abstract interface class ProductRepository {
     ProductLocationSearchParameter? location,
     CancelToken? cancelToken,
   });
+
+  Future<Result<ProductResponseItem>> getById({required int id});
 }
 
 class ProductDataSource implements ProductRepository {
@@ -47,6 +49,16 @@ class ProductDataSource implements ProductRepository {
         radiusKm: location?.radiusKm,
         cancelToken: cancelToken,
       );
+      return ResultSuccess(result);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<ProductResponseItem>> getById({required int id}) async {
+    try {
+      final result = await service.getProduct(id);
       return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);

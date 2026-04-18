@@ -119,9 +119,9 @@ class ProductResponseItem {
   final DateTime updatedAt;
   final String name;
   @JsonKey(name: "price_per_day")
-  final String pricePerDay;
+  final int pricePerDay;
   @JsonKey(name: "late_fee_per_day")
-  final String lateFeePerDay;
+  final int lateFeePerDay;
   final int stock;
   final String description;
   final ProductAddress address;
