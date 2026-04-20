@@ -22,6 +22,9 @@ abstract class ProductService {
 
   @GET("/products/{id}")
   Future<ProductResponseItem> getProduct(@Path("id") int id);
+
+  @POST("/products")
+  Future<ProductResponseItem> addProduct(@Body() ProductAddRequest request);
 }
 
 @JsonSerializable()
@@ -143,4 +146,26 @@ class ProductResponseItem {
       _$ProductResponseItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductResponseItemToJson(this);
+}
+
+
+@JsonSerializable()
+class ProductAddRequest {
+  final String name;
+  @JsonKey(name: "price_per_day")
+  final int pricePerDay;
+  @JsonKey(name: "late_fee_per_day")
+  final int lateFeePerDay;
+  final int stock;
+  final String description;
+  @JsonKey(name: "address_id")
+  final int addressId;
+
+  ProductAddRequest({required this.name, required this.pricePerDay, required this.lateFeePerDay, required this.stock, required this.description, required this.addressId});
+
+
+  factory ProductAddRequest.fromJson(Map<String, dynamic> json) =>
+      _$ProductAddRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductAddRequestToJson(this);
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/my_products/cubit.dart';
 import 'package:openrent_client/ui/my_products/state.dart';
+import 'package:openrent_client/ui/product_form/page.dart';
 
 class MyProductsPage extends StatelessWidget {
   const MyProductsPage({super.key});
@@ -19,7 +20,7 @@ class MyProductsPage extends StatelessWidget {
         appBar: AppBar(title: Text("My Products")),
         body: _MyProductsPageContent(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).push(ProductFormPage.routeAdd()),
           child: Icon(Icons.add),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/ui/error_with_datetime.dart';
 
 part 'state.freezed.dart';
