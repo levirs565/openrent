@@ -49,21 +49,73 @@ class _ProductPageContent extends StatelessWidget {
       },
       builder: (context, state) => Scaffold(
         appBar: AppBar(title: Text(state.data?.name ?? "")),
-        body: Column(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (state.isLoading) LinearProgressIndicator(),
+              Text("Price: ${state.data?.pricePerDay ?? "-"} per day"),
+              Text("Late: ${state.data?.lateFeePerDay ?? "-"} per day"),
+              Text(
+                "Address: ${state.data != null ? formatAddress(state.data!.address) : "-"}",
+              ),
+              Text("Stock ${state.data?.stock ?? "-"}"),
+              Text("User ${state.data?.user.name}"),
+              Text("Descrption:"),
+              Text(state.data?.description ?? "-"),
+              Text("Reccomendation"),
+              ...(state.data?.recommendations
+                      .map((item) => _ProductRecommendationItem(item: item))
+                      .toList() ??
+                  List.empty()),
+              Text("Reviews"),
+              ...(state.data?.topReviews
+                      .map((item) => _ProductReviewItem(item: item))
+                      .toList() ??
+                  List.empty()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// TODO: Copy from Search, refactor
+class _ProductRecommendationItem extends StatelessWidget {
+  final ProductResponseItemShort item;
+
+  const _ProductRecommendationItem({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card.filled(
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(ProductPage.route(item.id)),
+        child: Column(
           children: [
-            if (state.isLoading) LinearProgressIndicator(),
-            Text("Price: ${state.data?.pricePerDay ?? "-"} per day"),
-            Text("Late: ${state.data?.lateFeePerDay ?? "-"} per day"),
-            Text(
-              "Address: ${state.data != null ? formatAddress(state.data!.address) : "-"}",
-            ),
-            Text("Stock ${state.data?.stock ?? "-"}"),
-            Text("User ${state.data?.user.name}"),
-            Text("Descrption:"),
-            Text(state.data?.description ?? "-"),
+            Text(item.name),
+            Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
+            Text("${item.address.regency} - ${item.user.name}"),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ProductReviewItem extends StatelessWidget {
+  final ProductReviewDetail item;
+
+  const _ProductReviewItem({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(item.user.name),
+        Text("${item.rating} Start"),
+        Text(item.content),
+      ],
     );
   }
 }

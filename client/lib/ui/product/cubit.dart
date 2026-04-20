@@ -26,12 +26,12 @@ class ProductCubit extends Cubit<ProductState> {
     final result = await _productRepository.getById(id: state.id);
 
     switch (result) {
-      case ResultSuccess<ProductResponseItem>():
+      case ResultSuccess<ProductResponseItemDetail>():
         emit(state.copyWith(
           isLoading: false,
           data: result.data
         ));
-      case ResultError<ProductResponseItem>():
+      case ResultError<ProductResponseItemDetail>():
         emit(state.copyWith(
           isLoading: false,
           error: ErrorWithDateTime.current(message: result.message)

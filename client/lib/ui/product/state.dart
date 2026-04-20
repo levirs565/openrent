@@ -8,7 +8,7 @@ part 'state.freezed.dart';
 class ProductState with _$ProductState {
   final int id;
   final bool isLoading;
-  final ProductResponseItem? data;
+  final ProductResponseItemDetail? data;
   final ErrorWithDateTime? error;
 
   ProductState({

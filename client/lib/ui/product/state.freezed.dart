@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductState {
 
- int get id; bool get isLoading; ProductResponseItem? get data; ErrorWithDateTime? get error;
+ int get id; bool get isLoading; ProductResponseItemDetail? get data; ErrorWithDateTime? get error;
 /// Create a copy of ProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ProductStateCopyWith<$Res>  {
   factory $ProductStateCopyWith(ProductState value, $Res Function(ProductState) _then) = _$ProductStateCopyWithImpl;
 @useResult
 $Res call({
- ProductResponseItem? data, ErrorWithDateTime? error, int id, bool isLoading
+ ProductResponseItemDetail? data, ErrorWithDateTime? error, int id, bool isLoading
 });
 
 
@@ -65,7 +65,7 @@ class _$ProductStateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? isLoading = null,}) {
   return _then(ProductState(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ProductResponseItem?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorWithDateTime?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,

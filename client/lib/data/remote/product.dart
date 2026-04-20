@@ -17,11 +17,11 @@ abstract class ProductService {
     @Query("lat") double? lat,
     @Query("lng") double? lng,
     @Query("radius_km") int? radiusKm,
-    @CancelRequest() CancelToken? cancelToken
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/products/{id}")
-  Future<ProductResponseItem> getProduct(@Path("id") int id);
+  Future<ProductResponseItemDetail> getProduct(@Path("id") int id);
 
   @POST("/products")
   Future<ProductResponseItem> addProduct(@Body() ProductAddRequest request);
@@ -148,6 +148,47 @@ class ProductResponseItem {
   Map<String, dynamic> toJson() => _$ProductResponseItemToJson(this);
 }
 
+@JsonSerializable()
+class ProductReviewDetail {
+  final int id;
+  final ProductUserData user;
+  final int rating;
+  final String content;
+
+  ProductReviewDetail(this.id, this.user, this.rating, this.content);
+
+  factory ProductReviewDetail.fromJson(Map<String, dynamic> json) =>
+      _$ProductReviewDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductReviewDetailToJson(this);
+}
+
+@JsonSerializable()
+class ProductResponseItemDetail extends ProductResponseItem {
+  final List<ProductResponseItemShort> recommendations;
+  @JsonKey(name: "top_reviews")
+  final List<ProductReviewDetail> topReviews;
+
+  ProductResponseItemDetail({
+    required super.id,
+    required super.user,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.name,
+    required super.pricePerDay,
+    required super.lateFeePerDay,
+    required super.stock,
+    required super.description,
+    required super.address,
+    required this.recommendations,
+    required this.topReviews,
+  });
+
+  factory ProductResponseItemDetail.fromJson(Map<String, dynamic> json) =>
+      _$ProductResponseItemDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductResponseItemDetailToJson(this);
+}
 
 @JsonSerializable()
 class ProductAddRequest {
@@ -161,8 +202,14 @@ class ProductAddRequest {
   @JsonKey(name: "address_id")
   final int addressId;
 
-  ProductAddRequest({required this.name, required this.pricePerDay, required this.lateFeePerDay, required this.stock, required this.description, required this.addressId});
-
+  ProductAddRequest({
+    required this.name,
+    required this.pricePerDay,
+    required this.lateFeePerDay,
+    required this.stock,
+    required this.description,
+    required this.addressId,
+  });
 
   factory ProductAddRequest.fromJson(Map<String, dynamic> json) =>
       _$ProductAddRequestFromJson(json);

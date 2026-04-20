@@ -23,7 +23,7 @@ abstract interface class ProductRepository {
     CancelToken? cancelToken,
   });
 
-  Future<Result<ProductResponseItem>> getById({required int id});
+  Future<Result<ProductResponseItemDetail>> getById({required int id});
 
   Future<Result<List<ProductResponseItemShort>>> getMyProduct();
 
@@ -60,7 +60,7 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<ProductResponseItem>> getById({required int id}) async {
+  Future<Result<ProductResponseItemDetail>> getById({required int id}) async {
     try {
       final result = await service.getProduct(id);
       return ResultSuccess(result);

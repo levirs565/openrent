@@ -111,6 +111,61 @@ Map<String, dynamic> _$ProductResponseItemToJson(
   'address': instance.address,
 };
 
+ProductReviewDetail _$ProductReviewDetailFromJson(Map<String, dynamic> json) =>
+    ProductReviewDetail(
+      (json['id'] as num).toInt(),
+      ProductUserData.fromJson(json['user'] as Map<String, dynamic>),
+      (json['rating'] as num).toInt(),
+      json['content'] as String,
+    );
+
+Map<String, dynamic> _$ProductReviewDetailToJson(
+  ProductReviewDetail instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'user': instance.user,
+  'rating': instance.rating,
+  'content': instance.content,
+};
+
+ProductResponseItemDetail _$ProductResponseItemDetailFromJson(
+  Map<String, dynamic> json,
+) => ProductResponseItemDetail(
+  id: (json['id'] as num).toInt(),
+  user: ProductUserData.fromJson(json['user'] as Map<String, dynamic>),
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
+  name: json['name'] as String,
+  pricePerDay: (json['price_per_day'] as num).toInt(),
+  lateFeePerDay: (json['late_fee_per_day'] as num).toInt(),
+  stock: (json['stock'] as num).toInt(),
+  description: json['description'] as String,
+  address: ProductAddress.fromJson(json['address'] as Map<String, dynamic>),
+  recommendations: (json['recommendations'] as List<dynamic>)
+      .map((e) => ProductResponseItemShort.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  topReviews: (json['top_reviews'] as List<dynamic>)
+      .map((e) => ProductReviewDetail.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$ProductResponseItemDetailToJson(
+  ProductResponseItemDetail instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'user': instance.user,
+  'created_at': instance.createdAt.toIso8601String(),
+  'updated_at': instance.updatedAt.toIso8601String(),
+  'name': instance.name,
+  'price_per_day': instance.pricePerDay,
+  'late_fee_per_day': instance.lateFeePerDay,
+  'stock': instance.stock,
+  'description': instance.description,
+  'address': instance.address,
+  'recommendations': instance.recommendations,
+  'top_reviews': instance.topReviews,
+};
+
 ProductAddRequest _$ProductAddRequestFromJson(Map<String, dynamic> json) =>
     ProductAddRequest(
       name: json['name'] as String,
@@ -200,12 +255,12 @@ class _ProductService implements ProductService {
   }
 
   @override
-  Future<ProductResponseItem> getProduct(int id) async {
+  Future<ProductResponseItemDetail> getProduct(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ProductResponseItem>(
+    final _options = _setStreamType<ProductResponseItemDetail>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -216,9 +271,9 @@ class _ProductService implements ProductService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ProductResponseItem _value;
+    late ProductResponseItemDetail _value;
     try {
-      _value = ProductResponseItem.fromJson(_result.data!);
+      _value = ProductResponseItemDetail.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
