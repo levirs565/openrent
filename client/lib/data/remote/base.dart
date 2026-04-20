@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/data/remote/auth.dart';
 import 'package:openrent_client/data/remote/error.dart';
+import 'package:openrent_client/data/remote/locationiq.dart';
 import 'package:openrent_client/data/remote/product.dart';
 
 Dio createDio() {
@@ -21,3 +22,4 @@ final dioInstance = createDio();
 final authService = AuthService(dioInstance);
 final addressService = AddressService(dioInstance);
 final productService = ProductService(dioInstance);
+final locationIQService = LocationIQService(Dio());

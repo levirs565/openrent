@@ -36,7 +36,7 @@ Result<T> mapDioErrorToResult<T>(Object e) {
     if (e.error is ErrorResponse) {
       return ResultError((e.error as ErrorResponse).message);
     }
-    return ResultError(e.error.toString());
+    return ResultError(e.toString());
   }
   return ResultError(e.toString());
 }

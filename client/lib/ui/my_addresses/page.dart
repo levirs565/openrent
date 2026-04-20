@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/address.dart';
+import 'package:openrent_client/ui/address_form/page.dart';
+import 'package:openrent_client/ui/map_picker/page.dart';
 import 'package:openrent_client/ui/my_addresses/cubit.dart';
 import 'package:openrent_client/ui/my_addresses/state.dart';
 
+// TODO: Refresh
 class MyAddressesPage extends StatelessWidget {
   const MyAddressesPage({super.key});
 
@@ -19,7 +22,8 @@ class MyAddressesPage extends StatelessWidget {
         appBar: AppBar(title: Text("My Address")),
         body: _MyAddressesPageContent(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () =>
+              Navigator.of(context).push(MapPickerPage.routeForAdd(position: null)),
           child: Icon(Icons.add),
         ),
       ),
@@ -69,13 +73,16 @@ class _MyAddressItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Text(item.name),
-          Text(
-            "${item.detail}, ${item.district}, ${item.regency}, ${item.province}",
-          ),
-        ],
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(AddressFormPage.routeEdit(id: item.id)),
+        child: Column(
+          children: [
+            Text(item.name),
+            Text(
+              "${item.detail}, ${item.district}, ${item.regency}, ${item.province}",
+            ),
+          ],
+        ),
       ),
     );
   }

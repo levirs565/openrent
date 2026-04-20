@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/auth.dart';
+import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
 import 'package:openrent_client/data/resource.dart';
@@ -30,6 +31,10 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<ProductRepository>(
           create: (_) => ProductDataSource(service: productService),
+        ),
+        RepositoryProvider<LocationRepository>(
+          create: (_) =>
+              LocationDataSource(locationIQService: locationIQService),
         ),
       ],
       child: BlocProvider(
