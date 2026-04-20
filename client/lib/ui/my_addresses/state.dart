@@ -5,11 +5,33 @@ import '../error_with_datetime.dart';
 
 part 'state.freezed.dart';
 
+enum MyAddressesErrorSource { data, action }
+
+enum MyAddressesDataStatus { loading, success, fail }
+
+enum MyAddressesActionStatus { idle, performing }
+
+@freezed
+class MyAddressesError with _$MyAddressesError {
+  final MyAddressesErrorSource source;
+  final ErrorWithDateTime error;
+
+  MyAddressesError({required this.source, required this.error});
+}
+
 @freezed
 class MyAddressesState with _$MyAddressesState {
-  final bool isLoading;
+  final MyAddressesDataStatus dataStatus;
+  final MyAddressesActionStatus actionStatus;
   final List<AddressResponseItem> data;
-  final ErrorWithDateTime? error;
+  final MyAddressesError? error;
 
-  MyAddressesState({required this.isLoading, required this.data, this.error});
+  MyAddressesState({
+    required this.data,
+    this.error,
+    required this.dataStatus,
+    required this.actionStatus,
+  });
+
+  bool get isLoading => dataStatus == .loading || actionStatus == .performing;
 }

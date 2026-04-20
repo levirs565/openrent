@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:dio/dio.dart';
+import 'package:openrent_client/data/remote/auth.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'address.g.dart';
@@ -22,6 +23,9 @@ abstract class AddressService {
     @Path("id") int id,
     @Body() AddressAddRequest request,
   );
+
+  @DELETE("/addresses/{id}")
+  Future<ActionResponse> deleteById(@Path("id") int id);
 }
 
 @JsonSerializable()

@@ -10,31 +10,61 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
 
   MyAddressesCubit({required AddressRepository addressRepository})
     : _addressRepository = addressRepository,
-      super(MyAddressesState(isLoading: false, data: List.empty())) {
+      super(
+        MyAddressesState(
+          data: List.empty(),
+          dataStatus: .success,
+          actionStatus: .idle,
+        ),
+      ) {
     onRefresh();
   }
 
   void onRefresh() async {
     if (state.isLoading) return;
 
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(dataStatus: .loading));
 
     final result = await _addressRepository.getMine();
 
     switch (result) {
       case ResultSuccess<List<AddressResponseItem>>():
-        emit(state.copyWith(isLoading: false, data: result.data));
+        emit(state.copyWith(dataStatus: .success, data: result.data));
       case ResultError<List<AddressResponseItem>>():
         emit(
           state.copyWith(
-            isLoading: true,
-            error: ErrorWithDateTime.current(message: result.message),
+            dataStatus: .fail,
+            error: MyAddressesError(
+              source: .data,
+              error: ErrorWithDateTime.current(message: result.message),
+            ),
           ),
         );
     }
   }
 
-  void onErrorHandled(ErrorWithDateTime error) {
+  void onDelete(int id) async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(actionStatus: .performing));
+
+    final result = await _addressRepository.delete(id);
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(actionStatus: .idle));
+        onRefresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            actionStatus: .idle,
+            error: MyAddressesError(source: .action, error: ErrorWithDateTime.current(message: result.message)),
+          ),
+        );
+    }
+  }
+
+  void onErrorHandled(MyAddressesError error) {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }

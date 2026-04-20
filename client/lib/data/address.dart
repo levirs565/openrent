@@ -9,6 +9,8 @@ abstract interface class AddressRepository {
   Future<Result<AddressResponseItem>> getById(int id);
 
   Future<Result<AddressResponseItem>> update(int id, AddressAddRequest request);
+
+  Future<Result<void>> delete(int id);
 }
 
 class AddressDataSource extends AddressRepository {
@@ -55,6 +57,16 @@ class AddressDataSource extends AddressRepository {
     try {
       final result = await _addressService.updateById(id, request);
       return ResultSuccess(result);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> delete(int id) async {
+    try {
+      await _addressService.deleteById(id);
+      return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
     }
