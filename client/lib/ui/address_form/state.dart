@@ -51,7 +51,7 @@ class AddressFormState with _$AddressFormState {
       detail.isNotEmpty &&
       name.isNotEmpty;
 
-  bool get canEdit => dataStatus == .success;
+  bool get canEdit => dataStatus == .success && submissionStatus == .idle;
 
   bool get isLoading =>
       dataStatus == .loading || submissionStatus == .submitting;
