@@ -200,7 +200,7 @@ case _:
 /// @nodoc
 mixin _$ProductFormState {
 
- List<AddressResponseItem> get addressList; String get name; int? get addressId; int? get pricePerDay; int? get lateFeePerDay; int? get stock; String get description; ProductFormDataStatus get dataStatus; ProductFormSubmissionStatus get submissionStatus; ProductFormError? get error;
+ int? get id; List<AddressResponseItem> get addressList; String get name; int? get addressId; int? get pricePerDay; int? get lateFeePerDay; int? get stock; String get description; ProductFormDataStatus get dataStatus; ProductFormDataStatus get addressStatus; ProductFormSubmissionStatus get submissionStatus; ProductFormError? get error;
 /// Create a copy of ProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -211,16 +211,16 @@ $ProductFormStateCopyWith<ProductFormState> get copyWith => _$ProductFormStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductFormState&&const DeepCollectionEquality().equals(other.addressList, addressList)&&(identical(other.name, name) || other.name == name)&&(identical(other.addressId, addressId) || other.addressId == addressId)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.submissionStatus, submissionStatus) || other.submissionStatus == submissionStatus)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductFormState&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.addressList, addressList)&&(identical(other.name, name) || other.name == name)&&(identical(other.addressId, addressId) || other.addressId == addressId)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.addressStatus, addressStatus) || other.addressStatus == addressStatus)&&(identical(other.submissionStatus, submissionStatus) || other.submissionStatus == submissionStatus)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(addressList),name,addressId,pricePerDay,lateFeePerDay,stock,description,dataStatus,submissionStatus,error);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(addressList),name,addressId,pricePerDay,lateFeePerDay,stock,description,dataStatus,addressStatus,submissionStatus,error);
 
 @override
 String toString() {
-  return 'ProductFormState(addressList: $addressList, name: $name, addressId: $addressId, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, dataStatus: $dataStatus, submissionStatus: $submissionStatus, error: $error)';
+  return 'ProductFormState(id: $id, addressList: $addressList, name: $name, addressId: $addressId, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, dataStatus: $dataStatus, addressStatus: $addressStatus, submissionStatus: $submissionStatus, error: $error)';
 }
 
 
@@ -231,7 +231,7 @@ abstract mixin class $ProductFormStateCopyWith<$Res>  {
   factory $ProductFormStateCopyWith(ProductFormState value, $Res Function(ProductFormState) _then) = _$ProductFormStateCopyWithImpl;
 @useResult
 $Res call({
- List<AddressResponseItem> addressList, String name, int? addressId, int? pricePerDay, int? lateFeePerDay, int? stock, String description, ProductFormDataStatus dataStatus, ProductFormSubmissionStatus submissionStatus, ProductFormError? error
+ int? id, List<AddressResponseItem> addressList, String name, int? addressId, int? pricePerDay, int? lateFeePerDay, int? stock, String description, ProductFormDataStatus dataStatus, ProductFormDataStatus addressStatus, ProductFormSubmissionStatus submissionStatus, ProductFormError? error
 });
 
 
@@ -248,9 +248,10 @@ class _$ProductFormStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? addressList = null,Object? name = null,Object? addressId = freezed,Object? pricePerDay = freezed,Object? lateFeePerDay = freezed,Object? stock = freezed,Object? description = null,Object? dataStatus = null,Object? submissionStatus = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? addressList = null,Object? name = null,Object? addressId = freezed,Object? pricePerDay = freezed,Object? lateFeePerDay = freezed,Object? stock = freezed,Object? description = null,Object? dataStatus = null,Object? addressStatus = null,Object? submissionStatus = null,Object? error = freezed,}) {
   return _then(ProductFormState(
-addressList: null == addressList ? _self.addressList : addressList // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,addressList: null == addressList ? _self.addressList : addressList // ignore: cast_nullable_to_non_nullable
 as List<AddressResponseItem>,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,addressId: freezed == addressId ? _self.addressId : addressId // ignore: cast_nullable_to_non_nullable
 as int?,pricePerDay: freezed == pricePerDay ? _self.pricePerDay : pricePerDay // ignore: cast_nullable_to_non_nullable
@@ -258,6 +259,7 @@ as int?,lateFeePerDay: freezed == lateFeePerDay ? _self.lateFeePerDay : lateFeeP
 as int?,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as int?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as ProductFormDataStatus,addressStatus: null == addressStatus ? _self.addressStatus : addressStatus // ignore: cast_nullable_to_non_nullable
 as ProductFormDataStatus,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
 as ProductFormSubmissionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ProductFormError?,

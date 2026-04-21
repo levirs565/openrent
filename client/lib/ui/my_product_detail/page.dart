@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
+import 'package:openrent_client/ui/product_form/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
 
 import 'cubit.dart';
@@ -44,7 +45,8 @@ class _MyProductDetailPageContent extends StatelessWidget {
               content: Text(state.error!.message),
               action: SnackBarAction(
                 label: "Refresh",
-                onPressed: () => context.read<MyProductDetailCubit>().onRefresh(),
+                onPressed: () =>
+                    context.read<MyProductDetailCubit>().onRefresh(),
               ),
             ),
           );
@@ -52,7 +54,17 @@ class _MyProductDetailPageContent extends StatelessWidget {
         }
       },
       builder: (context, state) => Scaffold(
-        appBar: AppBar(title: Text(state.data?.name ?? "")),
+        appBar: AppBar(
+          title: Text(state.data?.name ?? ""),
+          actions: [
+            IconButton(
+              onPressed: () => Navigator.of(
+                context,
+              ).push(ProductFormPage.routeEdit(state.id)),
+              icon: Icon(Icons.edit),
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [

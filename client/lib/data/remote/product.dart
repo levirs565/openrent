@@ -25,6 +25,12 @@ abstract class ProductService {
 
   @POST("/products")
   Future<ProductResponseItem> addProduct(@Body() ProductAddRequest request);
+
+  @PUT("/products/{id}")
+  Future<ProductResponseItem> updateProduct(
+    @Path("id") int id,
+    @Body() ProductAddRequest request,
+  );
 }
 
 @JsonSerializable()

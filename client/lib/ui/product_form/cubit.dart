@@ -14,12 +14,14 @@ class ProductFormCubit extends Cubit<ProductFormState> {
   final ProductRepository _productRepository;
 
   ProductFormCubit({
+    required int? id,
     required AddressRepository addressRepository,
     required ProductRepository productRepository,
   }) : _productRepository = productRepository,
        _addressRepository = addressRepository,
        super(
          ProductFormState(
+           id: id,
            addressList: List.empty(),
            name: "",
            addressId: null,
@@ -27,26 +29,61 @@ class ProductFormCubit extends Cubit<ProductFormState> {
            lateFeePerDay: null,
            stock: null,
            description: "",
-           dataStatus: .success,
+           dataStatus: id == null ? .success : .initial,
+           addressStatus: .initial,
            submissionStatus: .idle,
          ),
        ) {
     onRefreshAddress();
   }
 
+  void onRefreshProduct() async {
+    if (state.isLoading || state.id == null) return;
+
+    emit(state.copyWith(dataStatus: .loading));
+
+    final result = await _productRepository.getById(id: state.id!);
+
+    switch (result) {
+      case ResultSuccess<ProductResponseItemDetail>():
+        emit(
+          state.copyWith(
+            dataStatus: .success,
+            name: result.data.name,
+            addressId: result.data.address.id,
+            pricePerDay: result.data.pricePerDay,
+            lateFeePerDay: result.data.lateFeePerDay,
+            description: result.data.description,
+            stock: result.data.stock,
+          ),
+        );
+      case ResultError<ProductResponseItemDetail>():
+        emit(
+          state.copyWith(
+            dataStatus: .fail,
+            error: ProductFormError(
+              source: .dataProduct,
+              error: ErrorWithDateTime.current(message: result.message),
+            ),
+          ),
+        );
+    }
+  }
+
   void onRefreshAddress() async {
     if (state.isLoading) return;
 
-    emit(state.copyWith(dataStatus: .loading));
+    emit(state.copyWith(addressStatus: .loading));
     final result = await _addressRepository.getMine();
 
     switch (result) {
       case ResultSuccess<List<AddressResponseItem>>():
-        emit(state.copyWith(dataStatus: .success, addressList: result.data));
+        emit(state.copyWith(addressStatus: .success, addressList: result.data));
+        onRefreshProduct();
       case ResultError<List<AddressResponseItem>>():
         emit(
           state.copyWith(
-            dataStatus: .fail,
+            addressStatus: .fail,
             error: ProductFormError(
               source: .dataAddress,
               error: ErrorWithDateTime.current(message: result.message),
@@ -90,16 +127,17 @@ class ProductFormCubit extends Cubit<ProductFormState> {
     if (state.isLoading || !state.isValid) return;
     emit(state.copyWith(submissionStatus: .submitting));
 
-    final result = await _productRepository.add(
-      ProductAddRequest(
-        name: state.name,
-        pricePerDay: state.pricePerDay!,
-        lateFeePerDay: state.lateFeePerDay!,
-        stock: state.stock!,
-        description: state.description,
-        addressId: state.addressId!,
-      ),
+    final request = ProductAddRequest(
+      name: state.name,
+      pricePerDay: state.pricePerDay!,
+      lateFeePerDay: state.lateFeePerDay!,
+      stock: state.stock!,
+      description: state.description,
+      addressId: state.addressId!,
     );
+    final result = state.id == null
+        ? await _productRepository.add(request)
+        : await _productRepository.update(state.id!, request);
 
     switch (result) {
       case ResultSuccess<ProductResponseItem>():

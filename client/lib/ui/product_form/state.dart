@@ -4,11 +4,12 @@ import 'package:openrent_client/ui/error_with_datetime.dart';
 
 part 'state.freezed.dart';
 
-enum ProductFormDataStatus { loading, success, fail }
+// TODO: Refactor
+enum ProductFormDataStatus { initial, loading, success, fail }
 
 enum ProductFormSubmissionStatus { idle, submitting, finished }
 
-enum ProductFormErrorSource { dataAddress, submit }
+enum ProductFormErrorSource { dataProduct, dataAddress, submit }
 
 @freezed
 class ProductFormError with _$ProductFormError {
@@ -20,6 +21,7 @@ class ProductFormError with _$ProductFormError {
 
 @freezed
 class ProductFormState with _$ProductFormState {
+  final int? id;
   final List<AddressResponseItem> addressList;
   final String name;
   final int? addressId;
@@ -28,10 +30,12 @@ class ProductFormState with _$ProductFormState {
   final int? stock;
   final String description;
   final ProductFormDataStatus dataStatus;
+  final ProductFormDataStatus addressStatus;
   final ProductFormSubmissionStatus submissionStatus;
   final ProductFormError? error;
 
   ProductFormState({
+    required this.id,
     required this.addressList,
     required this.name,
     required this.addressId,
@@ -40,12 +44,15 @@ class ProductFormState with _$ProductFormState {
     required this.stock,
     required this.description,
     required this.dataStatus,
+    required this.addressStatus,
     required this.submissionStatus,
     this.error,
   });
 
   bool get isLoading =>
-      dataStatus == .loading || submissionStatus == .submitting;
+      dataStatus == .loading ||
+      addressStatus == .loading ||
+      submissionStatus == .submitting;
 
   bool get isValid =>
       name.isNotEmpty &&
@@ -55,11 +62,11 @@ class ProductFormState with _$ProductFormState {
       stock != null &&
       description.isNotEmpty;
 
-  bool get canEdit => dataStatus == .success && submissionStatus == .idle;
+  bool get canEdit =>
+      dataStatus == .success &&
+      addressStatus == .success &&
+      submissionStatus == .idle;
 
   bool get canSubmit =>
-      isValid && submissionStatus == .idle && dataStatus == .success;
-
-  bool getCanSubmit() =>
-      isValid && submissionStatus == .idle && dataStatus == .success;
+      isValid && canEdit;
 }
