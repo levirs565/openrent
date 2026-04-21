@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
+import 'package:openrent_client/ui/my_product_detail/page.dart';
 import 'package:openrent_client/ui/my_products/cubit.dart';
 import 'package:openrent_client/ui/my_products/state.dart';
 import 'package:openrent_client/ui/product_form/page.dart';
@@ -62,6 +63,7 @@ class _MyProductsPageContent extends StatelessWidget {
   }
 }
 
+// TODO: This simmiliar to ProductCard, but this will use List instead of grid
 class _MyProductsItem extends StatelessWidget {
   final ProductResponseItemShort item;
 
@@ -70,12 +72,15 @@ class _MyProductsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
-      child: Column(
-        children: [
-          Text(item.name),
-          Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
-          Text("${item.address.regency} - ${item.user.name}"),
-        ],
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(MyProductDetailPage.route(item.id)),
+        child: Column(
+          children: [
+            Text(item.name),
+            Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
+            Text("${item.address.regency} - ${item.user.name}"),
+          ],
+        ),
       ),
     );
   }
