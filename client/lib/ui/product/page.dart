@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/product/cubit.dart';
 import 'package:openrent_client/ui/product/state.dart';
+import 'package:openrent_client/ui/product_reviews/page.dart';
 
 /* TODO Rent dynamic stock chat */
 
@@ -72,6 +73,12 @@ class _ProductPageContent extends StatelessWidget {
                       .map((item) => _ProductReviewItem(item: item))
                       .toList() ??
                   List.empty()),
+              OutlinedButton(
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(ProductReviewsPage.route(state.id)),
+                child: Text("See More Reviews"),
+              ),
             ],
           ),
         ),

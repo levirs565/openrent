@@ -241,6 +241,7 @@ func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest
 	}
 	model.Embedding = pgvector.NewVector(embed)
 
+	// TODO: Lock Stock
 	rows, err := gorm.G[models.Product](s.db).
 		Where("user_account_id = ? AND id = ?", userId, product.ID).
 		Updates(ctx, model)

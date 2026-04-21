@@ -7,6 +7,7 @@ import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/review.dart';
 import 'package:openrent_client/ui/login/page.dart';
 import 'package:openrent_client/ui/home.dart';
 import 'package:openrent_client/ui/splash.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<ProductRepository>(
           create: (_) => ProductDataSource(service: productService),
+        ),
+        RepositoryProvider<ReviewRepository>(
+          create: (_) => ReviewDataSource(reviewService: reviewService),
         ),
         RepositoryProvider<LocationRepository>(
           create: (_) =>
