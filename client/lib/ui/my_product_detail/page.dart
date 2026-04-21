@@ -9,7 +9,7 @@ import 'package:openrent_client/ui/product_reviews/page.dart';
 import 'cubit.dart';
 import 'state.dart';
 
-/* TODO Rent dynamic stock chat */
+/* TODO delete */
 
 class MyProductDetailPage extends StatelessWidget {
   final int id;
