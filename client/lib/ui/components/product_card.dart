@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openrent_client/data/remote/product.dart';
-import 'package:openrent_client/ui/product/page.dart';
+import 'package:openrent_client/ui/product_detail/page.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductResponseItemShort item;
@@ -11,7 +11,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card.filled(
       child: InkWell(
-        onTap: () => Navigator.of(context).push(ProductPage.route(item.id)),
+        onTap: () => Navigator.of(context).push(ProductDetailPage.route(item.id)),
         child: Column(
           children: [
             Text(item.name),

@@ -3,39 +3,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
-import 'package:openrent_client/ui/product/cubit.dart';
-import 'package:openrent_client/ui/product/state.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
+
+import 'cubit.dart';
+import 'state.dart';
 
 /* TODO Rent dynamic stock chat */
 
-class ProductPage extends StatelessWidget {
+class ProductDetailPage extends StatelessWidget {
   final int id;
 
   static Route<void> route(int id) {
-    return MaterialPageRoute<void>(builder: (_) => ProductPage(id: id));
+    return MaterialPageRoute<void>(builder: (_) => ProductDetailPage(id: id));
   }
 
-  const ProductPage({super.key, required this.id});
+  const ProductDetailPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ProductCubit(id: id, productRepository: context.read()),
-      child: ScaffoldMessenger(child: _ProductPageContent()),
+          ProductDetailCubit(id: id, productRepository: context.read()),
+      child: ScaffoldMessenger(child: _ProductDetailPageContent()),
     );
   }
 }
 
-class _ProductPageContent extends StatelessWidget {
+class _ProductDetailPageContent extends StatelessWidget {
   static String formatAddress(ProductAddress address) {
     return "${address.detail}, ${address.district}, ${address.regency}, ${address.province}";
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProductCubit, ProductState>(
+    return BlocConsumer<ProductDetailCubit, ProductDetailState>(
       listener: (context, state) {
         if (state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -43,11 +44,11 @@ class _ProductPageContent extends StatelessWidget {
               content: Text(state.error!.message),
               action: SnackBarAction(
                 label: "Refresh",
-                onPressed: () => context.read<ProductCubit>().onRefresh(),
+                onPressed: () => context.read<ProductDetailCubit>().onRefresh(),
               ),
             ),
           );
-          context.read<ProductCubit>().onErrorHandled(state.error!);
+          context.read<ProductDetailCubit>().onErrorHandled(state.error!);
         }
       },
       builder: (context, state) => Scaffold(
@@ -88,4 +89,3 @@ class _ProductPageContent extends StatelessWidget {
     );
   }
 }
-

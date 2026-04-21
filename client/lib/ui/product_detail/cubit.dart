@@ -3,14 +3,15 @@ import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/error_with_datetime.dart';
-import 'package:openrent_client/ui/product/state.dart';
 
-class ProductCubit extends Cubit<ProductState> {
+import 'state.dart';
+
+class ProductDetailCubit extends Cubit<ProductDetailState> {
   final ProductRepository _productRepository;
 
-  ProductCubit({required int id, required ProductRepository productRepository})
+  ProductDetailCubit({required int id, required ProductRepository productRepository})
     : _productRepository = productRepository,
-      super(ProductState(id: id, isLoading: false, data: null)) {
+      super(ProductDetailState(id: id, isLoading: false, data: null)) {
     _refresh();
   }
 
@@ -27,15 +28,14 @@ class ProductCubit extends Cubit<ProductState> {
 
     switch (result) {
       case ResultSuccess<ProductResponseItemDetail>():
-        emit(state.copyWith(
-          isLoading: false,
-          data: result.data
-        ));
+        emit(state.copyWith(isLoading: false, data: result.data));
       case ResultError<ProductResponseItemDetail>():
-        emit(state.copyWith(
-          isLoading: false,
-          error: ErrorWithDateTime.current(message: result.message)
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            error: ErrorWithDateTime.current(message: result.message),
+          ),
+        );
     }
   }
 

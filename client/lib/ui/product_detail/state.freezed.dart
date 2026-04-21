@@ -12,20 +12,20 @@ part of 'state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ProductState {
+mixin _$ProductDetailState {
 
  int get id; bool get isLoading; ProductResponseItemDetail? get data; ErrorWithDateTime? get error;
-/// Create a copy of ProductState
+/// Create a copy of ProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ProductStateCopyWith<ProductState> get copyWith => _$ProductStateCopyWithImpl<ProductState>(this as ProductState, _$identity);
+$ProductDetailStateCopyWith<ProductDetailState> get copyWith => _$ProductDetailStateCopyWithImpl<ProductDetailState>(this as ProductDetailState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductState&&(identical(other.id, id) || other.id == id)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -34,15 +34,15 @@ int get hashCode => Object.hash(runtimeType,id,isLoading,data,error);
 
 @override
 String toString() {
-  return 'ProductState(id: $id, isLoading: $isLoading, data: $data, error: $error)';
+  return 'ProductDetailState(id: $id, isLoading: $isLoading, data: $data, error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ProductStateCopyWith<$Res>  {
-  factory $ProductStateCopyWith(ProductState value, $Res Function(ProductState) _then) = _$ProductStateCopyWithImpl;
+abstract mixin class $ProductDetailStateCopyWith<$Res>  {
+  factory $ProductDetailStateCopyWith(ProductDetailState value, $Res Function(ProductDetailState) _then) = _$ProductDetailStateCopyWithImpl;
 @useResult
 $Res call({
  ProductResponseItemDetail? data, ErrorWithDateTime? error, int id, bool isLoading
@@ -53,17 +53,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$ProductStateCopyWithImpl<$Res>
-    implements $ProductStateCopyWith<$Res> {
-  _$ProductStateCopyWithImpl(this._self, this._then);
+class _$ProductDetailStateCopyWithImpl<$Res>
+    implements $ProductDetailStateCopyWith<$Res> {
+  _$ProductDetailStateCopyWithImpl(this._self, this._then);
 
-  final ProductState _self;
-  final $Res Function(ProductState) _then;
+  final ProductDetailState _self;
+  final $Res Function(ProductDetailState) _then;
 
-/// Create a copy of ProductState
+/// Create a copy of ProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? isLoading = null,}) {
-  return _then(ProductState(
+  return _then(ProductDetailState(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as ProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorWithDateTime?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
@@ -75,8 +75,8 @@ as bool,
 }
 
 
-/// Adds pattern-matching-related methods to [ProductState].
-extension ProductStatePatterns on ProductState {
+/// Adds pattern-matching-related methods to [ProductDetailState].
+extension ProductDetailStatePatterns on ProductDetailState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
