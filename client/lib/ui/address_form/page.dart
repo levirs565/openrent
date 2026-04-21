@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:openrent_client/ui/address_form/cubit.dart';
 import 'package:openrent_client/ui/address_form/state.dart';
+import 'package:openrent_client/ui/components/controlled_text_field.dart';
 import 'package:openrent_client/ui/map_picker/page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,6 +52,8 @@ class AddressFormPage extends StatelessWidget {
     );
   }
 }
+
+typedef _AddressFormTextField = ControlledTextField<AddressFormCubit, AddressFormState>;
 
 class _AddressFormContent extends StatelessWidget {
   @override
@@ -232,47 +235,6 @@ class _AddressFormMapState extends State<_AddressFormMap> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _AddressFormTextField extends StatefulWidget {
-  final String Function(AddressFormState) selector;
-  final Widget Function(TextEditingController) builder;
-
-  const _AddressFormTextField({
-    super.key,
-    required this.selector,
-    required this.builder,
-  });
-
-  @override
-  State<_AddressFormTextField> createState() => _AddressFormTextFieldState();
-}
-
-class _AddressFormTextFieldState extends State<_AddressFormTextField> {
-  final controller = TextEditingController();
-
-  @override
-  void initState() {
-    controller.text = widget.selector(context.read<AddressFormCubit>().state);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<AddressFormCubit, AddressFormState>(
-      listenWhen: (prev, curr) => controller.text != widget.selector(curr),
-      listener: (context, state) {
-        controller.text = widget.selector(state);
-      },
-      child: widget.builder(controller),
     );
   }
 }
