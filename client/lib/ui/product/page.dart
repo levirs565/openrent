@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
+import 'package:openrent_client/ui/components/product_card.dart';
+import 'package:openrent_client/ui/components/review_card.dart';
 import 'package:openrent_client/ui/product/cubit.dart';
 import 'package:openrent_client/ui/product/state.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
@@ -65,12 +67,12 @@ class _ProductPageContent extends StatelessWidget {
               Text(state.data?.description ?? "-"),
               Text("Reccomendation"),
               ...(state.data?.recommendations
-                      .map((item) => _ProductRecommendationItem(item: item))
+                      .map((item) => ProductCard(item: item))
                       .toList() ??
                   List.empty()),
               Text("Reviews"),
               ...(state.data?.topReviews
-                      .map((item) => _ProductReviewItem(item: item))
+                      .map((item) => ReviewCard(item: item))
                       .toList() ??
                   List.empty()),
               OutlinedButton(
@@ -87,42 +89,3 @@ class _ProductPageContent extends StatelessWidget {
   }
 }
 
-// TODO: Copy from Search, refactor
-class _ProductRecommendationItem extends StatelessWidget {
-  final ProductResponseItemShort item;
-
-  const _ProductRecommendationItem({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card.filled(
-      child: InkWell(
-        onTap: () => Navigator.of(context).push(ProductPage.route(item.id)),
-        child: Column(
-          children: [
-            Text(item.name),
-            Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
-            Text("${item.address.regency} - ${item.user.name}"),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProductReviewItem extends StatelessWidget {
-  final ProductReviewDetail item;
-
-  const _ProductReviewItem({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(item.user.name),
-        Text("${item.rating} Start"),
-        Text(item.content),
-      ],
-    );
-  }
-}

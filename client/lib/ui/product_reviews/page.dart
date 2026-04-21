@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
+import 'package:openrent_client/ui/components/review_card.dart';
 import 'package:openrent_client/ui/product_reviews/cubit.dart';
 import 'package:openrent_client/ui/product_reviews/state.dart';
 
@@ -58,29 +59,11 @@ class _ProductReviewsPageContent extends StatelessWidget {
             child: ListView.builder(
               itemCount: state.list.length,
               itemBuilder: (context, index) =>
-                  _ProductReviewItem(item: state.list.elementAt(index)),
+                  ReviewCard(item: state.list.elementAt(index)),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-// TODO: Refactor this
-class _ProductReviewItem extends StatelessWidget {
-  final ProductReviewDetail item;
-
-  const _ProductReviewItem({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(item.user.name),
-        Text("${item.rating} Start"),
-        Text(item.content),
-      ],
     );
   }
 }
