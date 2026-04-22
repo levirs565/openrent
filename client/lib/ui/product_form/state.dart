@@ -1,13 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/address.dart';
+import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
-
-// TODO: Refactor
-enum ProductFormDataStatus { initial, loading, success, fail }
-
-enum ProductFormSubmissionStatus { idle, submitting, finished }
 
 enum ProductFormErrorSource { dataProduct, dataAddress, submit }
 
@@ -23,9 +19,9 @@ class ProductFormState with _$ProductFormState {
   final int? lateFeePerDay;
   final int? stock;
   final String description;
-  final ProductFormDataStatus dataStatus;
-  final ProductFormDataStatus addressStatus;
-  final ProductFormSubmissionStatus submissionStatus;
+  final DataStatus dataStatus;
+  final DataStatus addressStatus;
+  final ActionStatus submissionStatus;
   final ProductFormError? error;
 
   ProductFormState({
@@ -46,7 +42,7 @@ class ProductFormState with _$ProductFormState {
   bool get isLoading =>
       dataStatus == .loading ||
       addressStatus == .loading ||
-      submissionStatus == .submitting;
+      submissionStatus == .loading;
 
   bool get isValid =>
       name.isNotEmpty &&

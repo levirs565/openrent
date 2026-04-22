@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductFormState {
 
- int? get id; List<AddressResponseItem> get addressList; String get name; int? get addressId; int? get pricePerDay; int? get lateFeePerDay; int? get stock; String get description; ProductFormDataStatus get dataStatus; ProductFormDataStatus get addressStatus; ProductFormSubmissionStatus get submissionStatus; ProductFormError? get error;
+ int? get id; List<AddressResponseItem> get addressList; String get name; int? get addressId; int? get pricePerDay; int? get lateFeePerDay; int? get stock; String get description; DataStatus get dataStatus; DataStatus get addressStatus; ActionStatus get submissionStatus; ProductFormError? get error;
 /// Create a copy of ProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ProductFormStateCopyWith<$Res>  {
   factory $ProductFormStateCopyWith(ProductFormState value, $Res Function(ProductFormState) _then) = _$ProductFormStateCopyWithImpl;
 @useResult
 $Res call({
- int? id, List<AddressResponseItem> addressList, String name, int? addressId, int? pricePerDay, int? lateFeePerDay, int? stock, String description, ProductFormDataStatus dataStatus, ProductFormDataStatus addressStatus, ProductFormSubmissionStatus submissionStatus, ErrorData<ProductFormErrorSource>? error
+ int? id, List<AddressResponseItem> addressList, String name, int? addressId, int? pricePerDay, int? lateFeePerDay, int? stock, String description, DataStatus dataStatus, DataStatus addressStatus, ActionStatus submissionStatus, ErrorData<ProductFormErrorSource>? error
 });
 
 
@@ -73,9 +73,9 @@ as int?,lateFeePerDay: freezed == lateFeePerDay ? _self.lateFeePerDay : lateFeeP
 as int?,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as int?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
-as ProductFormDataStatus,addressStatus: null == addressStatus ? _self.addressStatus : addressStatus // ignore: cast_nullable_to_non_nullable
-as ProductFormDataStatus,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
-as ProductFormSubmissionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as DataStatus,addressStatus: null == addressStatus ? _self.addressStatus : addressStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
+as ActionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorData<ProductFormErrorSource>?,
   ));
 }

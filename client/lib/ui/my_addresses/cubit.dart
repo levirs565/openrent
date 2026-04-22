@@ -12,8 +12,9 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
       super(
         MyAddressesState(
           data: List.empty(),
-          dataStatus: .success,
-          actionStatus: .idle,
+          dataStatus: .initial,
+          isActionLoading: false,
+          error: null,
         ),
       ) {
     onRefresh();
@@ -42,18 +43,18 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
   void onDelete(int id) async {
     if (state.isLoading) return;
 
-    emit(state.copyWith(actionStatus: .performing));
+    emit(state.copyWith(isActionLoading: true));
 
     final result = await _addressRepository.delete(id);
 
     switch (result) {
       case ResultSuccess<void>():
-        emit(state.copyWith(actionStatus: .idle));
+        emit(state.copyWith(isActionLoading: false));
         onRefresh();
       case ResultError<void>():
         emit(
           state.copyWith(
-            actionStatus: .idle,
+            isActionLoading: false,
             error: MyAddressesError(source: .action, message: result.message),
           ),
         );

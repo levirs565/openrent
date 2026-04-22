@@ -1,11 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
-
-enum RegisterSubmissionStatus {
-  idle, submitting, finished
-}
 
 @freezed
 class RegisterState with _$RegisterState {
@@ -13,7 +10,7 @@ class RegisterState with _$RegisterState {
   final String name;
   final String password;
   final String repeatPassword;
-  final RegisterSubmissionStatus submissionStatus;
+  final ActionStatus submissionStatus;
   final GeneralErrorData? error;
 
   RegisterState({

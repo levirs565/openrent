@@ -122,7 +122,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
 
   void onSubmit() async {
     if (state.isLoading || !state.isValid) return;
-    emit(state.copyWith(submissionStatus: .submitting));
+    emit(state.copyWith(submissionStatus: .loading));
 
     final request = ProductAddRequest(
       name: state.name,

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
@@ -7,10 +8,6 @@ part 'state.freezed.dart';
 enum AddressFormErrorSource { loading, submit }
 
 typedef AddressFormError = ErrorData<AddressFormErrorSource>;
-
-enum AddressFormDataStatus { loading, success, fail }
-
-enum AddressFormSubmissionStatus { idle, submitting, finished }
 
 @freezed
 class AddressFormState with _$AddressFormState {
@@ -22,8 +19,8 @@ class AddressFormState with _$AddressFormState {
   final String detail;
   final String name;
   final AddressFormError? error;
-  final AddressFormDataStatus dataStatus;
-  final AddressFormSubmissionStatus submissionStatus;
+  final DataStatus dataStatus;
+  final ActionStatus submissionStatus;
 
   AddressFormState({
     required this.id,
@@ -48,7 +45,7 @@ class AddressFormState with _$AddressFormState {
   bool get canEdit => dataStatus == .success && submissionStatus == .idle;
 
   bool get isLoading =>
-      dataStatus == .loading || submissionStatus == .submitting;
+      dataStatus == .loading || submissionStatus == .loading;
 
   bool get canSubmit =>
       isValid && submissionStatus == .idle && dataStatus == .success;

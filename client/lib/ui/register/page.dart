@@ -37,7 +37,7 @@ class _RegisterForm extends StatelessWidget {
           ).showSnackBar(SnackBar(content: Text(state.error!.message)));
           context.read<RegisterCubit>().onErrorHandled(state.error!);
         }
-        if (state.submissionStatus == RegisterSubmissionStatus.finished) {
+        if (state.submissionStatus == .finished) {
           Navigator.of(
             context,
           ).pushAndRemoveUntil(LoginPage.route(), (_) => false);
@@ -67,12 +67,12 @@ class _RegisterForm extends StatelessWidget {
                   .onRepeatPasswordChanged(repeatPassword),
               decoration: InputDecoration(label: Text("Repeat Password")),
             ),
-            if (state.submissionStatus == RegisterSubmissionStatus.submitting)
+            if (state.submissionStatus == .loading)
               CircularProgressIndicator(),
             OutlinedButton(
               onPressed:
                   !state.isValid ||
-                      state.submissionStatus != RegisterSubmissionStatus.idle
+                      state.submissionStatus != .idle
                   ? null
                   : () => context.read<RegisterCubit>().onSubmit(),
               child: Text("Register"),

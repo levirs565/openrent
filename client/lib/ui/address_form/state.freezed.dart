@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AddressFormState {
 
- int? get id; LatLng get position; String get province; String get regency; String get district; String get detail; String get name; AddressFormError? get error; AddressFormDataStatus get dataStatus; AddressFormSubmissionStatus get submissionStatus;
+ int? get id; LatLng get position; String get province; String get regency; String get district; String get detail; String get name; AddressFormError? get error; DataStatus get dataStatus; ActionStatus get submissionStatus;
 /// Create a copy of AddressFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $AddressFormStateCopyWith<$Res>  {
   factory $AddressFormStateCopyWith(AddressFormState value, $Res Function(AddressFormState) _then) = _$AddressFormStateCopyWithImpl;
 @useResult
 $Res call({
- int? id, LatLng position, String province, String regency, String district, String detail, String name, AddressFormSubmissionStatus submissionStatus, ErrorData<AddressFormErrorSource>? error, AddressFormDataStatus dataStatus
+ int? id, LatLng position, String province, String regency, String district, String detail, String name, ActionStatus submissionStatus, ErrorData<AddressFormErrorSource>? error, DataStatus dataStatus
 });
 
 
@@ -72,9 +72,9 @@ as String,district: null == district ? _self.district : district // ignore: cast
 as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
-as AddressFormSubmissionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ActionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorData<AddressFormErrorSource>?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
-as AddressFormDataStatus,
+as DataStatus,
   ));
 }
 

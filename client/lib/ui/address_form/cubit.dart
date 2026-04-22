@@ -23,7 +23,7 @@ class AddressFormCubit extends Cubit<AddressFormState> {
            detail: "",
            name: "",
            submissionStatus: .idle,
-           dataStatus: .success,
+           dataStatus: .initial,
            error: null,
          ),
        ) {
@@ -33,7 +33,7 @@ class AddressFormCubit extends Cubit<AddressFormState> {
   }
 
   void onRefresh() async {
-    if (state.id == null || state.dataStatus == .loading) return;
+    if (state.id == null || state.isLoading) return;
 
     emit(state.copyWith(dataStatus: .loading));
 
@@ -99,7 +99,8 @@ class AddressFormCubit extends Cubit<AddressFormState> {
   }
 
   void onSubmit() async {
-    emit(state.copyWith(submissionStatus: .submitting));
+    if (state.isLoading) return;
+    emit(state.copyWith(submissionStatus: .loading));
     final request = AddressAddRequest(
       name: state.name,
       province: state.province,

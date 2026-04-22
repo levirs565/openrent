@@ -15,7 +15,7 @@ class RegisterCubit extends Cubit<RegisterState> {
           name: "",
           password: "",
           repeatPassword: "",
-          submissionStatus: RegisterSubmissionStatus.idle,
+          submissionStatus: .idle,
         ),
       );
 
@@ -30,7 +30,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(state.copyWith(repeatPassword: repeatPassword));
 
   Future<void> onSubmit() async {
-    emit(state.copyWith(submissionStatus: RegisterSubmissionStatus.submitting));
+    emit(state.copyWith(submissionStatus: .loading));
 
     final result = await _authRepository.register(
       email: state.email,
@@ -40,12 +40,12 @@ class RegisterCubit extends Cubit<RegisterState> {
 
     if (result is ResultError) {
       emit(state.copyWith(
-        submissionStatus: RegisterSubmissionStatus.idle,
+        submissionStatus: .idle,
         error: GeneralErrorData.general(message: result.message)
       ));
     } else if (result is ResultSuccess) {
       emit(state.copyWith(
-        submissionStatus: RegisterSubmissionStatus.finished
+        submissionStatus: .finished
       ));
     }
   }

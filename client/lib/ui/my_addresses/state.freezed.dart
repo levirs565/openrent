@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyAddressesState {
 
- MyAddressesDataStatus get dataStatus; MyAddressesActionStatus get actionStatus; List<AddressResponseItem> get data; MyAddressesError? get error;
+ DataStatus get dataStatus; bool get isActionLoading; List<AddressResponseItem> get data; MyAddressesError? get error;
 /// Create a copy of MyAddressesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyAddressesStateCopyWith<MyAddressesState> get copyWith => _$MyAddressesStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyAddressesState&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyAddressesState&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,dataStatus,actionStatus,const DeepCollectionEquality().hash(data),error);
+int get hashCode => Object.hash(runtimeType,dataStatus,isActionLoading,const DeepCollectionEquality().hash(data),error);
 
 @override
 String toString() {
-  return 'MyAddressesState(dataStatus: $dataStatus, actionStatus: $actionStatus, data: $data, error: $error)';
+  return 'MyAddressesState(dataStatus: $dataStatus, isActionLoading: $isActionLoading, data: $data, error: $error)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MyAddressesStateCopyWith<$Res>  {
   factory $MyAddressesStateCopyWith(MyAddressesState value, $Res Function(MyAddressesState) _then) = _$MyAddressesStateCopyWithImpl;
 @useResult
 $Res call({
- List<AddressResponseItem> data, ErrorData<MyAddressesErrorSource>? error, MyAddressesDataStatus dataStatus, MyAddressesActionStatus actionStatus
+ List<AddressResponseItem> data, ErrorData<MyAddressesErrorSource>? error, DataStatus dataStatus, bool isActionLoading
 });
 
 
@@ -62,13 +62,13 @@ class _$MyAddressesStateCopyWithImpl<$Res>
 
 /// Create a copy of MyAddressesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? error = freezed,Object? dataStatus = null,Object? actionStatus = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? error = freezed,Object? dataStatus = null,Object? isActionLoading = null,}) {
   return _then(MyAddressesState(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as List<AddressResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorData<MyAddressesErrorSource>?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
-as MyAddressesDataStatus,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
-as MyAddressesActionStatus,
+as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

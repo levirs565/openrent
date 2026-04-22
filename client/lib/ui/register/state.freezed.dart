@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RegisterState {
 
- String get email; String get name; String get password; String get repeatPassword; RegisterSubmissionStatus get submissionStatus; GeneralErrorData? get error;
+ String get email; String get name; String get password; String get repeatPassword; ActionStatus get submissionStatus; GeneralErrorData? get error;
 /// Create a copy of RegisterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $RegisterStateCopyWith<$Res>  {
   factory $RegisterStateCopyWith(RegisterState value, $Res Function(RegisterState) _then) = _$RegisterStateCopyWithImpl;
 @useResult
 $Res call({
- String email, String name, String password, String repeatPassword, RegisterSubmissionStatus submissionStatus, ErrorData<void>? error
+ String email, String name, String password, String repeatPassword, ActionStatus submissionStatus, ErrorData<void>? error
 });
 
 
@@ -69,7 +69,7 @@ as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,repeatPassword: null == repeatPassword ? _self.repeatPassword : repeatPassword // ignore: cast_nullable_to_non_nullable
 as String,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
-as RegisterSubmissionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ActionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as ErrorData<void>?,
   ));
 }
