@@ -12,192 +12,6 @@ part of 'state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$MyAddressesError {
-
- MyAddressesErrorSource get source; ErrorWithDateTime get error;
-/// Create a copy of MyAddressesError
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MyAddressesErrorCopyWith<MyAddressesError> get copyWith => _$MyAddressesErrorCopyWithImpl<MyAddressesError>(this as MyAddressesError, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyAddressesError&&(identical(other.source, source) || other.source == source)&&(identical(other.error, error) || other.error == error));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,source,error);
-
-@override
-String toString() {
-  return 'MyAddressesError(source: $source, error: $error)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $MyAddressesErrorCopyWith<$Res>  {
-  factory $MyAddressesErrorCopyWith(MyAddressesError value, $Res Function(MyAddressesError) _then) = _$MyAddressesErrorCopyWithImpl;
-@useResult
-$Res call({
- MyAddressesErrorSource source, ErrorWithDateTime error
-});
-
-
-
-
-}
-/// @nodoc
-class _$MyAddressesErrorCopyWithImpl<$Res>
-    implements $MyAddressesErrorCopyWith<$Res> {
-  _$MyAddressesErrorCopyWithImpl(this._self, this._then);
-
-  final MyAddressesError _self;
-  final $Res Function(MyAddressesError) _then;
-
-/// Create a copy of MyAddressesError
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? error = null,}) {
-  return _then(MyAddressesError(
-source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as MyAddressesErrorSource,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorWithDateTime,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [MyAddressesError].
-extension MyAddressesErrorPatterns on MyAddressesError {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(){
-final _that = this;
-switch (_that) {
-case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
-final _that = this;
-switch (_that) {
-case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
-switch (_that) {
-case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
-switch (_that) {
-case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
 mixin _$MyAddressesState {
 
  MyAddressesDataStatus get dataStatus; MyAddressesActionStatus get actionStatus; List<AddressResponseItem> get data; MyAddressesError? get error;
@@ -231,7 +45,7 @@ abstract mixin class $MyAddressesStateCopyWith<$Res>  {
   factory $MyAddressesStateCopyWith(MyAddressesState value, $Res Function(MyAddressesState) _then) = _$MyAddressesStateCopyWithImpl;
 @useResult
 $Res call({
- List<AddressResponseItem> data, MyAddressesError? error, MyAddressesDataStatus dataStatus, MyAddressesActionStatus actionStatus
+ List<AddressResponseItem> data, ErrorData<MyAddressesErrorSource>? error, MyAddressesDataStatus dataStatus, MyAddressesActionStatus actionStatus
 });
 
 
@@ -252,7 +66,7 @@ class _$MyAddressesStateCopyWithImpl<$Res>
   return _then(MyAddressesState(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as List<AddressResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as MyAddressesError?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as ErrorData<MyAddressesErrorSource>?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as MyAddressesDataStatus,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
 as MyAddressesActionStatus,
   ));

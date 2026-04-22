@@ -42,7 +42,7 @@ class _MyAddressesPageContent extends StatelessWidget {
         if (state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!.error.message),
+              content: Text(state.error!.message),
               action: state.error!.source == .action ? null : SnackBarAction(
                 label: "Refresh",
                 onPressed: () => context.read<MyAddressesCubit>().onRefresh(),

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/product.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
@@ -8,7 +8,7 @@ part 'state.freezed.dart';
 class MyProductsState with _$MyProductsState {
   final bool isLoading;
   final List<ProductResponseItemShort> data;
-  final ErrorWithDateTime? error;
+  final GeneralErrorData? error;
 
   MyProductsState({required this.isLoading, required this.data, this.error});
 }

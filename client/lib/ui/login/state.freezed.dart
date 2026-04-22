@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginState {
 
- String get email; String get password; bool get isSubmit; ErrorWithDateTime? get error;
+ String get email; String get password; bool get isSubmit; GeneralErrorData? get error;
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $LoginStateCopyWith<$Res>  {
   factory $LoginStateCopyWith(LoginState value, $Res Function(LoginState) _then) = _$LoginStateCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, bool isSubmit, ErrorWithDateTime? error
+ String email, String password, bool isSubmit, ErrorData<void>? error
 });
 
 
@@ -68,7 +68,7 @@ email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nulla
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,isSubmit: null == isSubmit ? _self.isSubmit : isSubmit // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorWithDateTime?,
+as ErrorData<void>?,
   ));
 }
 

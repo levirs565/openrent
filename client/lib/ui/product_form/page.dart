@@ -56,7 +56,7 @@ class _ProductFormPageContent extends StatelessWidget {
           final source = state.error!.source;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!.error.message),
+              content: Text(state.error!.message),
               action: source == .submit
                   ? null
                   : SnackBarAction(

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/ui/my_products/page.dart';
 import 'package:openrent_client/ui/profile/page.dart';
 import 'package:openrent_client/ui/search/page.dart';

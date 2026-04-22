@@ -1,18 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:openrent_client/data/remote/address.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
 enum AddressFormErrorSource { loading, submit }
 
-class AddressFormError {
-  final AddressFormErrorSource source;
-  final ErrorWithDateTime error;
-
-  AddressFormError({required this.source, required this.error});
-}
+typedef AddressFormError = ErrorData<AddressFormErrorSource>;
 
 enum AddressFormDataStatus { loading, success, fail }
 

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductDetailState {
 
- int get id; bool get isLoading; ProductResponseItemDetail? get data; ErrorWithDateTime? get error;
+ int get id; bool get isLoading; ProductResponseItemDetail? get data; GeneralErrorData? get error;
 /// Create a copy of ProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ProductDetailStateCopyWith<$Res>  {
   factory $ProductDetailStateCopyWith(ProductDetailState value, $Res Function(ProductDetailState) _then) = _$ProductDetailStateCopyWithImpl;
 @useResult
 $Res call({
- ProductResponseItemDetail? data, ErrorWithDateTime? error, int id, bool isLoading
+ ProductResponseItemDetail? data, ErrorData<void>? error, int id, bool isLoading
 });
 
 
@@ -66,7 +66,7 @@ class _$ProductDetailStateCopyWithImpl<$Res>
   return _then(ProductDetailState(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as ProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorWithDateTime?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as ErrorData<void>?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/product.dart';
-import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
 import 'package:openrent_client/ui/product_form/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';

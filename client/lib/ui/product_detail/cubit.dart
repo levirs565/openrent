@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 import 'state.dart';
 
@@ -33,13 +33,13 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
         emit(
           state.copyWith(
             isLoading: false,
-            error: ErrorWithDateTime.current(message: result.message),
+            error: GeneralErrorData.general(message: result.message),
           ),
         );
     }
   }
 
-  void onErrorHandled(ErrorWithDateTime error) {
+  void onErrorHandled(GeneralErrorData error) {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }

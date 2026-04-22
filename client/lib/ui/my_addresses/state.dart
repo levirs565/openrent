@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/address.dart';
-
-import '../error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
@@ -11,13 +10,7 @@ enum MyAddressesDataStatus { loading, success, fail }
 
 enum MyAddressesActionStatus { idle, performing }
 
-@freezed
-class MyAddressesError with _$MyAddressesError {
-  final MyAddressesErrorSource source;
-  final ErrorWithDateTime error;
-
-  MyAddressesError({required this.source, required this.error});
-}
+typedef MyAddressesError = ErrorData<MyAddressesErrorSource>;
 
 @freezed
 class MyAddressesState with _$MyAddressesState {

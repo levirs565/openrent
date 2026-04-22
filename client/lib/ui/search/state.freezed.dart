@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- List<ProductResponseItemShort> get result; bool get isLoading; ErrorWithDateTime? get error;
+ List<ProductResponseItemShort> get result; bool get isLoading; GeneralErrorData? get error;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- List<ProductResponseItemShort> result, bool isLoading, ErrorWithDateTime? error
+ List<ProductResponseItemShort> result, bool isLoading, ErrorData<void>? error
 });
 
 
@@ -67,7 +67,7 @@ class _$SearchStateCopyWithImpl<$Res>
 result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as List<ProductResponseItemShort>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorWithDateTime?,
+as ErrorData<void>?,
   ));
 }
 

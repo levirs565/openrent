@@ -45,7 +45,7 @@ abstract mixin class $AddressFormStateCopyWith<$Res>  {
   factory $AddressFormStateCopyWith(AddressFormState value, $Res Function(AddressFormState) _then) = _$AddressFormStateCopyWithImpl;
 @useResult
 $Res call({
- int? id, LatLng position, String province, String regency, String district, String detail, String name, AddressFormSubmissionStatus submissionStatus, AddressFormError? error, AddressFormDataStatus dataStatus
+ int? id, LatLng position, String province, String regency, String district, String detail, String name, AddressFormSubmissionStatus submissionStatus, ErrorData<AddressFormErrorSource>? error, AddressFormDataStatus dataStatus
 });
 
 
@@ -73,7 +73,7 @@ as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullabl
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,submissionStatus: null == submissionStatus ? _self.submissionStatus : submissionStatus // ignore: cast_nullable_to_non_nullable
 as AddressFormSubmissionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as AddressFormError?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as ErrorData<AddressFormErrorSource>?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as AddressFormDataStatus,
   ));
 }

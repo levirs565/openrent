@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
@@ -14,7 +14,7 @@ class RegisterState with _$RegisterState {
   final String password;
   final String repeatPassword;
   final RegisterSubmissionStatus submissionStatus;
-  final ErrorWithDateTime? error;
+  final GeneralErrorData? error;
 
   RegisterState({
     required this.email,

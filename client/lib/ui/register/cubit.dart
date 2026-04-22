@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:openrent_client/ui/register/state.dart';
-
-import '../error_with_datetime.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   final AuthRepository _authRepository;
@@ -42,7 +41,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (result is ResultError) {
       emit(state.copyWith(
         submissionStatus: RegisterSubmissionStatus.idle,
-        error: ErrorWithDateTime.current(message: result.message)
+        error: GeneralErrorData.general(message: result.message)
       ));
     } else if (result is ResultSuccess) {
       emit(state.copyWith(
@@ -51,7 +50,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  void onErrorHandled(ErrorWithDateTime error) {
+  void onErrorHandled(GeneralErrorData error) {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }

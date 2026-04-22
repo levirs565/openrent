@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/address.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
@@ -11,13 +11,7 @@ enum ProductFormSubmissionStatus { idle, submitting, finished }
 
 enum ProductFormErrorSource { dataProduct, dataAddress, submit }
 
-@freezed
-class ProductFormError with _$ProductFormError {
-  final ProductFormErrorSource source;
-  final ErrorWithDateTime error;
-
-  ProductFormError({required this.source, required this.error});
-}
+typedef ProductFormError = ErrorData<ProductFormErrorSource>;
 
 @freezed
 class ProductFormState with _$ProductFormState {

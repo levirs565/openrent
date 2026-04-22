@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 import 'state.dart';
 
@@ -57,13 +55,13 @@ class MapPickerCubit extends Cubit<MapPickerState> {
           state.copyWith(
             isLoading: false,
             reverseGeocodingResult: null,
-            error: ErrorWithDateTime.current(message: result.message),
+            error: GeneralErrorData.general(message: result.message),
           ),
         );
     }
   }
 
-  void onErrorHandled(ErrorWithDateTime error) {
+  void onErrorHandled(GeneralErrorData error) {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }

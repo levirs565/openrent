@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:openrent_client/ui/search/state.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -60,14 +59,14 @@ class SearchCubit extends Cubit<SearchState> {
       case ResultError<List<ProductResponseItemShort>>():
         emit(
           state.copyWith(
-            error: ErrorWithDateTime.current(message: result.message),
+            error: GeneralErrorData(message: result.message, source: null),
             isLoading: false,
           ),
         );
     }
   }
 
-  void onErrorHandled(ErrorWithDateTime error) {
+  void onErrorHandled(GeneralErrorData error) {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }

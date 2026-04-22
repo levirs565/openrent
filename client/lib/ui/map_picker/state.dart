@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/location.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
+import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
@@ -10,7 +10,7 @@ class MapPickerState with _$MapPickerState {
   final LatLng? selectedPosition;
   final ReverseGeocodingResult? reverseGeocodingResult;
   final bool isLoading;
-  final ErrorWithDateTime? error;
+  final GeneralErrorData? error;
 
   MapPickerState({
     required this.selectedPosition,

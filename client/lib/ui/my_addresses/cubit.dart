@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
 import 'package:openrent_client/ui/my_addresses/state.dart';
 
 class MyAddressesCubit extends Cubit<MyAddressesState> {
@@ -34,10 +33,7 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
         emit(
           state.copyWith(
             dataStatus: .fail,
-            error: MyAddressesError(
-              source: .data,
-              error: ErrorWithDateTime.current(message: result.message),
-            ),
+            error: MyAddressesError(source: .data, message: result.message),
           ),
         );
     }
@@ -58,7 +54,7 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
         emit(
           state.copyWith(
             actionStatus: .idle,
-            error: MyAddressesError(source: .action, error: ErrorWithDateTime.current(message: result.message)),
+            error: MyAddressesError(source: .action, message: result.message),
           ),
         );
     }

@@ -5,7 +5,6 @@ import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/address_form/state.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
 
 class AddressFormCubit extends Cubit<AddressFormState> {
   final AddressRepository _addressRepository;
@@ -59,7 +58,7 @@ class AddressFormCubit extends Cubit<AddressFormState> {
             dataStatus: .fail,
             error: AddressFormError(
               source: .loading,
-              error: ErrorWithDateTime.current(message: result.message),
+              message: result.message,
             ),
           ),
         );
@@ -123,7 +122,7 @@ class AddressFormCubit extends Cubit<AddressFormState> {
             submissionStatus: .idle,
             error: AddressFormError(
               source: .submit,
-              error: ErrorWithDateTime.current(message: result.message),
+              message: result.message,
             ),
           ),
         );

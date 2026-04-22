@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MapPickerState {
 
- LatLng? get selectedPosition; ReverseGeocodingResult? get reverseGeocodingResult; bool get isLoading; ErrorWithDateTime? get error;
+ LatLng? get selectedPosition; ReverseGeocodingResult? get reverseGeocodingResult; bool get isLoading; GeneralErrorData? get error;
 /// Create a copy of MapPickerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $MapPickerStateCopyWith<$Res>  {
   factory $MapPickerStateCopyWith(MapPickerState value, $Res Function(MapPickerState) _then) = _$MapPickerStateCopyWithImpl;
 @useResult
 $Res call({
- LatLng? selectedPosition, ReverseGeocodingResult? reverseGeocodingResult, ErrorWithDateTime? error, bool isLoading
+ LatLng? selectedPosition, ReverseGeocodingResult? reverseGeocodingResult, ErrorData<void>? error, bool isLoading
 });
 
 
@@ -67,7 +67,7 @@ class _$MapPickerStateCopyWithImpl<$Res>
 selectedPosition: freezed == selectedPosition ? _self.selectedPosition : selectedPosition // ignore: cast_nullable_to_non_nullable
 as LatLng?,reverseGeocodingResult: freezed == reverseGeocodingResult ? _self.reverseGeocodingResult : reverseGeocodingResult // ignore: cast_nullable_to_non_nullable
 as ReverseGeocodingResult?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorWithDateTime?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as ErrorData<void>?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

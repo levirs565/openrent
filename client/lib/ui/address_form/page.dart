@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -53,7 +51,8 @@ class AddressFormPage extends StatelessWidget {
   }
 }
 
-typedef _AddressFormTextField = ControlledTextField<AddressFormCubit, AddressFormState>;
+typedef _AddressFormTextField =
+    ControlledTextField<AddressFormCubit, AddressFormState>;
 
 class _AddressFormContent extends StatelessWidget {
   @override
@@ -66,7 +65,7 @@ class _AddressFormContent extends StatelessWidget {
         if (state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!.error.message),
+              content: Text(state.error!.message),
               action: state.error!.source == .submit
                   ? null
                   : SnackBarAction(

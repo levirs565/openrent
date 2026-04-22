@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/error_with_datetime.dart';
 import 'package:openrent_client/ui/product_form/state.dart';
 
 class ProductFormCubit extends Cubit<ProductFormState> {
@@ -63,7 +60,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
             dataStatus: .fail,
             error: ProductFormError(
               source: .dataProduct,
-              error: ErrorWithDateTime.current(message: result.message),
+              message: result.message,
             ),
           ),
         );
@@ -86,7 +83,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
             addressStatus: .fail,
             error: ProductFormError(
               source: .dataAddress,
-              error: ErrorWithDateTime.current(message: result.message),
+              message: result.message,
             ),
           ),
         );
@@ -148,7 +145,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
             submissionStatus: .idle,
             error: ProductFormError(
               source: .submit,
-              error: ErrorWithDateTime.current(message: result.message),
+              message: result.message,
             ),
           ),
         );
