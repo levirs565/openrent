@@ -4,6 +4,7 @@ import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
+import 'package:openrent_client/ui/rent_form/sheet.dart';
 
 import 'cubit.dart';
 import 'state.dart';
@@ -81,6 +82,16 @@ class _ProductDetailPageContent extends StatelessWidget {
                   context,
                 ).push(ProductReviewsPage.route(state.id)),
                 child: Text("See More Reviews"),
+              ),
+              OutlinedButton(
+                onPressed: () => {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) => RentFormSheet(id: state.id),
+                  ),
+                },
+                child: Text("Rent"),
               ),
             ],
           ),
