@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rental.dart';
-import 'package:openrent_client/ui/my_rentals/cubit.dart';
-import 'package:openrent_client/ui/my_rentals/state.dart';
 
-class MyRentalsPage extends StatelessWidget {
+import 'cubit.dart';
+import 'state.dart';
+
+class MyRentalsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MyRentalsCubit(rentalRepository: context.read()),
-      child: _MyRentalsPageContent(),
+    return ScaffoldMessenger(
+      child: Scaffold(
+        body: BlocProvider(
+          create: (context) => MyRentalsCubit(rentalRepository: context.read()),
+          child: _MyRentalsPageContent(),
+        ),
+      ),
     );
   }
 }

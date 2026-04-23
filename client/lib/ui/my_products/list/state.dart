@@ -5,10 +5,10 @@ import 'package:openrent_client/ui/core/error_data.dart';
 part 'state.freezed.dart';
 
 @freezed
-class MyProductsState with _$MyProductsState {
+class MyProductListState with _$MyProductListState {
   final bool isLoading;
   final List<ProductResponseItemShort> data;
   final GeneralErrorData? error;
 
-  MyProductsState({required this.isLoading, required this.data, this.error});
+  MyProductListState({required this.isLoading, required this.data, this.error});
 }

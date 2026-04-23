@@ -12,20 +12,20 @@ part of 'state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$MyProductsState {
+mixin _$MyProductListState {
 
  bool get isLoading; List<ProductResponseItemShort> get data; GeneralErrorData? get error;
-/// Create a copy of MyProductsState
+/// Create a copy of MyProductListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MyProductsStateCopyWith<MyProductsState> get copyWith => _$MyProductsStateCopyWithImpl<MyProductsState>(this as MyProductsState, _$identity);
+$MyProductListStateCopyWith<MyProductListState> get copyWith => _$MyProductListStateCopyWithImpl<MyProductListState>(this as MyProductListState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -34,15 +34,15 @@ int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquali
 
 @override
 String toString() {
-  return 'MyProductsState(isLoading: $isLoading, data: $data, error: $error)';
+  return 'MyProductListState(isLoading: $isLoading, data: $data, error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MyProductsStateCopyWith<$Res>  {
-  factory $MyProductsStateCopyWith(MyProductsState value, $Res Function(MyProductsState) _then) = _$MyProductsStateCopyWithImpl;
+abstract mixin class $MyProductListStateCopyWith<$Res>  {
+  factory $MyProductListStateCopyWith(MyProductListState value, $Res Function(MyProductListState) _then) = _$MyProductListStateCopyWithImpl;
 @useResult
 $Res call({
  bool isLoading, List<ProductResponseItemShort> data, ErrorData<void>? error
@@ -53,17 +53,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$MyProductsStateCopyWithImpl<$Res>
-    implements $MyProductsStateCopyWith<$Res> {
-  _$MyProductsStateCopyWithImpl(this._self, this._then);
+class _$MyProductListStateCopyWithImpl<$Res>
+    implements $MyProductListStateCopyWith<$Res> {
+  _$MyProductListStateCopyWithImpl(this._self, this._then);
 
-  final MyProductsState _self;
-  final $Res Function(MyProductsState) _then;
+  final MyProductListState _self;
+  final $Res Function(MyProductListState) _then;
 
-/// Create a copy of MyProductsState
+/// Create a copy of MyProductListState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? data = null,Object? error = freezed,}) {
-  return _then(MyProductsState(
+  return _then(MyProductListState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as List<ProductResponseItemShort>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -74,8 +74,8 @@ as ErrorData<void>?,
 }
 
 
-/// Adds pattern-matching-related methods to [MyProductsState].
-extension MyProductsStatePatterns on MyProductsState {
+/// Adds pattern-matching-related methods to [MyProductListState].
+extension MyProductListStatePatterns on MyProductListState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:

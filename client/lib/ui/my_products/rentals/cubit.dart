@@ -3,7 +3,8 @@ import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
-import 'package:openrent_client/ui/my_rentals/state.dart';
+
+import 'state.dart';
 
 class MyRentalsCubit extends Cubit<MyRentalsState> {
   final RentalRepository _rentalRepository;

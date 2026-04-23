@@ -3,14 +3,14 @@ import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
-import 'package:openrent_client/ui/my_products/state.dart';
+import 'package:openrent_client/ui/my_products/list/state.dart';
 
-class MyProductsCubit extends Cubit<MyProductsState> {
+class MyProductListCubit extends Cubit<MyProductListState> {
   final ProductRepository _productRepository;
 
-  MyProductsCubit({required ProductRepository productRepository})
+  MyProductListCubit({required ProductRepository productRepository})
     : _productRepository = productRepository,
-      super(MyProductsState(isLoading: false, data: List.empty())) {
+      super(MyProductListState(isLoading: false, data: List.empty())) {
     onRefresh();
   }
 

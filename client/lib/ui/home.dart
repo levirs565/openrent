@@ -16,7 +16,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  List<Widget> _widgetOptions = <Widget>[SearchPage(), MyProductsPage(), ProfilePage()];
+  List<Widget> _widgetOptions = <Widget>[
+    SearchPage(),
+    MyProductsPage(),
+    ProfilePage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
