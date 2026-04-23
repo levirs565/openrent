@@ -7,6 +7,7 @@ import 'package:openrent_client/data/remote/error.dart';
 import 'package:openrent_client/data/remote/locationiq.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/remote/rent.dart';
+import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/remote/review.dart';
 
 Dio createDio() {
@@ -26,4 +27,5 @@ final addressService = AddressService(dioInstance);
 final productService = ProductService(dioInstance);
 final reviewService = ReviewService(dioInstance);
 final rentService = RentService(dioInstance);
+final rentalService = RentalService(dioInstance);
 final locationIQService = LocationIQService(Dio());

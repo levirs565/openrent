@@ -7,6 +7,7 @@ import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
 import 'package:openrent_client/data/rent.dart';
+import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/review.dart';
 import 'package:openrent_client/ui/login/page.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<RentRepository>(
           create: (_) => RentDataSource(rentService: rentService),
+        ),
+        RepositoryProvider<RentalRepository>(
+          create: (_) => RentalDataSource(rentalService: rentalService),
         ),
       ],
       child: BlocProvider(

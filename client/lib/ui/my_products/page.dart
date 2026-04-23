@@ -18,7 +18,6 @@ class MyProductsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => MyProductsCubit(productRepository: context.read()),
       child: Scaffold(
-        appBar: AppBar(title: Text("My Products")),
         body: _MyProductsPageContent(),
         floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.of(context).push(ProductFormPage.routeAdd()),

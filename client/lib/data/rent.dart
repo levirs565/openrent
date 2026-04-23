@@ -10,6 +10,7 @@ abstract interface class RentRepository {
   });
 }
 
+// TODO: Rent is not noun, change to either Booking or Ordering
 class RentDataSource extends RentRepository {
   final RentService _rentService;
 
