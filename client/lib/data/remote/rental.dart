@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:openrent_client/data/remote/auth.dart';
 import 'package:openrent_client/data/remote/converter.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -13,6 +14,18 @@ abstract class RentalService {
 
   @GET("/owner/rents")
   Future<List<RentalResponseItem>> list();
+
+  @GET("/owner/rents/{id}")
+  Future<RentalResponseItemDetails> getById(@Path("id") int id);
+
+  @POST("/owner/rents/{id}/approve")
+  Future<ActionResponse> approve(@Path("id") int id);
+
+  @POST("/owner/rents/{id}/reject")
+  Future<ActionResponse> reject(
+    @Path("id") int id,
+    @Body() RentalRejectRequest request,
+  );
 }
 
 @freezed
@@ -71,4 +84,40 @@ abstract class RentalResponseItem with _$RentalResponseItem {
 
   factory RentalResponseItem.fromJson(Map<String, Object?> json) =>
       _$RentalResponseItemFromJson(json);
+}
+
+@freezed
+abstract class RentalUserDetails with _$RentalUserDetails {
+  const factory RentalUserDetails({required int id, required String name}) =
+      _RentalUserDetails;
+
+  factory RentalUserDetails.fromJson(Map<String, Object?> json) =>
+      _$RentalUserDetailsFromJson(json);
+}
+
+@freezed
+abstract class RentalResponseItemDetails with _$RentalResponseItemDetails {
+  const factory RentalResponseItemDetails({
+    required int id,
+    required RentalProductShort product,
+    required RentalUserDetails user,
+    required RentState state,
+    @JsonKey(name: "start_date")
+    @Iso8601Converter()
+    required DateTime startDate,
+    @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
+    required int quantity,
+  }) = _RentalResponseItemDetails;
+
+  factory RentalResponseItemDetails.fromJson(Map<String, Object?> json) =>
+      _$RentalResponseItemDetailsFromJson(json);
+}
+
+@freezed
+abstract class RentalRejectRequest with _$RentalRejectRequest {
+  const factory RentalRejectRequest({required String note}) =
+      _RentalRejectRequest;
+
+  factory RentalRejectRequest.fromJson(Map<String, Object?> json) =>
+      _$RentalRejectRequestFromJson(json);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/my_rental_detail/page.dart';
 
 import 'cubit.dart';
 import 'state.dart';
@@ -63,12 +64,15 @@ class _RentalItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
-      child: Column(
-        children: [
-          Text("${item.user.name} - ${item.product.name}"),
-          Text("${item.startDate} - ${item.endDate}"),
-          Text("${item.quantity} - ${item.state}"),
-        ],
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(MyRentalDetailPage.route(item.id)),
+        child: Column(
+          children: [
+            Text("${item.user.name} - ${item.product.name}"),
+            Text("${item.startDate} - ${item.endDate}"),
+            Text("${item.quantity} - ${item.state}"),
+          ],
+        ),
       ),
     );
   }

@@ -59,6 +59,46 @@ const _$RentStateEnumMap = {
   RentState.cancelled: 'cancelled',
 };
 
+_RentalUserDetails _$RentalUserDetailsFromJson(Map<String, dynamic> json) =>
+    _RentalUserDetails(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$RentalUserDetailsToJson(_RentalUserDetails instance) =>
+    <String, dynamic>{'id': instance.id, 'name': instance.name};
+
+_RentalResponseItemDetails _$RentalResponseItemDetailsFromJson(
+  Map<String, dynamic> json,
+) => _RentalResponseItemDetails(
+  id: (json['id'] as num).toInt(),
+  product: RentalProductShort.fromJson(json['product'] as Map<String, dynamic>),
+  user: RentalUserDetails.fromJson(json['user'] as Map<String, dynamic>),
+  state: $enumDecode(_$RentStateEnumMap, json['state']),
+  startDate: const Iso8601Converter().fromJson(json['start_date'] as String),
+  endDate: const Iso8601Converter().fromJson(json['end_date'] as String),
+  quantity: (json['quantity'] as num).toInt(),
+);
+
+Map<String, dynamic> _$RentalResponseItemDetailsToJson(
+  _RentalResponseItemDetails instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'product': instance.product,
+  'user': instance.user,
+  'state': _$RentStateEnumMap[instance.state]!,
+  'start_date': const Iso8601Converter().toJson(instance.startDate),
+  'end_date': const Iso8601Converter().toJson(instance.endDate),
+  'quantity': instance.quantity,
+};
+
+_RentalRejectRequest _$RentalRejectRequestFromJson(Map<String, dynamic> json) =>
+    _RentalRejectRequest(note: json['note'] as String);
+
+Map<String, dynamic> _$RentalRejectRequestToJson(
+  _RentalRejectRequest instance,
+) => <String, dynamic>{'note': instance.note};
+
 // dart format off
 
 // **************************************************************************
@@ -101,6 +141,88 @@ class _RentalService implements RentalService {
                 RentalResponseItem.fromJson(i as Map<String, dynamic>),
           )
           .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<RentalResponseItemDetails> getById(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<RentalResponseItemDetails>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/owner/rents/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late RentalResponseItemDetails _value;
+    try {
+      _value = RentalResponseItemDetails.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ActionResponse> approve(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ActionResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/owner/rents/${id}/approve',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ActionResponse _value;
+    try {
+      _value = ActionResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ActionResponse> reject(int id, RentalRejectRequest request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<ActionResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/owner/rents/${id}/reject',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ActionResponse _value;
+    try {
+      _value = ActionResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
