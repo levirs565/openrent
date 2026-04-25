@@ -191,6 +191,7 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 		}
 		return err
 	}
+	// TODO: Check this state
 	if data.State != models.RentStateOnRent {
 		return ErrNotReady
 	}
