@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/ui/components/loading_button.dart';
 import 'package:openrent_client/ui/register/cubit.dart';
 import 'package:openrent_client/ui/register/state.dart';
 
@@ -31,12 +32,6 @@ class _RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterState>(
       listener: (context, state) {
-        if (state.error != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error!.message)));
-          context.read<RegisterCubit>().onErrorHandled(state.error!);
-        }
         if (state.submissionStatus == .finished) {
           Navigator.of(
             context,
@@ -44,46 +39,156 @@ class _RegisterForm extends StatelessWidget {
         }
       },
       builder: (context, state) => Scaffold(
-        body: Column(
-          children: [
-            TextField(
-              onChanged: (email) =>
-                  context.read<RegisterCubit>().onEmailChanged(email),
-              decoration: InputDecoration(label: Text("Email")),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 24),
+                    CircleAvatar(
+                      radius: 36,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      child: Icon(
+                        Icons.app_registration_outlined,
+                        size: 36,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Buat Akun Baru',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Daftar sekarang untuk mulai menyewa atau mempromosikan properti Anda.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 28),
+                    Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Register',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              onChanged: (email) => context
+                                  .read<RegisterCubit>()
+                                  .onEmailChanged(email),
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                hintText: 'nama@domain.com',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              onChanged: (name) => context
+                                  .read<RegisterCubit>()
+                                  .onNameChanged(name),
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                labelText: 'Nama Lengkap',
+                                hintText: 'Nama sesuai KTP atau identitas',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              onChanged: (password) => context
+                                  .read<RegisterCubit>()
+                                  .onPasswordChanged(password),
+                              obscureText: true,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                hintText: 'Minimal 8 karakter',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              onChanged: (repeatPassword) => context
+                                  .read<RegisterCubit>()
+                                  .onRepeatPasswordChanged(repeatPassword),
+                              obscureText: true,
+                              textInputAction: TextInputAction.done,
+                              decoration: const InputDecoration(
+                                labelText: 'Ulangi Password',
+                                hintText: 'Ketik ulang password Anda',
+                              ),
+                            ),
+                            if (state.error != null) ...[
+                              const SizedBox(height: 16),
+                              Text(
+                                state.error!.message,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
+                              ),
+                            ],
+                            const SizedBox(height: 24),
+                            LoadingButton(
+                              isLoading: state.submissionStatus == .loading,
+                              onPressed: (!state.isValid ||
+                                      state.submissionStatus != .idle)
+                                  ? null
+                                  : () => context
+                                        .read<RegisterCubit>()
+                                        .onSubmit(),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                child: Text('Register'),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Center(
+                              child: TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      LoginPage.route(),
+                                      (_) => false,
+                                    ),
+                                child: const Text('Sudah punya akun? Login'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Dengan mendaftar, Anda menyetujui syarat dan ketentuan kami.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
             ),
-            TextField(
-              onChanged: (name) =>
-                  context.read<RegisterCubit>().onNameChanged(name),
-              decoration: InputDecoration(label: Text("Name")),
-            ),
-            TextField(
-              onChanged: (password) =>
-                  context.read<RegisterCubit>().onPasswordChanged(password),
-              decoration: InputDecoration(label: Text("Password")),
-            ),
-            TextField(
-              onChanged: (repeatPassword) => context
-                  .read<RegisterCubit>()
-                  .onRepeatPasswordChanged(repeatPassword),
-              decoration: InputDecoration(label: Text("Repeat Password")),
-            ),
-            if (state.submissionStatus == .loading)
-              CircularProgressIndicator(),
-            OutlinedButton(
-              onPressed:
-                  !state.isValid ||
-                      state.submissionStatus != .idle
-                  ? null
-                  : () => context.read<RegisterCubit>().onSubmit(),
-              child: Text("Register"),
-            ),
-            OutlinedButton(
-              onPressed: () => Navigator.of(
-                context,
-              ).pushAndRemoveUntil(LoginPage.route(), (_) => false),
-              child: Text("Sudah punya akun? Login"),
-            ),
-          ],
+          ),
         ),
       ),
     );

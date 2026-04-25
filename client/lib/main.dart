@@ -75,8 +75,11 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      title: 'OpenRent',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthBlocState>(
           listener: (context, state) {
