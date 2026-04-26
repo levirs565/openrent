@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/ui/components/loading_button.dart';
+import 'package:openrent_client/ui/components/password_text_field.dart';
 import 'package:openrent_client/ui/register/cubit.dart';
 import 'package:openrent_client/ui/register/state.dart';
 
@@ -102,28 +103,22 @@ class _RegisterForm extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            TextFormField(
+                            PasswordTextField(
                               onChanged: (password) => context
                                   .read<RegisterCubit>()
                                   .onPasswordChanged(password),
-                              obscureText: true,
+                              labelText: 'Password',
+                              hintText: 'Minimal 8 karakter',
                               textInputAction: TextInputAction.next,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                hintText: 'Minimal 8 karakter',
-                              ),
                             ),
                             const SizedBox(height: 16),
-                            TextFormField(
+                            PasswordTextField(
                               onChanged: (repeatPassword) => context
                                   .read<RegisterCubit>()
                                   .onRepeatPasswordChanged(repeatPassword),
-                              obscureText: true,
+                              labelText: 'Ulangi Password',
+                              hintText: 'Ketik ulang password Anda',
                               textInputAction: TextInputAction.done,
-                              decoration: const InputDecoration(
-                                labelText: 'Ulangi Password',
-                                hintText: 'Ketik ulang password Anda',
-                              ),
                             ),
                             if (state.error != null) ...[
                               const SizedBox(height: 16),
