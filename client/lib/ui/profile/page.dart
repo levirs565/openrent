@@ -15,29 +15,101 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthBlocState>(
-      builder: (context, state) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (state.state is ResourceSuccess)
-            Text(
-              (state.state as ResourceSuccess<AuthUserState?>).data?.name ?? "",
-            ),
-          Center(
-            child: OutlinedButton(
-              onPressed: () =>
-                  Navigator.of(context).push(MyAddressesPage.route()),
-              child: Text("My Address"),
+      builder: (context, state) {
+        final user = state.state is ResourceSuccess
+            ? (state.state as ResourceSuccess<AuthUserState?>).data
+            : null;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Profil Saya'),
+            centerTitle: true,
+            elevation: 0,
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 28,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
+                                child: Icon(
+                                  Icons.person,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimaryContainer,
+                                  size: 32,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user?.name ?? 'Pengguna',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      user?.email ?? 'Belum ada email',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MyAddressesPage.route()),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Text('Alamat Saya'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: () =>
+                        context.read<AuthBloc>().add(AuthBlocEventLogout()),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Text('Keluar'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Center(
-            child: OutlinedButton(
-              onPressed: () =>
-                  context.read<AuthBloc>().add(AuthBlocEventLogout()),
-              child: Text("Logout"),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
