@@ -99,6 +99,11 @@ class _Content extends StatelessWidget {
               onPressed: () => context.read<MyRentalDetailCubit>().onHandover(),
               child: Text("Handover"),
             ),
+          if (state.data?.state == .awaitingReturnConfirmation)
+            OutlinedButton(
+              onPressed: () => context.read<MyRentalDetailCubit>().onConfirmReturn(),
+              child: Text("Confirm Return"),
+            ),
         ],
       ),
     );

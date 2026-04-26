@@ -96,4 +96,28 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
         );
     }
   }
+
+  void onConfirmReturn() async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(isActionLoading: true));
+
+    final result = await _rentalRepository.confirmReturn(state.id);
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(isActionLoading: false));
+        onRefresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            error: MyRentalDetailError(
+              source: .actionConfirmReturn,
+              message: result.message,
+            ),
+          ),
+        );
+    }
+  }
 }

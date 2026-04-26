@@ -5,7 +5,12 @@ import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
-enum MyRentalDetailErrorSource { data, actionApprove, actionHandover }
+enum MyRentalDetailErrorSource {
+  data,
+  actionApprove,
+  actionHandover,
+  actionConfirmReturn,
+}
 
 typedef MyRentalDetailError = ErrorData<MyRentalDetailErrorSource>;
 

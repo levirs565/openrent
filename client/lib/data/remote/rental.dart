@@ -29,6 +29,9 @@ abstract class RentalService {
 
   @POST("/owner/rents/{id}/handover")
   Future<ActionResponse> handover(@Path("id") int id);
+
+  @POST("/owner/rents/{id}/confirm_return")
+  Future<ActionResponse> confirmReturn(@Path("id") int id);
 }
 
 @freezed
