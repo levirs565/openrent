@@ -4,6 +4,7 @@ import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/location.dart';
+import 'package:openrent_client/data/order.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
 import 'package:openrent_client/data/rent.dart';
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<RentalRepository>(
           create: (_) => RentalDataSource(rentalService: rentalService),
+        ),
+        RepositoryProvider<OrderRepository>(
+          create: (_) => OrderDataSource(service: orderService),
         ),
       ],
       child: BlocProvider(
