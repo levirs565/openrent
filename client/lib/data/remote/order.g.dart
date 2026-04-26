@@ -69,6 +69,49 @@ const _$RentStateEnumMap = {
   RentState.cancelled: 'cancelled',
 };
 
+_OrderUserDetails _$OrderUserDetailsFromJson(Map<String, dynamic> json) =>
+    _OrderUserDetails(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$OrderUserDetailsToJson(_OrderUserDetails instance) =>
+    <String, dynamic>{'id': instance.id, 'name': instance.name};
+
+_OrderReviewDetails _$OrderReviewDetailsFromJson(Map<String, dynamic> json) =>
+    _OrderReviewDetails(id: (json['id'] as num).toInt());
+
+Map<String, dynamic> _$OrderReviewDetailsToJson(_OrderReviewDetails instance) =>
+    <String, dynamic>{'id': instance.id};
+
+_OrderResponseItemDetails _$OrderResponseItemDetailsFromJson(
+  Map<String, dynamic> json,
+) => _OrderResponseItemDetails(
+  id: (json['id'] as num).toInt(),
+  product: OrderProductShort.fromJson(json['product'] as Map<String, dynamic>),
+  user: OrderUserDetails.fromJson(json['user'] as Map<String, dynamic>),
+  review: json['review'] == null
+      ? null
+      : OrderReviewDetails.fromJson(json['review'] as Map<String, dynamic>),
+  state: $enumDecode(_$RentStateEnumMap, json['state']),
+  startDate: const Iso8601Converter().fromJson(json['start_date'] as String),
+  endDate: const Iso8601Converter().fromJson(json['end_date'] as String),
+  quantity: (json['quantity'] as num).toInt(),
+);
+
+Map<String, dynamic> _$OrderResponseItemDetailsToJson(
+  _OrderResponseItemDetails instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'product': instance.product,
+  'user': instance.user,
+  'review': instance.review,
+  'state': _$RentStateEnumMap[instance.state]!,
+  'start_date': const Iso8601Converter().toJson(instance.startDate),
+  'end_date': const Iso8601Converter().toJson(instance.endDate),
+  'quantity': instance.quantity,
+};
+
 // dart format off
 
 // **************************************************************************
@@ -111,6 +154,60 @@ class _OrderService implements OrderService {
                 OrderResponseItem.fromJson(i as Map<String, dynamic>),
           )
           .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<OrderResponseItemDetails> getById(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<OrderResponseItemDetails>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/rents/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, Object?>>(_options);
+    late OrderResponseItemDetails _value;
+    try {
+      _value = OrderResponseItemDetails.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ActionResponse> receive(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ActionResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/rents/${id}/receive',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ActionResponse _value;
+    try {
+      _value = ActionResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
