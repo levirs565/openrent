@@ -62,12 +62,6 @@ class _LoginForm extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        'Masuk untuk melanjutkan, temukan properti terbaik dengan mudah.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 28),
                       Card(
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -78,11 +72,6 @@ class _LoginForm extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
-                                'Login',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 20),
                               TextFormField(
                                 onChanged: (email) => context
                                     .read<LoginCubit>()

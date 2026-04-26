@@ -69,12 +69,6 @@ class _RegisterForm extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      'Daftar sekarang untuk mulai menyewa atau mempromosikan properti Anda.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 28),
                     Card(
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -85,11 +79,6 @@ class _RegisterForm extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              'Register',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 20),
                             TextFormField(
                               onChanged: (email) => context
                                   .read<RegisterCubit>()
@@ -151,7 +140,8 @@ class _RegisterForm extends StatelessWidget {
                             const SizedBox(height: 24),
                             LoadingButton(
                               isLoading: state.submissionStatus == .loading,
-                              onPressed: (!state.isValid ||
+                              onPressed:
+                                  (!state.isValid ||
                                       state.submissionStatus != .idle)
                                   ? null
                                   : () => context
@@ -159,7 +149,7 @@ class _RegisterForm extends StatelessWidget {
                                         .onSubmit(),
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 14),
-                                child: Text('Register'),
+                                child: Text('Daftar'),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -170,7 +160,7 @@ class _RegisterForm extends StatelessWidget {
                                       LoginPage.route(),
                                       (_) => false,
                                     ),
-                                child: const Text('Sudah punya akun? Login'),
+                                child: const Text('Sudah punya akun? Masuk'),
                               ),
                             ),
                           ],
