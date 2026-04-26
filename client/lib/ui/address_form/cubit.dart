@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/address.dart';
@@ -23,7 +25,7 @@ class AddressFormCubit extends Cubit<AddressFormState> {
            detail: "",
            name: "",
            submissionStatus: .idle,
-           dataStatus: .initial,
+           dataStatus: id == null ? .success : .initial,
            error: null,
          ),
        ) {
