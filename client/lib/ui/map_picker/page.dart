@@ -42,7 +42,7 @@ class MapPickerPage extends StatelessWidget {
         position: position,
       ),
       child: Scaffold(
-        appBar: AppBar(title: Text("Point Location")),
+        appBar: AppBar(title: const Text('Pilih titik lokasi di peta')),
         body: _AddAddressPageContent(isForResult: isForResult),
       ),
     );
@@ -71,86 +71,117 @@ class _AddAddressPageContent extends StatelessWidget {
           context.read<MapPickerCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => Column(
-        children: [
-          Expanded(
-            child: FlutterMap(
-              options: MapOptions(
-                initialCenter:
-                    state.selectedPosition ?? LatLng(-7.771720, 110.412984),
-                initialZoom: 9.2,
-                onTap: (tapPosition, point) {
-                  context.read<MapPickerCubit>().onSelectPosition(point);
-                },
-              ),
-              children: [
-                TileLayer(
-                  // Bring your own tiles
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName:
-                      "OpenRent/0.1 (contact: levirs565@gmail.com)",
+      builder: (context, state) => SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter:
+                      state.selectedPosition ?? LatLng(-7.771720, 110.412984),
+                  initialZoom: 9.2,
+                  onTap: (tapPosition, point) {
+                    context.read<MapPickerCubit>().onSelectPosition(point);
+                  },
                 ),
-                MarkerLayer(
-                  markers: [
-                    if (state.selectedPosition != null)
-                      Marker(
-                        alignment: Alignment.topCenter,
-                        point: state.selectedPosition!,
-                        width: 48,
-                        height: 48,
-                        child: Icon(Icons.location_on, size: 48),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName:
+                        'OpenRent/0.1 (contact: levirs565@gmail.com)',
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      if (state.selectedPosition != null)
+                        Marker(
+                          alignment: Alignment.topCenter,
+                          point: state.selectedPosition!,
+                          width: 48,
+                          height: 48,
+                          child: Icon(
+                            Icons.location_on,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                    ],
+                  ),
+                  RichAttributionWidget(
+                    attributions: [
+                      TextSourceAttribution(
+                        'OpenStreetMap contributors',
+                        onTap: () => launchUrl(
+                          Uri.parse('https://openstreetmap.org/copyright'),
+                        ),
                       ),
-                  ],
-                ),
-                RichAttributionWidget(
-                  attributions: [
-                    TextSourceAttribution(
-                      'OpenStreetMap contributors',
-                      onTap: () => launchUrl(
-                        Uri.parse('https://openstreetmap.org/copyright'),
-                      ), // (external)
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Row(
-            children: [
-              if (state.isLoading) ...[
-                CircularProgressIndicator(),
-                Expanded(child: Center()),
-              ],
-              if (state.reverseGeocodingResult != null)
-                Expanded(
-                  child: Text(
-                    "${state.reverseGeocodingResult?.regency ?? "-"}, ${state.reverseGeocodingResult?.province ?? "-"}",
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (state.isLoading)
+                        Column(
+                          children: [
+                            LinearProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(height: 36),
+                          ],
+                        ),
+                      if (state.reverseGeocodingResult != null) ...[
+                        Text(
+                          '${state.reverseGeocodingResult?.regency ?? '-'}, ${state.reverseGeocodingResult?.province ?? '-'}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      FilledButton(
+                        onPressed: !state.isValid
+                            ? null
+                            : () {
+                                if (state.selectedPosition == null ||
+                                    state.reverseGeocodingResult == null) {
+                                  return;
+                                }
+                                final result = MapPickerResult(
+                                  position: state.selectedPosition!,
+                                  geocodingResult:
+                                      state.reverseGeocodingResult!,
+                                );
+                                if (isForResult) {
+                                  Navigator.of(context).pop(result);
+                                } else {
+                                  Navigator.of(context).pushReplacement(
+                                    AddressFormPage.routeAdd(position: result),
+                                  );
+                                }
+                              },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Text('Pilih Lokasi'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              OutlinedButton(
-                onPressed: !state.isValid
-                    ? null
-                    : () {
-                        if (state.selectedPosition == null ||
-                            state.reverseGeocodingResult == null)
-                          return;
-                        final result = MapPickerResult(
-                          position: state.selectedPosition!,
-                          geocodingResult: state.reverseGeocodingResult!,
-                        );
-                        if (isForResult) {
-                          Navigator.of(context).pop(result);
-                        } else {
-                          Navigator.of(
-                            context,
-                          ).pushReplacement(AddressFormPage.routeAdd(position: result));
-                        }
-                      },
-                child: Text("Select"),
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }
