@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:openrent_client/ui/address_form/cubit.dart';
 import 'package:openrent_client/ui/address_form/state.dart';
 import 'package:openrent_client/ui/components/controlled_text_field.dart';
+import 'package:openrent_client/ui/components/loading_button.dart';
 import 'package:openrent_client/ui/map_picker/page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,7 +43,9 @@ class AddressFormPage extends StatelessWidget {
       child: ScaffoldMessenger(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(id == null ? "Add Address" : "Edit Address"),
+            title: Text(id == null ? 'Tambah Alamat' : 'Edit Alamat'),
+            centerTitle: true,
+            elevation: 0,
           ),
           body: _AddressFormContent(),
         ),
@@ -84,92 +87,169 @@ class _AddressFormContent extends StatelessWidget {
           previous.isLoading != current.isLoading ||
           previous.id != current.id,
       builder: (context, state) => SingleChildScrollView(
-        child: Column(
-          children: [
-            if (state.isLoading) LinearProgressIndicator(),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 200),
-              child: _AddressFormMap(),
-            ),
-            OutlinedButton(
-              onPressed: !state.canEdit
-                  ? null
-                  : () async {
-                      final state = context.read<AddressFormCubit>().state;
-                      final result = await Navigator.of(context).push(
-                        MapPickerPage.routeForResult(position: state.position),
-                      );
-                      if (result != null) {
-                        // TODO: Is isMounted nescesssary
-                        context.read<AddressFormCubit>().onChangeLocation(
-                          result.position,
-                          result.geocodingResult,
-                        );
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (state.isLoading) const LinearProgressIndicator(),
+              const SizedBox(height: 16),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Lokasi alamat',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                          Icon(
+                            Icons.place_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: SizedBox(height: 210, child: _AddressFormMap()),
+                      ),
+                      const SizedBox(height: 14),
+                      FilledButton.tonal(
+                        onPressed: !state.canEdit
+                            ? null
+                            : () async {
+                                final state = context
+                                    .read<AddressFormCubit>()
+                                    .state;
+                                final result = await Navigator.of(context).push(
+                                  MapPickerPage.routeForResult(
+                                    position: state.position,
+                                  ),
+                                );
+                                if (result != null) {
+                                  context
+                                      .read<AddressFormCubit>()
+                                      .onChangeLocation(
+                                        result.position,
+                                        result.geocodingResult,
+                                      );
+                                }
+                              },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Text('Ubah Titik Alamat'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _AddressFormTextField(
+                        selector: (state) => state.name,
+                        builder: (controller) => TextField(
+                          controller: controller,
+                          readOnly: !state.canEdit,
+                          onChanged: (name) => context
+                              .read<AddressFormCubit>()
+                              .onNameChanged(name),
+                          decoration: const InputDecoration(
+                            labelText: 'Label Alamat',
+                            hintText: 'Contoh: Rumah, Kantor, dll',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _AddressFormTextField(
+                        selector: (state) => state.province,
+                        builder: (controller) => TextField(
+                          controller: controller,
+                          readOnly: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Provinsi',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _AddressFormTextField(
+                        selector: (state) => state.regency,
+                        builder: (controller) => TextField(
+                          controller: controller,
+                          readOnly: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Kabupaten/Kota',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _AddressFormTextField(
+                        selector: (state) => state.district,
+                        builder: (controller) => TextField(
+                          controller: controller,
+                          readOnly: !state.canEdit,
+                          onChanged: (district) => context
+                              .read<AddressFormCubit>()
+                              .onDistrictChanged(district),
+                          decoration: const InputDecoration(
+                            labelText: 'Kecamatan',
+                            hintText: 'Contoh: Kec. Gambir',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _AddressFormTextField(
+                        selector: (state) => state.detail,
+                        builder: (controller) => TextField(
+                          controller: controller,
+                          readOnly: !state.canEdit,
+                          onChanged: (detail) => context
+                              .read<AddressFormCubit>()
+                              .onDetailChanged(detail),
+                          decoration: const InputDecoration(
+                            labelText: 'Detail Alamat',
+                            hintText: 'Contoh: Jl. Merdeka No. 123',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              LoadingButton(
+                isLoading: state.submissionStatus == .loading,
+                onPressed: state.canSubmit
+                    ? () {
+                        context.read<AddressFormCubit>().onSubmit();
                       }
-                    },
-              child: Text("Change Point"),
-            ),
-            _AddressFormTextField(
-              selector: (state) => state.name,
-              builder: (controller) => TextField(
-                controller: controller,
-                readOnly: !state.canEdit,
-                onChanged: (name) =>
-                    context.read<AddressFormCubit>().onNameChanged(name),
-                decoration: InputDecoration(label: Text("Name")),
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Text(
+                    state.id == null ? 'Tambah Alamat' : 'Simpan Perubahan',
+                  ),
+                ),
               ),
-            ),
-            _AddressFormTextField(
-              selector: (state) => state.province,
-              builder: (controller) => TextField(
-                controller: controller,
-                readOnly: !state.canEdit,
-                onChanged: (province) => context
-                    .read<AddressFormCubit>()
-                    .onProvinceChanged(province),
-                decoration: InputDecoration(label: Text("Province")),
-              ),
-            ),
-            _AddressFormTextField(
-              selector: (state) => state.regency,
-              builder: (controller) => TextField(
-                controller: controller,
-                readOnly: !state.canEdit,
-                onChanged: (regency) =>
-                    context.read<AddressFormCubit>().onRegencyChanged(regency),
-                decoration: InputDecoration(label: Text("Regency")),
-              ),
-            ),
-            _AddressFormTextField(
-              selector: (state) => state.district,
-              builder: (controller) => TextField(
-                controller: controller,
-                readOnly: !state.canEdit,
-                onChanged: (district) => context
-                    .read<AddressFormCubit>()
-                    .onDistrictChanged(district),
-                decoration: InputDecoration(label: Text("District")),
-              ),
-            ),
-            _AddressFormTextField(
-              selector: (state) => state.detail,
-              builder: (controller) => TextField(
-                controller: controller,
-                readOnly: !state.canEdit,
-                onChanged: (detail) =>
-                    context.read<AddressFormCubit>().onDetailChanged(detail),
-                decoration: InputDecoration(label: Text("Detail")),
-              ),
-            ),
-            OutlinedButton(
-              onPressed: !state.canSubmit
-                  ? null
-                  : () {
-                      context.read<AddressFormCubit>().onSubmit();
-                    },
-              child: Text(state.id == null ? "Add" : "Edit"),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

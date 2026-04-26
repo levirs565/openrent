@@ -8,7 +8,7 @@ class LoadingButton extends StatelessWidget {
     this.isLoading = false,
     this.style,
     this.loadingIndicator,
-    this.height = 56,
+    this.height = 46,
   });
 
   final VoidCallback? onPressed;
