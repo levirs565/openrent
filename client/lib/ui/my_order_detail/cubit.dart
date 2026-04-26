@@ -73,4 +73,28 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
         );
     }
   }
+
+  void onRequestReturn() async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(isActionLoading: true));
+
+    final result = await _orderRepository.requestReturn(state.id);
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(isActionLoading: false));
+        onRefresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            error: MyOrderDetailError(
+              source: .actionReturn,
+              message: result.message,
+            ),
+          ),
+        );
+    }
+  }
 }

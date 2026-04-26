@@ -7,6 +7,7 @@ abstract interface class OrderRepository {
   Future<Result<List<OrderResponseItem>>> getAll();
   Future<Result<OrderResponseItemDetails>> getById(int id);
   Future<Result<void>> receive(int id);
+  Future<Result<void>> requestReturn(int id);
 }
 
 class OrderDataSource implements OrderRepository {
@@ -38,6 +39,16 @@ class OrderDataSource implements OrderRepository {
   Future<Result<void>> receive(int id) async {
     try {
       await _service.receive(id);
+      return ResultSuccess(null);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> requestReturn(int id) async {
+    try {
+      await _service.requestReturn(id);
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);

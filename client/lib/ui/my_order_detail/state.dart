@@ -6,7 +6,7 @@ import '../core/enum.dart';
 
 part 'state.freezed.dart';
 
-enum MyOrderDetailErrorSource { data, actionReceive }
+enum MyOrderDetailErrorSource { data, actionReceive, actionReturn }
 
 typedef MyOrderDetailError = ErrorData<MyOrderDetailErrorSource>;
 

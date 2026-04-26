@@ -78,6 +78,11 @@ class _Content extends StatelessWidget {
               onPressed: () => context.read<MyOrderDetailCubit>().onReceive(),
               child: Text("Receive"),
             ),
+          if (state.data?.state == .onRent)
+            OutlinedButton(
+              onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+              child: Text("Return"),
+            ),
         ],
       ),
     );

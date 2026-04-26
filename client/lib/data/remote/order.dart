@@ -22,6 +22,9 @@ abstract class OrderService {
 
   @POST("/rents/{id}/receive")
   Future<ActionResponse> receive(@Path() int id);
+
+  @POST("/rents/{id}/return")
+  Future<ActionResponse> requestReturn(@Path() int id);
 }
 
 @freezed
