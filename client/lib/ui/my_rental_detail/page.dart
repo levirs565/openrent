@@ -40,11 +40,11 @@ class _Content extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: SnackBarAction(
+              action: state.error!.source == .data ? SnackBarAction(
                 label: "Refresh",
                 onPressed: () =>
                     context.read<MyRentalDetailCubit>().onRefresh(),
-              ),
+              ) : null,
             ),
           );
           context.read<MyRentalDetailCubit>().onErrorHandled(state.error!);

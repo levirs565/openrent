@@ -72,28 +72,4 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
         );
     }
   }
-
-  void onReject(String note) async {
-    if (state.isLoading) return;
-
-    emit(state.copyWith(isActionLoading: true));
-
-    final result = await _rentalRepository.reject(id: state.id, note: note);
-
-    switch (result) {
-      case ResultSuccess<void>():
-        emit(state.copyWith(isActionLoading: false));
-        onRefresh();
-      case ResultError<void>():
-        emit(
-          state.copyWith(
-            isActionLoading: false,
-            error: MyRentalDetailError(
-              source: .actionReject,
-              message: result.message,
-            ),
-          ),
-        );
-    }
-  }
 }
