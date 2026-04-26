@@ -40,11 +40,13 @@ class _Content extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: SnackBarAction(
-                label: "Refresh",
-                onPressed: () =>
-                    context.read<MyRentalDetailCubit>().onRefresh(),
-              ),
+              action: state.error!.source == .data
+                  ? SnackBarAction(
+                      label: "Refresh",
+                      onPressed: () =>
+                          context.read<MyRentalDetailCubit>().onRefresh(),
+                    )
+                  : null,
             ),
           );
           context.read<MyRentalDetailCubit>().onErrorHandled(state.error!);
@@ -91,6 +93,16 @@ class _Content extends StatelessWidget {
                   child: Text("Reject"),
                 ),
               ],
+            ),
+          if (state.data?.state == .awaitingHandover)
+            OutlinedButton(
+              onPressed: () => context.read<MyRentalDetailCubit>().onHandover(),
+              child: Text("Handover"),
+            ),
+          if (state.data?.state == .awaitingReturnConfirmation)
+            OutlinedButton(
+              onPressed: () => context.read<MyRentalDetailCubit>().onConfirmReturn(),
+              child: Text("Confirm Return"),
             ),
         ],
       ),

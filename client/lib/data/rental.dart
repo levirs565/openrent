@@ -9,6 +9,10 @@ abstract interface class RentalRepository {
   Future<Result<void>> approve(int id);
 
   Future<Result<void>> reject({required int id, required String note});
+
+  Future<Result<void>> handover(int id);
+
+  Future<Result<void>> confirmReturn(int id);
 }
 
 class RentalDataSource implements RentalRepository {
@@ -51,6 +55,26 @@ class RentalDataSource implements RentalRepository {
   Future<Result<void>> reject({required int id, required String note}) async {
     try {
       await _rentalService.reject(id, RentalRejectRequest(note: note));
+      return ResultSuccess(null);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> handover(int id) async {
+    try {
+      await _rentalService.handover(id);
+      return ResultSuccess(null);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> confirmReturn(int id) async {
+    try {
+      await _rentalService.confirmReturn(id);
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);

@@ -73,12 +73,12 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
     }
   }
 
-  void onReject(String note) async {
+  void onHandover() async {
     if (state.isLoading) return;
 
     emit(state.copyWith(isActionLoading: true));
 
-    final result = await _rentalRepository.reject(id: state.id, note: note);
+    final result = await _rentalRepository.handover(state.id);
 
     switch (result) {
       case ResultSuccess<void>():
@@ -89,7 +89,31 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
           state.copyWith(
             isActionLoading: false,
             error: MyRentalDetailError(
-              source: .actionReject,
+              source: .actionHandover,
+              message: result.message,
+            ),
+          ),
+        );
+    }
+  }
+
+  void onConfirmReturn() async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(isActionLoading: true));
+
+    final result = await _rentalRepository.confirmReturn(state.id);
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(isActionLoading: false));
+        onRefresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            error: MyRentalDetailError(
+              source: .actionConfirmReturn,
               message: result.message,
             ),
           ),
