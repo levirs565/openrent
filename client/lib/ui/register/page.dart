@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/ui/components/loading_button.dart';
+import 'package:openrent_client/ui/components/password_text_field.dart';
 import 'package:openrent_client/ui/register/cubit.dart';
 import 'package:openrent_client/ui/register/state.dart';
 
@@ -69,12 +70,6 @@ class _RegisterForm extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      'Daftar sekarang untuk mulai menyewa atau mempromosikan properti Anda.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 28),
                     Card(
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -85,11 +80,6 @@ class _RegisterForm extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              'Register',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 20),
                             TextFormField(
                               onChanged: (email) => context
                                   .read<RegisterCubit>()
@@ -113,28 +103,22 @@ class _RegisterForm extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            TextFormField(
+                            PasswordTextField(
                               onChanged: (password) => context
                                   .read<RegisterCubit>()
                                   .onPasswordChanged(password),
-                              obscureText: true,
+                              labelText: 'Password',
+                              hintText: 'Minimal 8 karakter',
                               textInputAction: TextInputAction.next,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                hintText: 'Minimal 8 karakter',
-                              ),
                             ),
                             const SizedBox(height: 16),
-                            TextFormField(
+                            PasswordTextField(
                               onChanged: (repeatPassword) => context
                                   .read<RegisterCubit>()
                                   .onRepeatPasswordChanged(repeatPassword),
-                              obscureText: true,
+                              labelText: 'Ulangi Password',
+                              hintText: 'Ketik ulang password Anda',
                               textInputAction: TextInputAction.done,
-                              decoration: const InputDecoration(
-                                labelText: 'Ulangi Password',
-                                hintText: 'Ketik ulang password Anda',
-                              ),
                             ),
                             if (state.error != null) ...[
                               const SizedBox(height: 16),
@@ -151,7 +135,8 @@ class _RegisterForm extends StatelessWidget {
                             const SizedBox(height: 24),
                             LoadingButton(
                               isLoading: state.submissionStatus == .loading,
-                              onPressed: (!state.isValid ||
+                              onPressed:
+                                  (!state.isValid ||
                                       state.submissionStatus != .idle)
                                   ? null
                                   : () => context
@@ -159,7 +144,7 @@ class _RegisterForm extends StatelessWidget {
                                         .onSubmit(),
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 14),
-                                child: Text('Register'),
+                                child: Text('Daftar'),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -170,7 +155,7 @@ class _RegisterForm extends StatelessWidget {
                                       LoginPage.route(),
                                       (_) => false,
                                     ),
-                                child: const Text('Sudah punya akun? Login'),
+                                child: const Text('Sudah punya akun? Masuk'),
                               ),
                             ),
                           ],

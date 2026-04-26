@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/ui/components/loading_button.dart';
+import 'package:openrent_client/ui/components/password_text_field.dart';
 import 'package:openrent_client/ui/login/cubit.dart';
 import 'package:openrent_client/ui/login/state.dart';
 import 'package:openrent_client/ui/register/page.dart';
@@ -62,12 +63,6 @@ class _LoginForm extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        'Masuk untuk melanjutkan, temukan properti terbaik dengan mudah.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 28),
                       Card(
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -78,11 +73,6 @@ class _LoginForm extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
-                                'Login',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 20),
                               TextFormField(
                                 onChanged: (email) => context
                                     .read<LoginCubit>()
@@ -95,16 +85,13 @@ class _LoginForm extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              TextFormField(
+                              PasswordTextField(
                                 onChanged: (password) => context
                                     .read<LoginCubit>()
                                     .onPasswordChanged(password),
-                                obscureText: true,
+                                labelText: 'Password',
+                                hintText: 'Minimal 8 karakter',
                                 textInputAction: TextInputAction.done,
-                                decoration: const InputDecoration(
-                                  labelText: 'Password',
-                                  hintText: 'Minimal 8 karakter',
-                                ),
                               ),
                               if (state.error != null) ...[
                                 const SizedBox(height: 16),
