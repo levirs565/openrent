@@ -22,6 +22,9 @@ abstract class ReviewService {
     @Path("id") int rentId,
     @Body() ReviewAddRequest body,
   );
+
+  @DELETE("/reviews/{id}")
+  Future<ActionResponse> remove(@Path("id") int id);
 }
 
 @freezed

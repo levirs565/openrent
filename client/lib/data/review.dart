@@ -10,6 +10,8 @@ abstract interface class ReviewRepository {
     required int rating,
     required String content,
   });
+
+  Future<Result<void>> remove(int id);
 }
 
 class ReviewDataSource implements ReviewRepository {
@@ -39,6 +41,16 @@ class ReviewDataSource implements ReviewRepository {
         rentId,
         ReviewAddRequest(rating: rating, content: content),
       );
+      return ResultSuccess(null);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> remove(int id) async {
+    try {
+      final result = await _reviewService.remove(id);
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
