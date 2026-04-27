@@ -75,7 +75,7 @@ abstract class OrderResponseItem with _$OrderResponseItem {
 @freezed
 abstract class OrderUserDetails with _$OrderUserDetails {
   factory OrderUserDetails({required int id, required String name}) =
-  _OrderUserDetails;
+      _OrderUserDetails;
 
   factory OrderUserDetails.fromJson(Map<String, Object?> json) =>
       _$OrderUserDetailsFromJson(json);
@@ -83,7 +83,11 @@ abstract class OrderUserDetails with _$OrderUserDetails {
 
 @freezed
 abstract class OrderReviewDetails with _$OrderReviewDetails {
-  factory OrderReviewDetails({required int id}) = _OrderReviewDetails;
+  factory OrderReviewDetails({
+    required int id,
+    required int rating,
+    required String content,
+  }) = _OrderReviewDetails;
 
   factory OrderReviewDetails.fromJson(Map<String, Object?> json) =>
       _$OrderReviewDetailsFromJson(json);

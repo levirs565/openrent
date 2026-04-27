@@ -79,10 +79,18 @@ Map<String, dynamic> _$OrderUserDetailsToJson(_OrderUserDetails instance) =>
     <String, dynamic>{'id': instance.id, 'name': instance.name};
 
 _OrderReviewDetails _$OrderReviewDetailsFromJson(Map<String, dynamic> json) =>
-    _OrderReviewDetails(id: (json['id'] as num).toInt());
+    _OrderReviewDetails(
+      id: (json['id'] as num).toInt(),
+      rating: (json['rating'] as num).toInt(),
+      content: json['content'] as String,
+    );
 
 Map<String, dynamic> _$OrderReviewDetailsToJson(_OrderReviewDetails instance) =>
-    <String, dynamic>{'id': instance.id};
+    <String, dynamic>{
+      'id': instance.id,
+      'rating': instance.rating,
+      'content': instance.content,
+    };
 
 _OrderResponseItemDetails _$OrderResponseItemDetailsFromJson(
   Map<String, dynamic> json,

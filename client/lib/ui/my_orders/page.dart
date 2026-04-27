@@ -68,10 +68,8 @@ class _Item extends StatelessWidget {
           Text("${item.user.name} - ${item.product.name}"),
           Text("${item.startDate} - ${item.endDate}"),
           Text("${item.quantity} - ${item.state}"),
-          if (item.review == null)
+          if (item.review == null && item.state == .completed)
             OutlinedButton(onPressed: () {}, child: Text("Add Review")),
-          if (item.review != null)
-            OutlinedButton(onPressed: () {}, child: Text("Remove Review"))
         ],),
       ),
     );

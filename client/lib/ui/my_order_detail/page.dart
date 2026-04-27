@@ -83,6 +83,29 @@ class _Content extends StatelessWidget {
               onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
               child: Text("Return"),
             ),
+          if (state.data?.state == .completed)
+            OutlinedButton(
+              onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+              child: Text("Add Review"),
+            ),
+          if (state.data?.review != null)
+            ...[
+              Text("Review"),
+              Text("${state.data!.review!.rating} stars"),
+              Text(state.data!.review!.content),
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+                    child: Text("Edit Review"),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+                    child: Text("Delete Review"),
+                  ),
+                ],
+              )
+            ]
         ],
       ),
     );
