@@ -5,10 +5,11 @@ import 'package:openrent_client/ui/core/error_data.dart';
 part 'state.freezed.dart';
 
 @freezed
-class SearchState with _$SearchState{
-  final List<ProductResponseItemShort> result;
-  final bool isLoading;
-  final GeneralErrorData? error;
-
-  SearchState({required this.result, required this.isLoading, this.error});
+abstract class SearchState with _$SearchState {
+  factory SearchState({
+    required List<ProductResponseItemShort> result,
+    required bool isLoading,
+    required GeneralErrorData? error,
+    required bool isMapView,
+  }) = _SearchState;
 }

@@ -20,6 +20,8 @@ class SearchCubit extends Cubit<SearchState> {
         SearchState(
           result: List.empty(),
           isLoading: false,
+          error: null,
+          isMapView: false
         ),
       ) {
     _searchSubscription = _searchController.stream
@@ -70,5 +72,11 @@ class SearchCubit extends Cubit<SearchState> {
     if (state.error == error) {
       emit(state.copyWith(error: null));
     }
+  }
+
+  void onToggleView() {
+    emit(state.copyWith(
+      isMapView: !state.isMapView
+    ));
   }
 }
