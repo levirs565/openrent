@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/ui/my_product_detail/page.dart';
+import 'package:openrent_client/ui/review_form/page.dart';
 
 import 'cubit.dart';
 import 'state.dart';
@@ -83,9 +84,11 @@ class _Content extends StatelessWidget {
               onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
               child: Text("Return"),
             ),
-          if (state.data?.state == .completed)
+          if (state.data?.state == .completed && state.data?.review == null)
             OutlinedButton(
-              onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+              onPressed: () => Navigator.of(
+                context,
+              ).push(ReviewFormPage.routeAdd(rentId: state.id)),
               child: Text("Add Review"),
             ),
           if (state.data?.review != null)
@@ -96,11 +99,11 @@ class _Content extends StatelessWidget {
               Row(
                 children: [
                   OutlinedButton(
-                    onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+                    onPressed: () => {},
                     child: Text("Edit Review"),
                   ),
                   OutlinedButton(
-                    onPressed: () => context.read<MyOrderDetailCubit>().onRequestReturn(),
+                    onPressed: () => {},
                     child: Text("Delete Review"),
                   ),
                 ],

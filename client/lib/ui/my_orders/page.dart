@@ -4,6 +4,7 @@ import 'package:openrent_client/data/remote/order.dart';
 import 'package:openrent_client/ui/my_order_detail/page.dart';
 import 'package:openrent_client/ui/my_orders/cubit.dart';
 import 'package:openrent_client/ui/my_orders/state.dart';
+import 'package:openrent_client/ui/review_form/page.dart';
 
 class MyOrdersPage extends StatelessWidget {
   const MyOrdersPage({super.key});
@@ -12,8 +13,12 @@ class MyOrdersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MyOrdersCubit(orderRepository: context.read()),
-      child: ScaffoldMessenger(child: Scaffold(
-        body: _Content(), appBar: AppBar(title: Text("My Orders"),),)),
+      child: ScaffoldMessenger(
+        child: Scaffold(
+          body: _Content(),
+          appBar: AppBar(title: Text("My Orders")),
+        ),
+      ),
     );
   }
 }
@@ -63,14 +68,22 @@ class _Item extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card.filled(
       child: InkWell(
-        onTap: () => Navigator.of(context).push(MyOrderDetailPage.route(item.id)),
-        child: Column(children: [
-          Text("${item.user.name} - ${item.product.name}"),
-          Text("${item.startDate} - ${item.endDate}"),
-          Text("${item.quantity} - ${item.state}"),
-          if (item.review == null && item.state == .completed)
-            OutlinedButton(onPressed: () {}, child: Text("Add Review")),
-        ],),
+        onTap: () =>
+            Navigator.of(context).push(MyOrderDetailPage.route(item.id)),
+        child: Column(
+          children: [
+            Text("${item.user.name} - ${item.product.name}"),
+            Text("${item.startDate} - ${item.endDate}"),
+            Text("${item.quantity} - ${item.state}"),
+            if (item.review == null && item.state == .completed)
+              OutlinedButton(
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(ReviewFormPage.routeAdd(rentId: item.id)),
+                child: Text("Add Review"),
+              ),
+          ],
+        ),
       ),
     );
   }
