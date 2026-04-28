@@ -66,6 +66,7 @@ class ActionResponse {
 
 @JsonSerializable()
 class UserStateResponse {
+  final int id;
   final String email;
   final String name;
   final String role;
@@ -74,6 +75,7 @@ class UserStateResponse {
     required this.email,
     required this.name,
     required this.role,
+    required this.id,
   });
 
   factory UserStateResponse.fromJson(Map<String, dynamic> json) =>

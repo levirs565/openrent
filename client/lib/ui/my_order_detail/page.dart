@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/ui/messages/page.dart';
 import 'package:openrent_client/ui/my_order_detail/remove_review/dialog.dart';
 import 'package:openrent_client/ui/my_product_detail/page.dart';
 import 'package:openrent_client/ui/review_form/page.dart';
@@ -69,6 +70,14 @@ class _Content extends StatelessWidget {
           ),
           Text("User"),
           Text(state.data?.user.name ?? "-"),
+          OutlinedButton(
+            onPressed: state.data?.user == null
+                ? null
+                : () => Navigator.of(
+                    context,
+                  ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
+            child: Text("Chat"),
+          ),
           // TODO: User Detail Page, Cancel note, Cancel reason
           Text("State"),
           Text(state.data?.state.toString() ?? "-"),
