@@ -45,7 +45,7 @@ func modelToResponseItem(model models.Rent) ResponseItem {
 			Name: model.ProductSnapshot.Name,
 		},
 		User: UserShort{
-			ID:   model.UserAccountID,
+			ID:   model.Product.UserAccountID,
 			Name: model.OwnerSnapshotName,
 		},
 		Review:    review,
@@ -99,7 +99,7 @@ func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
 			Name: model.ProductSnapshot.Name,
 		},
 		User: UserDetails{
-			ID:   model.UserAccountID,
+			ID:   model.Product.UserAccountID,
 			Name: model.OwnerSnapshotName,
 		},
 		Review:    review,
