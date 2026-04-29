@@ -19,9 +19,13 @@ import (
 var error_codes map[error]int = map[error]int{
 	address.ErrNotFound: http.StatusNotFound,
 
-	auth.ErrEmailDuplicated:  http.StatusConflict,
-	auth.ErrEmailNotFound:    http.StatusNotFound,
-	auth.ErrPasswordNotMatch: http.StatusUnauthorized,
+	auth.ErrEmailDuplicated:       http.StatusConflict,
+	auth.ErrEmailNotFound:         http.StatusNotFound,
+	auth.ErrPasswordNotMatch:      http.StatusUnauthorized,
+	auth.ErrUserNotFound:          http.StatusBadRequest,
+	auth.ErrInvalidContentType:    http.StatusBadRequest,
+	auth.ErrAvatarSizeExceedLimit: http.StatusBadRequest,
+	auth.ErrAvatarNotFound:        http.StatusBadRequest,
 
 	chat.ErrCannotSendToSelf: http.StatusConflict,
 

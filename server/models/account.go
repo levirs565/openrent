@@ -25,6 +25,8 @@ type UserAccount struct {
 	AccountID uint `gorm:"primaryKey"`
 	Account   *Account
 
+	AvatarName string
+
 	BirthDate  datatypes.Date `gorm:"not null"`
 	BirthPlace string         `gorm:"not null"`
 	NIK        string         `gorm:"not null"`

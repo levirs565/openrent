@@ -17,6 +17,15 @@ type loginUserRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type avatarPresignedRequest struct {
+	Size        int64  `json:"size" validate:"required,min=1"`
+	ContentType string `json:"contentType" validate:"required"`
+}
+
+type avatarConfirmRequest struct {
+	Name string `json:"name" validate:"required"`
+}
+
 type Controller struct {
 	service *Service
 }
@@ -94,6 +103,39 @@ func (ct *Controller) logout(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
+func (ct *Controller) avatarPresignedURL(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := avatarPresignedRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	response, err := ct.service.GetUserAvatarPresignedURL(
+		c.Request().Context(), user.ID, payload.Size, payload.ContentType,
+	)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, response)
+}
+
+func (ct *Controller) avatarConfirm(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := avatarConfirmRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	if err := ct.service.ConfirmUserAvatar(c.Request().Context(), user.ID, payload.Name); err != nil {
+		return err
+	}
+
+	return c.JSON(200, core.CreateActionResponse(true))
+}
+
 func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g := e.Group("/auth")
 
@@ -101,4 +143,6 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g.POST("/login", ct.login, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
 	g.GET("/state", ct.getState)
 	g.POST("/logout", ct.logout, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.POST("/avatar/presigned-url", ct.avatarPresignedURL, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.POST("/avatar/confirm", ct.avatarConfirm, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 }

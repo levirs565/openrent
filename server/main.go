@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -40,6 +45,48 @@ func main() {
 		panic("cannot connect to database")
 	}
 
+	s3Region := os.Getenv("S3_REGION")
+	s3AccessKeyId := os.Getenv("S3_ACCESS_KEY_ID")
+	s3SecretAccessKey := os.Getenv("S3_SECRET_ACCESS_KEY")
+	s3Endpoint := os.Getenv("S3_ENDPOINT_URL")
+	s3Bucket := os.Getenv("S3_BUCKET")
+
+	if s3AccessKeyId == "" || s3SecretAccessKey == "" || s3Region == "" || s3Endpoint == "" || s3Bucket == "" {
+		log.Fatal("missing the env: S3_REGION / S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY / S3_ENDPOINT_URL / S3_BUCKET")
+	}
+
+	s3AwsConfig := aws.Config{
+		Region:      s3Region,
+		Credentials: aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(s3AccessKeyId, s3SecretAccessKey, "")),
+	}
+
+	s3Client := s3.NewFromConfig(s3AwsConfig, func(o *s3.Options) {
+		o.BaseEndpoint = &s3Endpoint
+		o.UsePathStyle = true
+	})
+
+	_, err = s3Client.PutBucketLifecycleConfiguration(context.Background(), &s3.PutBucketLifecycleConfigurationInput{
+		Bucket: &s3Bucket,
+		LifecycleConfiguration: &types.BucketLifecycleConfiguration{
+			Rules: []types.LifecycleRule{
+				{
+					ID:     aws.String("cleanup-temp"),
+					Status: types.ExpirationStatusEnabled,
+					Filter: &types.LifecycleRuleFilter{
+						Prefix: aws.String("temp/"),
+					},
+					Expiration: &types.LifecycleExpiration{
+						Days: aws.Int32(1),
+					},
+				},
+			},
+		},
+	})
+
+	if err != nil {
+		log.Panic("Cannot put bucket lifecycle configuration", err)
+	}
+
 	err = db.AutoMigrate(
 		&models.AdminAccount{}, &models.UserAccount{}, &models.Account{},
 		&models.UserAddress{},
@@ -73,7 +120,7 @@ func main() {
 	e.HTTPErrorHandler = NewErrorHandler()
 	e.Validator = core.NewValidator()
 
-	authService := auth.NewService(db)
+	authService := auth.NewService(db, s3Client, s3Bucket)
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder)
 	ownerRentsService := owner_rent.NewService(db)
