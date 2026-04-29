@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -85,6 +87,35 @@ func main() {
 
 	if err != nil {
 		log.Panic("Cannot put bucket lifecycle configuration", err)
+	}
+
+	policy := map[string]any{
+		"Version": "2012-10-17",
+		"Statement": []map[string]any{
+			{
+				"Sid":    "PublicReadPrefix",
+				"Effect": "Allow",
+				"Principal": map[string]any{
+					"AWS": []string{"*"},
+				},
+				"Action":   []string{"s3:GetObject"},
+				"Resource": []string{fmt.Sprintf("arn:aws:s3:::%s/public/*", s3Bucket)},
+			},
+		},
+	}
+
+	policyJSON, err := json.Marshal(policy)
+	if err != nil {
+		log.Panic("Cannot marshal bucket policy", err)
+	}
+
+	_, err = s3Client.PutBucketPolicy(context.Background(), &s3.PutBucketPolicyInput{
+		Bucket: aws.String(s3Bucket),
+		Policy: aws.String(string(policyJSON)),
+	})
+
+	if err != nil {
+		log.Panic("Cannot put bucket policy", err)
 	}
 
 	err = db.AutoMigrate(

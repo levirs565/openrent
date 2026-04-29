@@ -19,7 +19,7 @@ type loginUserRequest struct {
 
 type avatarPresignedRequest struct {
 	Size        int64  `json:"size" validate:"required,min=1"`
-	ContentType string `json:"contentType" validate:"required"`
+	ContentType string `json:"content_type" validate:"required"`
 }
 
 type avatarConfirmRequest struct {

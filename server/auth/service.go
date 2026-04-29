@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var ErrEmailDuplicated = errors.New("email already exists")
@@ -108,24 +109,44 @@ func (s *Service) Login(ctx context.Context, email string, password string) (Log
 
 // TODO: Is it bettet to expose ID?
 type UserStateReponse struct {
-	ID    uint   `json:"id"`
-	Email string `json:"email"`
-	Name  string `json:"name"`
-	Role  string `json:"role"`
+	ID        uint    `json:"id"`
+	Email     string  `json:"email"`
+	Name      string  `json:"name"`
+	Role      string  `json:"role"`
+	AvatarURL *string `json:"avatar_url"`
 }
 
 func (s *Service) GetUserState(ctx context.Context, id uint) (UserStateReponse, error) {
 	account, err := gorm.G[models.Account](s.db).Select(
-		"ID", "Email", "Role", "Name").Where(&models.Account{ID: id}, "ID").First(ctx)
+		"accounts.id", "accounts.email", "accounts.role", "accounts.name",
+	).Joins(
+		clause.JoinTarget{Association: "User", Type: clause.LeftJoin},
+		func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+			db.Select("AvatarName")
+			return nil
+		},
+	).Where(&models.Account{ID: id}, "ID").First(ctx)
 	if err != nil {
 		return UserStateReponse{}, err
 	}
 
+	var avatarURL *string
+	if account.User.AvatarName != "" {
+		url := fmt.Sprintf(
+			"%s/%s/%s",
+			*s.s3.Options().BaseEndpoint,
+			s.s3Bucket,
+			formatAvatarKey(id, account.User.AvatarName, false),
+		)
+		avatarURL = &url
+	}
+
 	return UserStateReponse{
-		ID:    account.ID,
-		Email: account.Email,
-		Name:  account.Name,
-		Role:  account.Role,
+		ID:        account.ID,
+		Email:     account.Email,
+		Name:      account.Name,
+		Role:      account.Role,
+		AvatarURL: avatarURL,
 	}, nil
 }
 
@@ -140,7 +161,7 @@ func formatAvatarKey(userId uint, name string, temp bool) string {
 	if temp {
 		return fmt.Sprintf("temp/%d/avatar/%s", userId, name)
 	}
-	return fmt.Sprintf("%d/avatar/%s", userId, name)
+	return fmt.Sprintf("public/%d/avatar/%s", userId, name)
 }
 
 func (s *Service) GetUserAvatarPresignedURL(ctx context.Context, userId uint, fileSize int64, contentType string) (AvatarPresignResponse, error) {
