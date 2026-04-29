@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openrent_client/ui/chats/page.dart';
 import 'package:openrent_client/ui/my_orders/page.dart';
 import 'package:openrent_client/ui/my_products/page.dart';
 import 'package:openrent_client/ui/profile/page.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     SearchPage(),
+    ChatsPage(),
     MyOrdersPage(),
     MyProductsPage(),
     ProfilePage(),
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage> {
         // selectedItemColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chats'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'My Orders'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'My Products'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun'),

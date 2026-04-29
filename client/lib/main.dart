@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/auth.dart';
+import 'package:openrent_client/data/chat.dart';
 import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/order.dart';
@@ -55,6 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<MessageRepository>(
           create: (_) => MessageDataSource(service: messageService),
+        ),
+        RepositoryProvider<ChatRepository>(
+          create: (_) => ChatDataSource(chatService: chatService),
         ),
       ],
       child: BlocProvider(
