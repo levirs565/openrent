@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
@@ -29,7 +32,8 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (_) => AuthDataSource(service: authService),
+          create: (_) =>
+              AuthDataSource(service: authService, dioUploaded: Dio()),
           dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<AddressRepository>(
@@ -94,6 +98,12 @@ class _AppViewState extends State<AppView> {
       ),
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthBlocState>(
+          listenWhen: (prev, curr) =>
+              prev.state.runtimeType != curr.state.runtimeType ||
+              (prev.state is ResourceSuccess<AuthUserState?> &&
+                  curr.state is ResourceSuccess<AuthUserState?> &&
+                  (prev.state as ResourceSuccess<AuthUserState?>).data?.id !=
+                      (curr.state as ResourceSuccess<AuthUserState?>).data?.id),
           listener: (context, state) {
             if (state.state is ResourceSuccess) {
               final data =
