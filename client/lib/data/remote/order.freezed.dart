@@ -1420,7 +1420,7 @@ as String,
 /// @nodoc
 mixin _$OrderReviewDetails {
 
- int get id;
+ int get id; int get rating; String get content;
 /// Create a copy of OrderReviewDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1433,16 +1433,16 @@ $OrderReviewDetailsCopyWith<OrderReviewDetails> get copyWith => _$OrderReviewDet
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrderReviewDetails&&(identical(other.id, id) || other.id == id));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrderReviewDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.content, content) || other.content == content));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode => Object.hash(runtimeType,id,rating,content);
 
 @override
 String toString() {
-  return 'OrderReviewDetails(id: $id)';
+  return 'OrderReviewDetails(id: $id, rating: $rating, content: $content)';
 }
 
 
@@ -1453,7 +1453,7 @@ abstract mixin class $OrderReviewDetailsCopyWith<$Res>  {
   factory $OrderReviewDetailsCopyWith(OrderReviewDetails value, $Res Function(OrderReviewDetails) _then) = _$OrderReviewDetailsCopyWithImpl;
 @useResult
 $Res call({
- int id
+ int id, int rating, String content
 });
 
 
@@ -1470,10 +1470,12 @@ class _$OrderReviewDetailsCopyWithImpl<$Res>
 
 /// Create a copy of OrderReviewDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rating = null,Object? content = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,
+as int,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as int,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -1558,10 +1560,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int rating,  String content)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrderReviewDetails() when $default != null:
-return $default(_that.id);case _:
+return $default(_that.id,_that.rating,_that.content);case _:
   return orElse();
 
 }
@@ -1579,10 +1581,10 @@ return $default(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int rating,  String content)  $default,) {final _that = this;
 switch (_that) {
 case _OrderReviewDetails():
-return $default(_that.id);case _:
+return $default(_that.id,_that.rating,_that.content);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1599,10 +1601,10 @@ return $default(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int rating,  String content)?  $default,) {final _that = this;
 switch (_that) {
 case _OrderReviewDetails() when $default != null:
-return $default(_that.id);case _:
+return $default(_that.id,_that.rating,_that.content);case _:
   return null;
 
 }
@@ -1614,10 +1616,12 @@ return $default(_that.id);case _:
 @JsonSerializable()
 
 class _OrderReviewDetails implements OrderReviewDetails {
-   _OrderReviewDetails({required this.id});
+   _OrderReviewDetails({required this.id, required this.rating, required this.content});
   factory _OrderReviewDetails.fromJson(Map<String, dynamic> json) => _$OrderReviewDetailsFromJson(json);
 
 @override final  int id;
+@override final  int rating;
+@override final  String content;
 
 /// Create a copy of OrderReviewDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -1632,16 +1636,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderReviewDetails&&(identical(other.id, id) || other.id == id));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderReviewDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.content, content) || other.content == content));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode => Object.hash(runtimeType,id,rating,content);
 
 @override
 String toString() {
-  return 'OrderReviewDetails(id: $id)';
+  return 'OrderReviewDetails(id: $id, rating: $rating, content: $content)';
 }
 
 
@@ -1652,7 +1656,7 @@ abstract mixin class _$OrderReviewDetailsCopyWith<$Res> implements $OrderReviewD
   factory _$OrderReviewDetailsCopyWith(_OrderReviewDetails value, $Res Function(_OrderReviewDetails) _then) = __$OrderReviewDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- int id
+ int id, int rating, String content
 });
 
 
@@ -1669,10 +1673,12 @@ class __$OrderReviewDetailsCopyWithImpl<$Res>
 
 /// Create a copy of OrderReviewDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? rating = null,Object? content = null,}) {
   return _then(_OrderReviewDetails(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,
+as int,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as int,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

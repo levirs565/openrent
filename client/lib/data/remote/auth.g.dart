@@ -39,10 +39,12 @@ UserStateResponse _$UserStateResponseFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       name: json['name'] as String,
       role: json['role'] as String,
+      id: (json['id'] as num).toInt(),
     );
 
 Map<String, dynamic> _$UserStateResponseToJson(UserStateResponse instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'email': instance.email,
       'name': instance.name,
       'role': instance.role,

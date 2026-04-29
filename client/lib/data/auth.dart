@@ -7,11 +7,17 @@ import 'package:openrent_client/data/remote/error.dart';
 import 'package:openrent_client/data/resource.dart';
 
 class AuthUserState extends Equatable {
+  final int id;
   final String email;
   final String name;
   final String role;
 
-  AuthUserState({required this.email, required this.name, required this.role});
+  AuthUserState({
+    required this.email,
+    required this.name,
+    required this.role,
+    required this.id,
+  });
 
   @override
   List<Object?> get props => [email, name, role];
@@ -57,6 +63,7 @@ class AuthDataSource implements AuthRepository {
       if (result != null) {
         _lastState = ResourceSuccess(
           AuthUserState(
+            id: result.id,
             email: result.email,
             name: result.name,
             role: result.role,

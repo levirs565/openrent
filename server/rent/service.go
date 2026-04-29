@@ -40,7 +40,14 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 				return nil
 			},
 		).
-		Where(`user_account_id = ?`, userId).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
+		Where(`rents.user_account_id = ?`, userId).
 		Find(ctx)
 
 	if err != nil {
@@ -67,8 +74,15 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 				return nil
 			},
 		).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
 		Where("rents.id = ?", id).
-		Where(`user_account_id = ?`, userId).
+		Where(`rents.user_account_id = ?`, userId).
 		First(ctx)
 
 	if err != nil {

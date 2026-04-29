@@ -91,7 +91,9 @@ func (s *Service) Login(ctx context.Context, email string, password string) (Log
 	}, nil
 }
 
+// TODO: Is it bettet to expose ID?
 type UserStateReponse struct {
+	ID    uint   `json:"id"`
 	Email string `json:"email"`
 	Name  string `json:"name"`
 	Role  string `json:"role"`
@@ -99,12 +101,13 @@ type UserStateReponse struct {
 
 func (s *Service) GetUserState(ctx context.Context, id uint) (UserStateReponse, error) {
 	account, err := gorm.G[models.Account](s.db).Select(
-		"Email", "Role", "Name").Where(&models.Account{ID: id}, "ID").First(ctx)
+		"ID", "Email", "Role", "Name").Where(&models.Account{ID: id}, "ID").First(ctx)
 	if err != nil {
 		return UserStateReponse{}, err
 	}
 
 	return UserStateReponse{
+		ID:    account.ID,
 		Email: account.Email,
 		Name:  account.Name,
 		Role:  account.Role,
