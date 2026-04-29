@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/remote/auth.dart';
-import 'package:openrent_client/data/remote/error.dart';
 import 'package:openrent_client/data/resource.dart';
 
 class AuthUserState extends Equatable {
@@ -11,12 +13,14 @@ class AuthUserState extends Equatable {
   final String email;
   final String name;
   final String role;
+  final String? avatarUrl;
 
   AuthUserState({
     required this.email,
     required this.name,
     required this.role,
     required this.id,
+    required this.avatarUrl,
   });
 
   @override
@@ -36,15 +40,19 @@ abstract interface class AuthRepository {
 
   Future<Result<void>> logout();
 
+  Future<Result<void>> uploadAvatar(XFile file);
+
   void dispose();
 }
 
 class AuthDataSource implements AuthRepository {
+  final Dio _dioUploaded;
   final AuthService service;
   Resource<AuthUserState?> _lastState = ResourceLoading();
   final _stateController = StreamController<void>();
 
-  AuthDataSource({required this.service});
+  AuthDataSource({required this.service, required Dio dioUploaded})
+    : _dioUploaded = dioUploaded;
 
   @override
   Stream<Resource<AuthUserState?>> getState() async* {
@@ -67,6 +75,7 @@ class AuthDataSource implements AuthRepository {
             email: result.email,
             name: result.name,
             role: result.role,
+            avatarUrl: result.avatarUrl
           ),
         );
       } else {
@@ -116,6 +125,34 @@ class AuthDataSource implements AuthRepository {
     } catch (e) {
       return mapDioErrorToResult(e);
     }
+  }
+
+  @override
+  Future<Result<void>> uploadAvatar(XFile file) async {
+    log("${await file.length()}, ${await file.mimeType}");
+    final presigned = await service.createAvatarPresignedUrl(
+      UserAvatarPresignedRequest(
+        size: await file.length(),
+        contentType: file.mimeType ?? "image/jpeg",
+      ),
+    );
+    final headers = Map.fromEntries(
+      presigned.headers.entries.map((entry) {
+        if (entry.value.length == 1) {
+          return MapEntry(entry.key, entry.value.first);
+        }
+        return MapEntry(entry.key, entry.value);
+      }),
+    );
+    log(jsonEncode(presigned.toJson()));
+    await _dioUploaded.put(
+      presigned.url,
+      data: await file.readAsBytes(),
+      options: Options(headers: headers),
+    );
+    await service.confirmAvatar(UserAvatarConfirmRequest(name: presigned.name));
+    _stateController.add(null);
+    return ResultSuccess(null);
   }
 
   @override
