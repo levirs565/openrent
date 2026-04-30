@@ -164,7 +164,7 @@ func main() {
 	e.HTTPErrorHandler = NewErrorHandler()
 	e.Validator = core.NewValidator()
 
-	notificationService := notification.NewService(messaging, db)
+	notificationService := notification.NewFCMService(messaging, db)
 	authService := auth.NewService(db, s3Client, s3Bucket)
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder, notificationService)

@@ -23,10 +23,10 @@ var ErrReturnNotRequested = errors.New("return is not requested")
 
 type Service struct {
 	db           *gorm.DB
-	notification *notification.Service
+	notification notification.Service
 }
 
-func NewService(db *gorm.DB, notification *notification.Service) *Service {
+func NewService(db *gorm.DB, notification notification.Service) *Service {
 	return &Service{
 		db:           db,
 		notification: notification,

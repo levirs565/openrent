@@ -23,10 +23,10 @@ var ErrCannotSendToSelf = errors.New("cannot send to self")
 
 type Service struct {
 	db           *gorm.DB
-	notification *notification.Service
+	notification notification.Service
 }
 
-func NewService(db *gorm.DB, notification *notification.Service) *Service {
+func NewService(db *gorm.DB, notification notification.Service) *Service {
 	return &Service{
 		db:           db,
 		notification: notification,

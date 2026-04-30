@@ -24,10 +24,10 @@ var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 type Service struct {
 	db           *gorm.DB
 	embedder     embedding.AIEmbedder
-	notification *notification.Service
+	notification notification.Service
 }
 
-func NewService(db *gorm.DB, embedder embedding.AIEmbedder, notification *notification.Service) *Service {
+func NewService(db *gorm.DB, embedder embedding.AIEmbedder, notification notification.Service) *Service {
 	return &Service{
 		db:           db,
 		embedder:     embedder,
