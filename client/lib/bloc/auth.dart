@@ -88,5 +88,8 @@ class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
   ) async {
     await _authRepository.logout();
     await _settingsRepository.setNeedBiometric(false);
+    if (state.state is AuthStateBiometricFailed) {
+      add(AuthBlocEventStart());
+    }
   }
 }
