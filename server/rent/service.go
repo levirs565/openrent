@@ -3,8 +3,12 @@ package rent
 import (
 	"context"
 	"errors"
+	"fmt"
 	"openrent-server/models"
+	"openrent-server/notification"
+	"strconv"
 
+	"firebase.google.com/go/v4/messaging"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -17,12 +21,14 @@ var ErrNotCompleted = errors.New("rent is not completed")
 var ErrReviewDuplicated = errors.New("review is duplicated")
 
 type Service struct {
-	db *gorm.DB
+	db           *gorm.DB
+	notification notification.Service
 }
 
-func NewService(db *gorm.DB) *Service {
+func NewService(db *gorm.DB, notification notification.Service) *Service {
 	return &Service{
-		db: db,
+		db:           db,
+		notification: notification,
 	}
 }
 
@@ -40,7 +46,14 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 				return nil
 			},
 		).
-		Where(`user_account_id = ?`, userId).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
+		Where(`rents.user_account_id = ?`, userId).
 		Find(ctx)
 
 	if err != nil {
@@ -67,8 +80,15 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 				return nil
 			},
 		).
+		Joins(
+			clause.JoinTarget{Type: clause.LeftJoin, Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
 		Where("rents.id = ?", id).
-		Where(`user_account_id = ?`, userId).
+		Where(`rents.user_account_id = ?`, userId).
 		First(ctx)
 
 	if err != nil {
@@ -83,9 +103,16 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 
 func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.product_snapshot_name").
+		Joins(
+			clause.JoinTarget{Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
 		Where("rents.id = ?", id).
-		Where(`user_account_id = ?`, userId).
+		Where(`rents.user_account_id = ?`, userId).
 		First(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -112,15 +139,35 @@ func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.Product.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_receive",
+			"rent_id": strconv.FormatUint(uint64(id), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Rent need handover",
+			Body:  fmt.Sprintf("Rent for %s is ready for handover", data.ProductSnapshot.Name),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.product_snapshot_name").
+		Joins(
+			clause.JoinTarget{Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("user_account_id")
+				return nil
+			},
+		).
 		Where("rents.id = ?", id).
-		Where(`user_account_id = ?`, userId).
+		Where(`rents.user_account_id = ?`, userId).
 		First(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -147,7 +194,20 @@ func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.Product.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_return",
+			"rent_id": strconv.FormatUint(uint64(id), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Rent need return confirmation",
+			Body:  fmt.Sprintf("Rent for %s is ready for return", data.ProductSnapshot.Name),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -194,6 +254,6 @@ func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRe
 			return err
 		}
 	}
-	// Notification, cancelled need review?, AI sort
+	// cancelled need review?, AI sort
 	return nil
 }

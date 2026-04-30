@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/rental.dart';
@@ -6,6 +9,7 @@ import 'package:openrent_client/ui/my_rental_detail/state.dart';
 
 class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
   final RentalRepository _rentalRepository;
+  StreamSubscription? _fcmSubscription;
 
   MyRentalDetailCubit({
     required int id,
@@ -21,6 +25,18 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
          ),
        ) {
     onRefresh();
+    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
+      if (event.data["type"].toString().startsWith("rent_") &&
+          int.tryParse(event.data["rent_id"]) == id) {
+        onRefresh();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _fcmSubscription?.cancel();
+    return super.close();
   }
 
   void onRefresh() async {
@@ -73,12 +89,12 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
     }
   }
 
-  void onReject(String note) async {
+  void onHandover() async {
     if (state.isLoading) return;
 
     emit(state.copyWith(isActionLoading: true));
 
-    final result = await _rentalRepository.reject(id: state.id, note: note);
+    final result = await _rentalRepository.handover(state.id);
 
     switch (result) {
       case ResultSuccess<void>():
@@ -89,7 +105,31 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
           state.copyWith(
             isActionLoading: false,
             error: MyRentalDetailError(
-              source: .actionReject,
+              source: .actionHandover,
+              message: result.message,
+            ),
+          ),
+        );
+    }
+  }
+
+  void onConfirmReturn() async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(isActionLoading: true));
+
+    final result = await _rentalRepository.confirmReturn(state.id);
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(isActionLoading: false));
+        onRefresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            error: MyRentalDetailError(
+              source: .actionConfirmReturn,
               message: result.message,
             ),
           ),

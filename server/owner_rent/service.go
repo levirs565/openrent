@@ -3,9 +3,13 @@ package owner_rent
 import (
 	"context"
 	"errors"
+	"fmt"
 	"openrent-server/models"
+	"openrent-server/notification"
+	"strconv"
 	"time"
 
+	"firebase.google.com/go/v4/messaging"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -18,12 +22,14 @@ var ErrCannotHandover = errors.New("cannot handover rent")
 var ErrReturnNotRequested = errors.New("return is not requested")
 
 type Service struct {
-	db *gorm.DB
+	db           *gorm.DB
+	notification notification.Service
 }
 
-func NewService(db *gorm.DB) *Service {
+func NewService(db *gorm.DB, notification notification.Service) *Service {
 	return &Service{
-		db: db,
+		db:           db,
+		notification: notification,
 	}
 }
 
@@ -84,7 +90,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 
 func (s *Service) approve(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -123,13 +129,26 @@ func (s *Service) approve(ctx context.Context, userId uint, id uint) error {
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_approved",
+			"rent_id": strconv.FormatUint(uint64(id), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Your rent is approved",
+			Body:  fmt.Sprintf("Rent for %s is approved", data.ProductSnapshot.Name),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Service) reject(ctx context.Context, userId uint, request RejectRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -168,13 +187,26 @@ func (s *Service) reject(ctx context.Context, userId uint, request RejectRequest
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_rejected",
+			"rent_id": strconv.FormatUint(uint64(request.ID), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Your rent is rejected",
+			Body:  fmt.Sprintf("Rent for %s is rejected. Reason: %s", data.ProductSnapshot.Name, request.Note),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -214,13 +246,26 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_cancelled",
+			"rent_id": strconv.FormatUint(uint64(request.ID), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Your rent is cancelled",
+			Body:  fmt.Sprintf("Rent for %s is cancelled. Reason: %s", data.ProductSnapshot.Name, request.Note),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -257,13 +302,26 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_handover",
+			"rent_id": strconv.FormatUint(uint64(id), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Hand over is success",
+			Body:  fmt.Sprintf("Handover for %s", data.ProductSnapshot.Name),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state").
+		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -301,6 +359,19 @@ func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error
 		return err
 	}
 
-	// TODO: Notification
+	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
+		Data: map[string]string{
+			"type":    "rent_confirm_return",
+			"rent_id": strconv.FormatUint(uint64(id), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: "Return is confirmed",
+			Body:  fmt.Sprintf("Return for %s is confirmed", data.ProductSnapshot.Name),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"openrent-server/embedding"
 	"openrent-server/models"
+	"openrent-server/notification"
 	"os"
 	"sync"
 	"sync/atomic"
@@ -173,7 +174,7 @@ func TestRentRace(t *testing.T) {
 		return
 	}
 
-	service := NewService(db.db, embedding.NewNoopEmbedder())
+	service := NewService(db.db, embedding.NewNoopEmbedder(), notification.NewNoopService())
 
 	var wg sync.WaitGroup
 	start := make(chan struct{})

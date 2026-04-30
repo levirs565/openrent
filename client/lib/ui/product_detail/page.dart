@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/bloc/auth.dart';
+import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/remote/product.dart';
+import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
+import 'package:openrent_client/ui/messages/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
 import 'package:openrent_client/ui/rent_form/sheet.dart';
 
@@ -92,6 +96,26 @@ class _ProductDetailPageContent extends StatelessWidget {
                   ),
                 },
                 child: Text("Rent"),
+              ),
+              BlocBuilder<AuthBloc, AuthBlocState>(
+                builder: (context, authState) {
+                  final user = authState.state;
+
+                  if (user is ResourceSuccess<AuthUserState?> &&
+                      user.data?.id != state.data?.user.id) {
+                    return OutlinedButton(
+                      onPressed: state.data?.user == null
+                          ? null
+                          : () => Navigator.of(context).push(
+                              MessagesPage.route(
+                                otherUserId: state.data!.user.id,
+                              ),
+                            ),
+                      child: Text("Chat"),
+                    );
+                  }
+                  return Center();
+                },
               ),
             ],
           ),

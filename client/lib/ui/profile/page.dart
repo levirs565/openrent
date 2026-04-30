@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/resource.dart';
@@ -49,13 +50,18 @@ class ProfilePage extends StatelessWidget {
                                 backgroundColor: Theme.of(
                                   context,
                                 ).colorScheme.primaryContainer,
-                                child: Icon(
-                                  Icons.person,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                                  size: 32,
-                                ),
+                                backgroundImage: user?.avatarUrl == null
+                                    ? null
+                                    : NetworkImage(user!.avatarUrl!),
+                                child: user?.avatarUrl != null
+                                    ? null
+                                    : Icon(
+                                        Icons.person,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
+                                        size: 32,
+                                      ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
@@ -87,7 +93,33 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () async {
+                      // TODO: Must in Bloc/Cubit
+                      final repository = context.read<AuthRepository>();
+                      final picker = ImagePicker();
+                      final file = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+                      if (file != null) {
+                        final result = await repository.uploadAvatar(file);
+                        if (result is ResultSuccess) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Avatar berhasil diupload'),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Text('Upload Avatar'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   FilledButton(
                     onPressed: () =>
                         Navigator.of(context).push(MyAddressesPage.route()),
