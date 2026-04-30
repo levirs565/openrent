@@ -68,16 +68,57 @@ _RentalUserDetails _$RentalUserDetailsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RentalUserDetailsToJson(_RentalUserDetails instance) =>
     <String, dynamic>{'id': instance.id, 'name': instance.name};
 
+_RentCancellation _$RentCancellationFromJson(Map<String, dynamic> json) =>
+    _RentCancellation(
+      reason: $enumDecode(_$RentCancelReasonEnumMap, json['reason']),
+      note: json['note'] as String,
+    );
+
+Map<String, dynamic> _$RentCancellationToJson(_RentCancellation instance) =>
+    <String, dynamic>{
+      'reason': _$RentCancelReasonEnumMap[instance.reason]!,
+      'note': instance.note,
+    };
+
+const _$RentCancelReasonEnumMap = {
+  RentCancelReason.approvalTimeout: 'approval_timeout',
+  RentCancelReason.ownerRejected: 'owner_rejected',
+  RentCancelReason.initialPaymentTimeout: 'initial_payment_timeout',
+  RentCancelReason.ownerCancelled: 'owner_cancelled',
+  RentCancelReason.userCancelled: 'user_cancelled',
+};
+
+_RentalReviewDetails _$RentalReviewDetailsFromJson(Map<String, dynamic> json) =>
+    _RentalReviewDetails(
+      id: (json['id'] as num).toInt(),
+      rating: (json['rating'] as num).toInt(),
+      content: json['content'] as String,
+    );
+
+Map<String, dynamic> _$RentalReviewDetailsToJson(
+  _RentalReviewDetails instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'rating': instance.rating,
+  'content': instance.content,
+};
+
 _RentalResponseItemDetails _$RentalResponseItemDetailsFromJson(
   Map<String, dynamic> json,
 ) => _RentalResponseItemDetails(
   id: (json['id'] as num).toInt(),
   product: RentalProductShort.fromJson(json['product'] as Map<String, dynamic>),
   user: RentalUserDetails.fromJson(json['user'] as Map<String, dynamic>),
+  review: json['review'] == null
+      ? null
+      : RentalReviewDetails.fromJson(json['review'] as Map<String, dynamic>),
   state: $enumDecode(_$RentStateEnumMap, json['state']),
   startDate: const Iso8601Converter().fromJson(json['start_date'] as String),
   endDate: const Iso8601Converter().fromJson(json['end_date'] as String),
   quantity: (json['quantity'] as num).toInt(),
+  cancellation: json['cancellation'] == null
+      ? null
+      : RentCancellation.fromJson(json['cancellation'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$RentalResponseItemDetailsToJson(
@@ -86,10 +127,12 @@ Map<String, dynamic> _$RentalResponseItemDetailsToJson(
   'id': instance.id,
   'product': instance.product,
   'user': instance.user,
+  'review': instance.review,
   'state': _$RentStateEnumMap[instance.state]!,
   'start_date': const Iso8601Converter().toJson(instance.startDate),
   'end_date': const Iso8601Converter().toJson(instance.endDate),
   'quantity': instance.quantity,
+  'cancellation': instance.cancellation,
 };
 
 _RentalRejectRequest _$RentalRejectRequestFromJson(Map<String, dynamic> json) =>

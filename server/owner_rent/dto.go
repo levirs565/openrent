@@ -1,6 +1,7 @@
 package owner_rent
 
 import (
+	"openrent-server/core"
 	"openrent-server/models"
 
 	"gorm.io/datatypes"
@@ -54,17 +55,33 @@ type UserDetails struct {
 	Name string `json:"name"`
 }
 
+type ReviewDetails struct {
+	ID      uint   `json:"id"`
+	Rating  uint   `json:"rating"`
+	Content string `json:"content"`
+}
+
 type ResponseItemDetails struct {
-	ID        uint             `json:"id"`
-	Product   ProductShort     `json:"product"`
-	User      UserDetails      `json:"user"`
-	State     models.RentState `json:"state"`
-	StartDate datatypes.Date   `json:"start_date"`
-	EndDate   datatypes.Date   `json:"end_date"`
-	Quantity  int              `json:"quantity"`
+	ID           uint                      `json:"id"`
+	Product      ProductShort              `json:"product"`
+	User         UserDetails               `json:"user"`
+	Review       *ReviewDetails            `json:"review"`
+	State        models.RentState          `json:"state"`
+	StartDate    datatypes.Date            `json:"start_date"`
+	EndDate      datatypes.Date            `json:"end_date"`
+	Quantity     int                       `json:"quantity"`
+	Cancellation *core.RentCancellationDto `json:"cancellation"`
 }
 
 func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
+	var review *ReviewDetails
+	if model.Review != nil {
+		review = &ReviewDetails{
+			ID:      model.Review.ID,
+			Rating:  model.Review.Rating,
+			Content: model.Review.Content,
+		}
+	}
 	return ResponseItemDetails{
 		ID: model.ID,
 		Product: ProductShort{
@@ -75,10 +92,12 @@ func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
 			ID:   model.UserAccountID,
 			Name: model.RenterSnapshotName,
 		},
-		State:     model.State,
-		StartDate: model.StartDate,
-		EndDate:   model.EndDate,
-		Quantity:  model.Quantity,
+		Cancellation: core.RentCancellationFromModel(model),
+		Review:       review,
+		State:        model.State,
+		StartDate:    model.StartDate,
+		EndDate:      model.EndDate,
+		Quantity:     model.Quantity,
 	}
 }
 

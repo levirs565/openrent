@@ -101,18 +101,57 @@ abstract class RentalUserDetails with _$RentalUserDetails {
       _$RentalUserDetailsFromJson(json);
 }
 
+@JsonEnum()
+enum RentCancelReason {
+  @JsonValue("approval_timeout")
+  approvalTimeout,
+  @JsonValue("owner_rejected")
+  ownerRejected,
+  @JsonValue("initial_payment_timeout")
+  initialPaymentTimeout,
+  @JsonValue("owner_cancelled")
+  ownerCancelled,
+  @JsonValue("user_cancelled")
+  userCancelled,
+}
+
+@freezed
+abstract class RentCancellation with _$RentCancellation {
+  const factory RentCancellation({
+    required RentCancelReason reason,
+    required String note,
+  }) = _RentCancellation;
+
+  factory RentCancellation.fromJson(Map<String, Object?> json) =>
+      _$RentCancellationFromJson(json);
+}
+
+@freezed
+abstract class RentalReviewDetails with _$RentalReviewDetails {
+  factory RentalReviewDetails({
+    required int id,
+    required int rating,
+    required String content,
+  }) = _RentalReviewDetails;
+
+  factory RentalReviewDetails.fromJson(Map<String, Object?> json) =>
+      _$RentalReviewDetailsFromJson(json);
+}
+
 @freezed
 abstract class RentalResponseItemDetails with _$RentalResponseItemDetails {
   const factory RentalResponseItemDetails({
     required int id,
     required RentalProductShort product,
     required RentalUserDetails user,
+    required RentalReviewDetails? review,
     required RentState state,
     @JsonKey(name: "start_date")
     @Iso8601Converter()
     required DateTime startDate,
     @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
     required int quantity,
+    required RentCancellation? cancellation,
   }) = _RentalResponseItemDetails;
 
   factory RentalResponseItemDetails.fromJson(Map<String, Object?> json) =>
