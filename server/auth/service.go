@@ -132,7 +132,7 @@ func (s *Service) GetUserState(ctx context.Context, id uint) (UserStateReponse, 
 	}
 
 	var avatarURL *string
-	if account.User.AvatarName != "" {
+	if account.User != nil && account.User.AvatarName != "" {
 		url := fmt.Sprintf(
 			"%s/%s/%s",
 			*s.s3.Options().BaseEndpoint,

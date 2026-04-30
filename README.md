@@ -9,8 +9,8 @@
   - [ ] Upload Image 
 - [ ] Rental Management (Owner)
 - [ ] Order Management (Renter)
-- [ ] Chat
-- [ ] Show Search Result in Map
+- [x] Chat
+- [x] Show Search Result in Map
 - [ ] Optional Biometric (after Login when opening App)
 - [ ] Local Database for Caching and Setting
 - [ ] Review for Teacher
@@ -18,5 +18,5 @@
 - [ ] Time Conversion and Money Conversion
 - [ ] AI Based Reccomendation
 - [ ] Search using Voice Recognition
-- [ ] Notification use FCM
-- [ ] Sensor
+- [x] Notification use FCM
+- [x] Sensor
