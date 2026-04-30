@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/remote/message.dart';
@@ -6,6 +9,7 @@ import 'package:openrent_client/ui/messages/state.dart';
 
 class MessagesCubit extends Cubit<MessagesState> {
   final MessageRepository _repository;
+  StreamSubscription? _fcmSubscription;
 
   MessagesCubit({
     required int otherUserId,
@@ -22,6 +26,18 @@ class MessagesCubit extends Cubit<MessagesState> {
          ),
        ) {
     onRefresh();
+    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
+      if (event.data["type"] == "message" &&
+          int.tryParse(event.data["other_id"]) == state.otherUserId) {
+        onRefresh();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _fcmSubscription?.cancel();
+    return super.close();
   }
 
   void onRefresh() async {

@@ -47,6 +47,7 @@ func (s *Service) SendNotification(ctx context.Context, userId uint, notificatio
 	br, err := s.fcmClient.SendEachForMulticast(ctx, &messaging.MulticastMessage{
 		Tokens:       tokens,
 		Notification: notification.Notification,
+		Data:         notification.Data,
 		Android:      notification.Android,
 		Webpush:      notification.Webpush,
 		APNS:         notification.APNS,

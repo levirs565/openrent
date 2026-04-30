@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/order.dart';
 import 'package:openrent_client/data/remote/order.dart';
@@ -7,6 +10,7 @@ import 'state.dart';
 
 class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
   final OrderRepository _orderRepository;
+  StreamSubscription? _fcmSubscription;
 
   MyOrderDetailCubit({
     required int id,
@@ -22,6 +26,18 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
          ),
        ) {
     onRefresh();
+    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
+      if (event.data["type"].toString().startsWith("rent_") &&
+          int.tryParse(event.data["rent_id"]) == id) {
+        onRefresh();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _fcmSubscription?.cancel();
+    return super.close();
   }
 
   void onRefresh() async {
