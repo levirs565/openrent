@@ -105,6 +105,9 @@ _OrderResponseItemDetails _$OrderResponseItemDetailsFromJson(
   startDate: const Iso8601Converter().fromJson(json['start_date'] as String),
   endDate: const Iso8601Converter().fromJson(json['end_date'] as String),
   quantity: (json['quantity'] as num).toInt(),
+  cancellation: json['cancellation'] == null
+      ? null
+      : RentCancellation.fromJson(json['cancellation'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$OrderResponseItemDetailsToJson(
@@ -118,6 +121,7 @@ Map<String, dynamic> _$OrderResponseItemDetailsToJson(
   'start_date': const Iso8601Converter().toJson(instance.startDate),
   'end_date': const Iso8601Converter().toJson(instance.endDate),
   'quantity': instance.quantity,
+  'cancellation': instance.cancellation,
 };
 
 // dart format off

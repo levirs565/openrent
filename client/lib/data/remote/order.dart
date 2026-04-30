@@ -106,6 +106,7 @@ abstract class OrderResponseItemDetails with _$OrderResponseItemDetails {
     required DateTime startDate,
     @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
     required int quantity,
+    required RentCancellation? cancellation,
   }) = _OrderResponseItemDetails;
 
   factory OrderResponseItemDetails.fromJson(Map<String, Object?> json) =>

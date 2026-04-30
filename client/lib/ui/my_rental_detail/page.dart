@@ -72,11 +72,12 @@ class _Content extends StatelessWidget {
             onPressed: state.data?.user == null
                 ? null
                 : () => Navigator.of(
-              context,
-            ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
+                    context,
+                  ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
             child: Text("Chat"),
           ),
-          // TODO: User Detail Page, Cancel note, Cancel reason
+
+          // TODO: User Detail Page
           Text("State"),
           Text(state.data?.state.toString() ?? "-"),
           Text("Date"),
@@ -85,6 +86,16 @@ class _Content extends StatelessWidget {
           ),
           Text("Quantity"),
           Text(state.data?.quantity.toString() ?? "-"),
+          if (state.data?.cancellation != null) ...[
+            Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
+            Text("Cancel Note: ${state.data?.cancellation?.note}")
+          ],
+          if (state.data?.review != null) ...[
+            Text("Review"),
+            Text("${state.data?.review?.rating} start"),
+            Text(state.data?.review?.content ?? "-"),
+          ] else if (state.data?.state == .completed)
+            Text("Belum Ada Review"),
           if (state.data?.state == .pendingApproval)
             Row(
               children: [
@@ -110,7 +121,8 @@ class _Content extends StatelessWidget {
             ),
           if (state.data?.state == .awaitingReturnConfirmation)
             OutlinedButton(
-              onPressed: () => context.read<MyRentalDetailCubit>().onConfirmReturn(),
+              onPressed: () =>
+                  context.read<MyRentalDetailCubit>().onConfirmReturn(),
               child: Text("Confirm Return"),
             ),
         ],

@@ -78,7 +78,7 @@ class _Content extends StatelessWidget {
                   ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
             child: Text("Chat"),
           ),
-          // TODO: User Detail Page, Cancel note, Cancel reason
+          // TODO: User Detail Page
           Text("State"),
           Text(state.data?.state.toString() ?? "-"),
           Text("Date"),
@@ -87,6 +87,10 @@ class _Content extends StatelessWidget {
           ),
           Text("Quantity"),
           Text(state.data?.quantity.toString() ?? "-"),
+          if (state.data?.cancellation != null) ...[
+            Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
+            Text("Cancel Note: ${state.data?.cancellation?.note}")
+          ],
           if (state.data?.state == .readyForPickup)
             OutlinedButton(
               onPressed: () => context.read<MyOrderDetailCubit>().onReceive(),
