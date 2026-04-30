@@ -1,14 +1,14 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/chat.dart';
+import 'package:openrent_client/data/local/settings.dart';
 import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/order.dart';
@@ -18,8 +18,10 @@ import 'package:openrent_client/data/rent.dart';
 import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/review.dart';
-import 'package:openrent_client/ui/login/page.dart';
+import 'package:openrent_client/data/settings.dart';
+import 'package:openrent_client/ui/biometric_failed.dart';
 import 'package:openrent_client/ui/home.dart';
+import 'package:openrent_client/ui/login/page.dart';
 import 'package:openrent_client/ui/splash.dart';
 
 import 'data/remote/address.dart';
@@ -36,8 +38,11 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.requestPermission(provisional: true);
+
+  await openSettingsBox();
 
   final dioInstance = await createRemoteDio();
   final authService = AuthService(dioInstance);
@@ -87,6 +92,9 @@ void main() async {
         RepositoryProvider<ChatRepository>(
           create: (_) => ChatDataSource(chatService: chatService),
         ),
+        RepositoryProvider<SettingsRepository>(
+          create: (_) => SettingsDataSource(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -99,11 +107,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        lazy: false,
-        create: (context) =>
-            AuthBloc(authRepository: context.read())..add(AuthBlocEventStart()),
-        child: AppView(),
-      );
+      lazy: false,
+      create: (context) => AuthBloc(
+        authRepository: context.read(),
+        settingsRepository: context.read(),
+      )..add(AuthBlocEventStart()),
+      child: AppView(),
+    );
   }
 }
 
@@ -132,19 +142,20 @@ class _AppViewState extends State<AppView> {
         return BlocListener<AuthBloc, AuthBlocState>(
           listenWhen: (prev, curr) =>
               prev.state.runtimeType != curr.state.runtimeType ||
-              (prev.state is ResourceSuccess<AuthUserState?> &&
-                  curr.state is ResourceSuccess<AuthUserState?> &&
-                  (prev.state as ResourceSuccess<AuthUserState?>).data?.id !=
-                      (curr.state as ResourceSuccess<AuthUserState?>).data?.id),
+              (prev.state is AuthStateSuccess &&
+                  curr.state is AuthStateSuccess &&
+                  (prev.state as AuthStateSuccess).user?.id !=
+                      (curr.state as AuthStateSuccess).user?.id),
           listener: (context, state) {
-            if (state.state is ResourceSuccess) {
-              final data =
-                  (state.state as ResourceSuccess<AuthUserState?>).data;
+            if (state.state is AuthStateSuccess) {
+              final data = (state.state as AuthStateSuccess).user;
               if (data == null) {
                 _navigator.pushAndRemoveUntil(LoginPage.route(), (_) => false);
               } else {
                 _navigator.pushAndRemoveUntil(HomePage.route(), (_) => false);
               }
+            } else if (state.state is AuthStateBiometricFailed) {
+              _navigator.pushAndRemoveUntil(BiometricFailedPage.route(), (_) => false);
             }
           },
           child: child,

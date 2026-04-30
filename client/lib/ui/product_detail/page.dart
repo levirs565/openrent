@@ -101,8 +101,8 @@ class _ProductDetailPageContent extends StatelessWidget {
                 builder: (context, authState) {
                   final user = authState.state;
 
-                  if (user is ResourceSuccess<AuthUserState?> &&
-                      user.data?.id != state.data?.user.id) {
+                  if (user is AuthStateSuccess &&
+                      user.user?.id != state.data?.user.id) {
                     return OutlinedButton(
                       onPressed: state.data?.user == null
                           ? null

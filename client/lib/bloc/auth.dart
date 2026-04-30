@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/biometrics/biometric.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 
 sealed class AuthBlocEvent {
   const AuthBlocEvent();
@@ -12,8 +14,17 @@ sealed class AuthBlocEvent {
 final class AuthBlocEventStart extends AuthBlocEvent {}
 final class AuthBlocEventLogout extends AuthBlocEvent {}
 
+sealed class AuthState {}
+final class AuthStateLoading extends AuthState {}
+final class AuthStateBiometricFailed extends AuthState {}
+final class AuthStateSuccess extends AuthState {
+  final AuthUserState? user;
+
+  AuthStateSuccess(this.user);
+}
+
 class AuthBlocState extends Equatable {
-  final Resource<AuthUserState?> state;
+  final AuthState state;
 
   const AuthBlocState({required this.state});
 
@@ -23,10 +34,11 @@ class AuthBlocState extends Equatable {
 
 class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
   final AuthRepository _authRepository;
+  final SettingsRepository _settingsRepository;
 
-  AuthBloc({required AuthRepository authRepository})
-    : _authRepository = authRepository,
-      super(AuthBlocState(state: ResourceLoading())) {
+  AuthBloc({required AuthRepository authRepository, required SettingsRepository settingsRepository})
+    : _settingsRepository = settingsRepository, _authRepository = authRepository,
+      super(AuthBlocState(state: AuthStateLoading())) {
     on<AuthBlocEventStart>(_onStart);
     on<AuthBlocEventLogout>(_onLogout);
   }
@@ -41,10 +53,31 @@ class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
     AuthBlocEventStart event,
     Emitter<AuthBlocState> emit,
   ) async {
+    if (_settingsRepository.getNeedBiometric() && await isBiometricSupported()) {
+      try {
+        final result = await biometricAuthenticate(
+            reason: "Authenticate for open app");
+        if (!result) {
+          emit(AuthBlocState(state: AuthStateBiometricFailed()));
+          return;
+        }
+      } catch (e) {
+        emit(AuthBlocState(state: AuthStateBiometricFailed()));
+        return;
+      }
+    }
     return emit.onEach(
       _authRepository.getState(),
       onData: (state) {
-        return emit(AuthBlocState(state: state));
+        switch (state) {
+          case ResourceLoading<AuthUserState?>():
+            return emit(AuthBlocState(state: AuthStateLoading()));
+          case ResourceSuccess<AuthUserState?>():
+            return emit(AuthBlocState(state: AuthStateSuccess(state.data)));
+          case ResourceError<AuthUserState?>():
+            // TODO: Handle this case. This case should not happen.
+            throw UnimplementedError();
+        }
       },
     );
   }
@@ -54,5 +87,6 @@ class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
     Emitter<AuthBlocState> emit,
   ) async {
     await _authRepository.logout();
+    await _settingsRepository.setNeedBiometric(false);
   }
 }

@@ -54,6 +54,10 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.1
   cookie_jar: ^4.0.9
+  hive_ce: ^2.19.3
+  hive_ce_flutter: ^2.3.4
+  hive_ce_generator: ^1.11.1
+  local_auth: ^3.0.1
 
 dev_dependencies:
   retrofit_generator: ^10.0.1
