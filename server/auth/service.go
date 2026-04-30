@@ -24,6 +24,7 @@ var ErrUserNotFound = errors.New("user not found")
 var ErrInvalidContentType = errors.New("invalid content type")
 var ErrAvatarSizeExceedLimit = errors.New("avatar size exceeds limits")
 var ErrAvatarNotFound = errors.New("avatar not found")
+var ErrFCMTokenNotFound = errors.New("fcm token not found")
 
 type Service struct {
 	db       *gorm.DB
@@ -252,6 +253,56 @@ func (s *Service) ConfirmUserAvatar(ctx context.Context, userId uint, name strin
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+type AddFCMResponse struct {
+	ID uint `json:"id"`
+}
+
+func (s *Service) AddFCMToken(ctx context.Context, userId uint, token string) (AddFCMResponse, error) {
+	model := models.FCMToken{
+		UserAccountID: userId,
+		Token:         token,
+	}
+	err := gorm.G[models.FCMToken](s.db).Create(ctx, &model)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			rows, err := gorm.G[models.FCMToken](s.db).Where("token = ?", token).Update(ctx, "user_account_id", userId)
+			if err != nil {
+				return AddFCMResponse{}, err
+			}
+			if rows == 0 {
+				return AddFCMResponse{}, ErrFCMTokenNotFound
+			}
+			model, err = gorm.G[models.FCMToken](s.db).Where("token = ?", token).First(ctx)
+			if err != nil {
+				return AddFCMResponse{}, ErrFCMTokenNotFound
+			}
+		} else {
+			return AddFCMResponse{}, err
+		}
+	}
+
+	return AddFCMResponse{
+		ID: model.ID,
+	}, nil
+}
+
+func (s *Service) RemoveFCMToken(ctx context.Context, userId uint, id uint) error {
+	rows, err := gorm.G[models.FCMToken](s.db).
+		Where("user_account_id = ? AND id = ?", userId, id).
+		Delete(ctx)
+
+	if rows == 0 {
+		return ErrFCMTokenNotFound
+	}
+
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"openrent-server/embedding"
 	"openrent-server/models"
+	"openrent-server/notification"
+	"strconv"
 
+	"firebase.google.com/go/v4/messaging"
 	"github.com/pgvector/pgvector-go"
 	"github.com/samber/lo"
 	"gorm.io/datatypes"
@@ -19,14 +22,16 @@ var ErrStockUnavailable = errors.New("stock unavailable")
 var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 
 type Service struct {
-	db       *gorm.DB
-	embedder embedding.AIEmbedder
+	db           *gorm.DB
+	embedder     embedding.AIEmbedder
+	notification *notification.Service
 }
 
-func NewService(db *gorm.DB, embedder embedding.AIEmbedder) *Service {
+func NewService(db *gorm.DB, embedder embedding.AIEmbedder, notification *notification.Service) *Service {
 	return &Service{
-		db:       db,
-		embedder: embedder,
+		db:           db,
+		embedder:     embedder,
+		notification: notification,
 	}
 }
 
@@ -299,7 +304,11 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	// TODO: Buffern?
 	// TODO: Cron expired rent
 	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
-	return s.db.Transaction(func(tx *gorm.DB) error {
+	var ownerId uint
+	var productName string
+	var renterName string
+	var rentalId uint
+	err := s.db.Transaction(func(tx *gorm.DB) error {
 		model := models.Product{}
 		err := tx.WithContext(ctx).
 			Model(&model).
@@ -345,6 +354,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			return ErrStockUnavailable
 		}
 
+		ownerId = model.UserAccountID
+
 		model, err = gorm.G[models.Product](tx).
 			Select(
 				"products.name", "products.price_per_day",
@@ -378,6 +389,9 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			return err
 		}
 
+		productName = model.Name
+		renterName = userData.Name
+
 		rentModel := models.Rent{
 			ProductID:     request.ID,
 			UserAccountID: userId,
@@ -407,9 +421,30 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 		if err != nil {
 			return err
 		}
+		rentalId = rentModel.ID
 
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	err = s.notification.SendNotification(ctx, ownerId, notification.Notification{
+		Data: map[string]string{
+			"type":       "rent_request",
+			"product_id": strconv.FormatUint(uint64(request.ID), 10),
+			"rentals_id": strconv.FormatUint(uint64(rentalId), 10),
+		},
+		Notification: &messaging.Notification{
+			Title: fmt.Sprintf("New rent request for product %s", productName),
+			Body:  fmt.Sprintf("New rent request from %s", renterName),
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]ReviewDetail, error) {

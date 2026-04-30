@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/bloc/auth.dart';
@@ -20,16 +22,37 @@ import 'package:openrent_client/ui/login/page.dart';
 import 'package:openrent_client/ui/home.dart';
 import 'package:openrent_client/ui/splash.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'data/remote/address.dart';
+import 'data/remote/auth.dart';
+import 'data/remote/chat.dart';
+import 'data/remote/locationiq.dart';
+import 'data/remote/message.dart';
+import 'data/remote/order.dart';
+import 'data/remote/product.dart';
+import 'data/remote/rent.dart';
+import 'data/remote/rental.dart';
+import 'data/remote/review.dart';
+import 'firebase_options.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.requestPermission(provisional: true);
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+  final dioInstance = await createRemoteDio();
+  final authService = AuthService(dioInstance);
+  final addressService = AddressService(dioInstance);
+  final productService = ProductService(dioInstance);
+  final reviewService = ReviewService(dioInstance);
+  final rentService = RentService(dioInstance);
+  final rentalService = RentalService(dioInstance);
+  final orderService = OrderService(dioInstance);
+  final messageService = MessageService(dioInstance);
+  final chatService = ChatService(dioInstance);
+  final locationIQService = LocationIQService(Dio());
+
+  runApp(
+    MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
           create: (_) =>
@@ -65,13 +88,22 @@ class MyApp extends StatelessWidget {
           create: (_) => ChatDataSource(chatService: chatService),
         ),
       ],
-      child: BlocProvider(
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
         lazy: false,
         create: (context) =>
             AuthBloc(authRepository: context.read())..add(AuthBlocEventStart()),
         child: AppView(),
-      ),
-    );
+      );
   }
 }
 

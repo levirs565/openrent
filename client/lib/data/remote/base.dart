@@ -1,37 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:dio/browser.dart';
 import 'package:flutter/foundation.dart';
-import 'package:openrent_client/data/remote/address.dart';
-import 'package:openrent_client/data/remote/auth.dart';
-import 'package:openrent_client/data/remote/chat.dart';
+import 'package:openrent_client/data/remote/base.dio.dart';
 import 'package:openrent_client/data/remote/error.dart';
-import 'package:openrent_client/data/remote/locationiq.dart';
-import 'package:openrent_client/data/remote/message.dart';
-import 'package:openrent_client/data/remote/order.dart';
-import 'package:openrent_client/data/remote/product.dart';
-import 'package:openrent_client/data/remote/rent.dart';
-import 'package:openrent_client/data/remote/rental.dart';
-import 'package:openrent_client/data/remote/review.dart';
 
-Dio createDio() {
+Future<Dio> createRemoteDio() async {
   final dio = Dio(BaseOptions(
-      baseUrl: "http://localhost:1323/"
+      baseUrl: kIsWeb ? "http://localhost:1323/" : "http://3.24.7.34:1323/"
   ));
-  if (kIsWeb) {
-    (dio.httpClientAdapter as BrowserHttpClientAdapter).withCredentials = true;
-  }
+  await configureDio(dio);
   dio.interceptors.add(ErrorInterceptor());
   return dio;
 }
-
-final dioInstance = createDio();
-final authService = AuthService(dioInstance);
-final addressService = AddressService(dioInstance);
-final productService = ProductService(dioInstance);
-final reviewService = ReviewService(dioInstance);
-final rentService = RentService(dioInstance);
-final rentalService = RentalService(dioInstance);
-final orderService = OrderService(dioInstance);
-final messageService = MessageService(dioInstance);
-final chatService = ChatService(dioInstance);
-final locationIQService = LocationIQService(Dio());

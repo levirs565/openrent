@@ -31,6 +31,12 @@ class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
     on<AuthBlocEventLogout>(_onLogout);
   }
 
+  @override
+  Future<void> close() {
+    _authRepository.dispose();
+    return super.close();
+  }
+
   Future<void> _onStart(
     AuthBlocEventStart event,
     Emitter<AuthBlocState> emit,
@@ -38,7 +44,7 @@ class AuthBloc extends Bloc<AuthBlocEvent, AuthBlocState> {
     return emit.onEach(
       _authRepository.getState(),
       onData: (state) {
-        return emit(AuthBlocState(state  : state));
+        return emit(AuthBlocState(state: state));
       },
     );
   }

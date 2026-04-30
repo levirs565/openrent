@@ -3,8 +3,12 @@ package chat
 import (
 	"context"
 	"errors"
+	"fmt"
 	"openrent-server/models"
+	"openrent-server/notification"
+	"strconv"
 
+	"firebase.google.com/go/v4/messaging"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -18,12 +22,14 @@ var ErrCannotSendToSelf = errors.New("cannot send to self")
 // Maybe donot need update dan deleted message
 
 type Service struct {
-	db *gorm.DB
+	db           *gorm.DB
+	notification *notification.Service
 }
 
-func NewService(db *gorm.DB) *Service {
+func NewService(db *gorm.DB, notification *notification.Service) *Service {
 	return &Service{
-		db: db,
+		db:           db,
+		notification: notification,
 	}
 }
 
@@ -37,6 +43,26 @@ func (s *Service) Send(ctx context.Context, userId uint, request SendMessageRequ
 
 	err := gorm.G[models.Message](s.db).
 		Create(ctx, &model)
+	if err != nil {
+		return err
+	}
+
+	userModel, err := gorm.G[models.Account](s.db).Select("name").Where("id = ?", userId).First(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.notification.SendNotification(ctx, request.ReceiverID, notification.Notification{
+		Data: map[string]string{
+			"type":     "message",
+			"other_id": strconv.FormatUint(uint64(userId), 10),
+			"message":  request.Message,
+		},
+		Notification: &messaging.Notification{
+			Title: fmt.Sprintf("Message from %s", userModel.Name),
+			Body:  request.Message,
+		},
+	})
 	if err != nil {
 		return err
 	}

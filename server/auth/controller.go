@@ -26,6 +26,14 @@ type avatarConfirmRequest struct {
 	Name string `json:"name" validate:"required"`
 }
 
+type addFCMTokenRequest struct {
+	Token string `json:"token" validate:"required"`
+}
+
+type removeFCMTokenRequest struct {
+	ID uint `param:"id"`
+}
+
 type Controller struct {
 	service *Service
 }
@@ -128,8 +136,40 @@ func (ct *Controller) avatarConfirm(c *echo.Context) error {
 	if err := core.BindAndValidate(c, &payload); err != nil {
 		return err
 	}
+	err := ct.service.ConfirmUserAvatar(c.Request().Context(), user.ID, payload.Name)
+	if err != nil {
+		return err
+	}
 
-	if err := ct.service.ConfirmUserAvatar(c.Request().Context(), user.ID, payload.Name); err != nil {
+	return c.JSON(200, core.CreateActionResponse(true))
+}
+
+func (ct *Controller) addFCMToken(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := addFCMTokenRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	response, err := ct.service.AddFCMToken(c.Request().Context(), user.ID, payload.Token)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, response)
+}
+
+func (ct *Controller) removeFCMToken(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := removeFCMTokenRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	err := ct.service.RemoveFCMToken(c.Request().Context(), user.ID, payload.ID)
+	if err != nil {
 		return err
 	}
 
@@ -145,4 +185,6 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 	g.POST("/logout", ct.logout, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 	g.POST("/avatar/presigned-url", ct.avatarPresignedURL, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 	g.POST("/avatar/confirm", ct.avatarConfirm, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.POST("/me/fcm", ct.addFCMToken, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.DELETE("/me/fcm/:id", ct.removeFCMToken, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 }

@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	firebase "firebase.google.com/go/v4"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -25,6 +26,7 @@ import (
 	"openrent-server/embedding"
 	"openrent-server/message"
 	"openrent-server/models"
+	"openrent-server/notification"
 	"openrent-server/owner_rent"
 	"openrent-server/product"
 	"openrent-server/rent"
@@ -37,6 +39,16 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Print("Cannot load dotenv", err)
+	}
+
+	firebaseApp, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		panic(err)
+	}
+
+	messaging, err := firebaseApp.Messaging(context.Background())
+	if err != nil {
+		panic(err)
 	}
 
 	db, err := gorm.Open(postgres.Open(os.Getenv("DB_URL")), &gorm.Config{
@@ -125,6 +137,7 @@ func main() {
 		&models.Rent{},
 		&models.Review{},
 		&models.Message{},
+		&models.FCMToken{},
 	)
 	if err != nil {
 		log.Panic("Cannot auto migrate", err)
@@ -151,13 +164,14 @@ func main() {
 	e.HTTPErrorHandler = NewErrorHandler()
 	e.Validator = core.NewValidator()
 
+	notificationService := notification.NewService(messaging, db)
 	authService := auth.NewService(db, s3Client, s3Bucket)
 	addressService := address.NewService(db)
-	productService := product.NewService(db, embedder)
-	ownerRentsService := owner_rent.NewService(db)
-	rentsService := rent.NewService(db)
+	productService := product.NewService(db, embedder, notificationService)
+	ownerRentsService := owner_rent.NewService(db, notificationService)
+	rentsService := rent.NewService(db, notificationService)
 	reviwsService := review.NewService(db)
-	chatService := chat.NewService(db)
+	chatService := chat.NewService(db, notificationService)
 	messageService := message.NewService(db)
 
 	authController := auth.NewController(authService)

@@ -26,6 +26,7 @@ var error_codes map[error]int = map[error]int{
 	auth.ErrInvalidContentType:    http.StatusBadRequest,
 	auth.ErrAvatarSizeExceedLimit: http.StatusBadRequest,
 	auth.ErrAvatarNotFound:        http.StatusBadRequest,
+	auth.ErrFCMTokenNotFound:      http.StatusNotFound,
 
 	chat.ErrCannotSendToSelf: http.StatusConflict,
 
