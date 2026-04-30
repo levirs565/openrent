@@ -72,6 +72,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
 			"rents.quantity", "rents.product_id", "rents.user_account_id",
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+			"rents.cancel_reason", "rents.cancel_reason_note",
 		).
 		Joins(
 			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
