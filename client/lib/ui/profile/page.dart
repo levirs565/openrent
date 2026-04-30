@@ -5,6 +5,7 @@ import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/ui/my_addresses/page.dart';
+import 'package:openrent_client/ui/game/page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -127,7 +128,16 @@ class ProfilePage extends StatelessWidget {
                       child: Text('Alamat Saya'),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(FragileDeliveryGame.route()),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Text('Fragile Delivery Game'),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                   OutlinedButton(
                     onPressed: () =>
                         context.read<AuthBloc>().add(AuthBlocEventLogout()),
