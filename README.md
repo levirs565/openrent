@@ -3,7 +3,7 @@
 ## Features
 
 - [x] Register and Login (Migrate to JWT is needed, Encryption?)
-- [ ] Upload Profile
+- [x] Upload Profile
 - [x] Address Management
 - [ ] Product Management (Partial)
   - [ ] Upload Image 
