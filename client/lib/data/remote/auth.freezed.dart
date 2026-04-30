@@ -818,4 +818,530 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$FCMTokenAddRequest {
+
+ String get token;
+/// Create a copy of FCMTokenAddRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FCMTokenAddRequestCopyWith<FCMTokenAddRequest> get copyWith => _$FCMTokenAddRequestCopyWithImpl<FCMTokenAddRequest>(this as FCMTokenAddRequest, _$identity);
+
+  /// Serializes this FCMTokenAddRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FCMTokenAddRequest&&(identical(other.token, token) || other.token == token));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,token);
+
+@override
+String toString() {
+  return 'FCMTokenAddRequest(token: $token)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FCMTokenAddRequestCopyWith<$Res>  {
+  factory $FCMTokenAddRequestCopyWith(FCMTokenAddRequest value, $Res Function(FCMTokenAddRequest) _then) = _$FCMTokenAddRequestCopyWithImpl;
+@useResult
+$Res call({
+ String token
+});
+
+
+
+
+}
+/// @nodoc
+class _$FCMTokenAddRequestCopyWithImpl<$Res>
+    implements $FCMTokenAddRequestCopyWith<$Res> {
+  _$FCMTokenAddRequestCopyWithImpl(this._self, this._then);
+
+  final FCMTokenAddRequest _self;
+  final $Res Function(FCMTokenAddRequest) _then;
+
+/// Create a copy of FCMTokenAddRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,}) {
+  return _then(_self.copyWith(
+token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [FCMTokenAddRequest].
+extension FCMTokenAddRequestPatterns on FCMTokenAddRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _FCMTokenAddRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _FCMTokenAddRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _FCMTokenAddRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String token)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest() when $default != null:
+return $default(_that.token);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String token)  $default,) {final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest():
+return $default(_that.token);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String token)?  $default,) {final _that = this;
+switch (_that) {
+case _FCMTokenAddRequest() when $default != null:
+return $default(_that.token);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _FCMTokenAddRequest implements FCMTokenAddRequest {
+  const _FCMTokenAddRequest({required this.token});
+  factory _FCMTokenAddRequest.fromJson(Map<String, dynamic> json) => _$FCMTokenAddRequestFromJson(json);
+
+@override final  String token;
+
+/// Create a copy of FCMTokenAddRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$FCMTokenAddRequestCopyWith<_FCMTokenAddRequest> get copyWith => __$FCMTokenAddRequestCopyWithImpl<_FCMTokenAddRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$FCMTokenAddRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FCMTokenAddRequest&&(identical(other.token, token) || other.token == token));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,token);
+
+@override
+String toString() {
+  return 'FCMTokenAddRequest(token: $token)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$FCMTokenAddRequestCopyWith<$Res> implements $FCMTokenAddRequestCopyWith<$Res> {
+  factory _$FCMTokenAddRequestCopyWith(_FCMTokenAddRequest value, $Res Function(_FCMTokenAddRequest) _then) = __$FCMTokenAddRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String token
+});
+
+
+
+
+}
+/// @nodoc
+class __$FCMTokenAddRequestCopyWithImpl<$Res>
+    implements _$FCMTokenAddRequestCopyWith<$Res> {
+  __$FCMTokenAddRequestCopyWithImpl(this._self, this._then);
+
+  final _FCMTokenAddRequest _self;
+  final $Res Function(_FCMTokenAddRequest) _then;
+
+/// Create a copy of FCMTokenAddRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,}) {
+  return _then(_FCMTokenAddRequest(
+token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$FCMTokenAddResponse {
+
+ int get id;
+/// Create a copy of FCMTokenAddResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FCMTokenAddResponseCopyWith<FCMTokenAddResponse> get copyWith => _$FCMTokenAddResponseCopyWithImpl<FCMTokenAddResponse>(this as FCMTokenAddResponse, _$identity);
+
+  /// Serializes this FCMTokenAddResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FCMTokenAddResponse&&(identical(other.id, id) || other.id == id));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'FCMTokenAddResponse(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FCMTokenAddResponseCopyWith<$Res>  {
+  factory $FCMTokenAddResponseCopyWith(FCMTokenAddResponse value, $Res Function(FCMTokenAddResponse) _then) = _$FCMTokenAddResponseCopyWithImpl;
+@useResult
+$Res call({
+ int id
+});
+
+
+
+
+}
+/// @nodoc
+class _$FCMTokenAddResponseCopyWithImpl<$Res>
+    implements $FCMTokenAddResponseCopyWith<$Res> {
+  _$FCMTokenAddResponseCopyWithImpl(this._self, this._then);
+
+  final FCMTokenAddResponse _self;
+  final $Res Function(FCMTokenAddResponse) _then;
+
+/// Create a copy of FCMTokenAddResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [FCMTokenAddResponse].
+extension FCMTokenAddResponsePatterns on FCMTokenAddResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _FCMTokenAddResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _FCMTokenAddResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _FCMTokenAddResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse() when $default != null:
+return $default(_that.id);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id)  $default,) {final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse():
+return $default(_that.id);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id)?  $default,) {final _that = this;
+switch (_that) {
+case _FCMTokenAddResponse() when $default != null:
+return $default(_that.id);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _FCMTokenAddResponse implements FCMTokenAddResponse {
+  const _FCMTokenAddResponse({required this.id});
+  factory _FCMTokenAddResponse.fromJson(Map<String, dynamic> json) => _$FCMTokenAddResponseFromJson(json);
+
+@override final  int id;
+
+/// Create a copy of FCMTokenAddResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$FCMTokenAddResponseCopyWith<_FCMTokenAddResponse> get copyWith => __$FCMTokenAddResponseCopyWithImpl<_FCMTokenAddResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$FCMTokenAddResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FCMTokenAddResponse&&(identical(other.id, id) || other.id == id));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'FCMTokenAddResponse(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$FCMTokenAddResponseCopyWith<$Res> implements $FCMTokenAddResponseCopyWith<$Res> {
+  factory _$FCMTokenAddResponseCopyWith(_FCMTokenAddResponse value, $Res Function(_FCMTokenAddResponse) _then) = __$FCMTokenAddResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ int id
+});
+
+
+
+
+}
+/// @nodoc
+class __$FCMTokenAddResponseCopyWithImpl<$Res>
+    implements _$FCMTokenAddResponseCopyWith<$Res> {
+  __$FCMTokenAddResponseCopyWithImpl(this._self, this._then);
+
+  final _FCMTokenAddResponse _self;
+  final $Res Function(_FCMTokenAddResponse) _then;
+
+/// Create a copy of FCMTokenAddResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(_FCMTokenAddResponse(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
 // dart format on

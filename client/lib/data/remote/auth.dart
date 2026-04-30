@@ -32,6 +32,12 @@ abstract class AuthService {
   Future<ActionResponse> confirmAvatar(
     @Body() UserAvatarConfirmRequest request,
   );
+
+  @POST("/auth/me/fcm")
+  Future<FCMTokenAddResponse> addFCMToken(@Body() FCMTokenAddRequest request);
+
+  @DELETE("/auth/me/fcm/{id}")
+  Future<ActionResponse> deleteFCMToken(@Path() int id);
 }
 
 @JsonSerializable()
@@ -131,4 +137,22 @@ abstract class UserAvatarConfirmRequest with _$UserAvatarConfirmRequest {
 
   factory UserAvatarConfirmRequest.fromJson(Map<String, dynamic> json) =>
       _$UserAvatarConfirmRequestFromJson(json);
+}
+
+@freezed
+abstract class FCMTokenAddRequest with _$FCMTokenAddRequest {
+  const factory FCMTokenAddRequest({required String token}) =
+      _FCMTokenAddRequest;
+
+  factory FCMTokenAddRequest.fromJson(Map<String, dynamic> json) =>
+      _$FCMTokenAddRequestFromJson(json);
+}
+
+@freezed
+abstract class FCMTokenAddResponse with _$FCMTokenAddResponse {
+  const factory FCMTokenAddResponse({required int id}) =
+      _FCMTokenAddResponse;
+
+  factory FCMTokenAddResponse.fromJson(Map<String, dynamic> json) =>
+      _$FCMTokenAddResponseFromJson(json);
 }

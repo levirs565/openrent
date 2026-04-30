@@ -53,40 +53,42 @@ class _Content extends StatelessWidget {
       },
       builder: (context, state) => Scaffold(
         appBar: AppBar(title: Text("Messages"),),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (state.isLoading) LinearProgressIndicator(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: state.list.length,
-                itemBuilder: (context, index) => _Item(item: state.list[index]),
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (state.isLoading) LinearProgressIndicator(),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.list.length,
+                  itemBuilder: (context, index) => _Item(item: state.list[index]),
+                ),
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ControlledTextField<MessagesCubit, MessagesState>(
-                    selector: (state) => state.currentMessage,
-                    builder: (controller) => TextField(
-                      readOnly: !state.canEdit,
-                      decoration: InputDecoration(),
-                      controller: controller,
-                      onChanged: (message) => context
-                          .read<MessagesCubit>()
-                          .onCurrentMessageChanged(message),
+              Row(
+                children: [
+                  Expanded(
+                    child: ControlledTextField<MessagesCubit, MessagesState>(
+                      selector: (state) => state.currentMessage,
+                      builder: (controller) => TextField(
+                        readOnly: !state.canEdit,
+                        decoration: InputDecoration(),
+                        controller: controller,
+                        onChanged: (message) => context
+                            .read<MessagesCubit>()
+                            .onCurrentMessageChanged(message),
+                      ),
                     ),
                   ),
-                ),
-                OutlinedButton(
-                  onPressed: !state.canSubmit
-                      ? null
-                      : () => context.read<MessagesCubit>().onSend(),
-                  child: Icon(Icons.send),
-                ),
-              ],
-            ),
-          ],
+                  OutlinedButton(
+                    onPressed: !state.canSubmit
+                        ? null
+                        : () => context.read<MessagesCubit>().onSend(),
+                    child: Icon(Icons.send),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

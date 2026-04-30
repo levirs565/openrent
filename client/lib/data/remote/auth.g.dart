@@ -95,6 +95,19 @@ Map<String, dynamic> _$UserAvatarConfirmRequestToJson(
   _UserAvatarConfirmRequest instance,
 ) => <String, dynamic>{'name': instance.name};
 
+_FCMTokenAddRequest _$FCMTokenAddRequestFromJson(Map<String, dynamic> json) =>
+    _FCMTokenAddRequest(token: json['token'] as String);
+
+Map<String, dynamic> _$FCMTokenAddRequestToJson(_FCMTokenAddRequest instance) =>
+    <String, dynamic>{'token': instance.token};
+
+_FCMTokenAddResponse _$FCMTokenAddResponseFromJson(Map<String, dynamic> json) =>
+    _FCMTokenAddResponse(id: (json['id'] as num).toInt());
+
+Map<String, dynamic> _$FCMTokenAddResponseToJson(
+  _FCMTokenAddResponse instance,
+) => <String, dynamic>{'id': instance.id};
+
 // dart format off
 
 // **************************************************************************
@@ -266,6 +279,61 @@ class _AuthService implements AuthService {
           .compose(
             _dio.options,
             '/auth/avatar/confirm',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ActionResponse _value;
+    try {
+      _value = ActionResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<FCMTokenAddResponse> addFCMToken(FCMTokenAddRequest request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<FCMTokenAddResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/me/fcm',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late FCMTokenAddResponse _value;
+    try {
+      _value = FCMTokenAddResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ActionResponse> deleteFCMToken(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ActionResponse>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/me/fcm/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
