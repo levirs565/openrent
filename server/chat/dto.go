@@ -75,5 +75,6 @@ func modelToResponseItem(model models.Message, userId uint) MessageResponseItem 
 type ChatResponseItem struct {
 	ID          uint                `json:"id"`
 	Name        string              `json:"name"`
+	ImageURL    *string             `json:"image_url"`
 	LastMessage MessageResponseItem `json:"last_message"`
 }

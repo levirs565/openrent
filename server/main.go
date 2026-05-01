@@ -173,7 +173,7 @@ func main() {
 	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
 	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket)
 	reviwsService := review.NewService(db)
-	chatService := chat.NewService(db, notificationService)
+	chatService := chat.NewService(db, notificationService, s3Client, s3Bucket)
 	messageService := message.NewService(db)
 
 	authController := auth.NewController(authService)
