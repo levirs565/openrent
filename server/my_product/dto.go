@@ -4,6 +4,8 @@ import (
 	"openrent-server/core"
 	"openrent-server/models"
 	"time"
+
+	"gorm.io/datatypes"
 )
 
 type GetByIdRequest struct {
@@ -80,9 +82,38 @@ func modelToResponse(model models.Product) ResponseItem {
 	}
 }
 
+type UserShort struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+type RentItem struct {
+	ID        uint             `json:"id"`
+	User      UserShort        `json:"user"`
+	State     models.RentState `json:"state"`
+	StartDate datatypes.Date   `json:"start_date"`
+	EndDate   datatypes.Date   `json:"end_date"`
+	Quantity  int              `json:"quantity"`
+}
+
+func modelToRentItem(model models.Rent) RentItem {
+	return RentItem{
+		ID: model.ID,
+		User: UserShort{
+			ID:   model.UserAccountID,
+			Name: model.RenterSnapshotName,
+		},
+		State:     model.State,
+		StartDate: model.StartDate,
+		EndDate:   model.EndDate,
+		Quantity:  model.Quantity,
+	}
+}
+
 type ResponseItemDetail struct {
 	ResponseItem
 	TopReviews []core.ReviewDetail `json:"top_reviews"`
+	Rents      []RentItem          `json:"rents"`
 }
 
 type AddRequest struct {

@@ -152,8 +152,30 @@ func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseIt
 		return ResponseItemDetail{}, err
 	}
 
+	rents, err := gorm.G[models.Rent](s.db).
+		Select(
+			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
+			"rents.quantity", "rents.user_account_id", "rents.renter_snapshot_name",
+		).
+		Joins(
+			clause.JoinTarget{Association: "Product"},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("")
+				return nil
+			},
+		).
+		Where(`"Product".id = ?`, id).
+		Find(ctx)
+
+	if err != nil {
+		return ResponseItemDetail{}, err
+	}
+
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
+		Rents: lo.Map(rents, func(item models.Rent, index int) RentItem {
+			return modelToRentItem(item)
+		}),
 		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
 			return core.ReviewDetailFromModel(item)
 		}),
