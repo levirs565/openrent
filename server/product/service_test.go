@@ -174,7 +174,7 @@ func TestRentRace(t *testing.T) {
 		return
 	}
 
-	service := NewService(db.db, embedding.NewNoopEmbedder(), notification.NewNoopService())
+	service := NewService(db.db, embedding.NewNoopEmbedder(), notification.NewNoopService(), nil, "")
 
 	var wg sync.WaitGroup
 	start := make(chan struct{})

@@ -17,11 +17,13 @@ class MyProductListTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: BlocProvider(
-        create: (context) => MyProductListCubit(productRepository: context.read()),
+        create: (context) =>
+            MyProductListCubit(productRepository: context.read()),
         child: Scaffold(
           body: _MyProductsPageContent(),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => Navigator.of(context).push(ProductFormPage.routeAdd()),
+            onPressed: () =>
+                Navigator.of(context).push(ProductFormPage.routeAdd()),
             child: Icon(Icons.add),
           ),
         ),
@@ -66,7 +68,7 @@ class _MyProductsPageContent extends StatelessWidget {
 
 // TODO: This simmiliar to ProductCard, but this will use List instead of grid
 class _MyProductsItem extends StatelessWidget {
-  final ProductResponseItemShort item;
+  final MyProductResponseItemShort item;
 
   const _MyProductsItem({super.key, required this.item});
 
@@ -74,12 +76,30 @@ class _MyProductsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card.filled(
       child: InkWell(
-        onTap: () => Navigator.of(context).push(MyProductDetailPage.route(item.id)),
+        onTap: () =>
+            Navigator.of(context).push(MyProductDetailPage.route(item.id)),
         child: Column(
           children: [
+            if (item.imageUrl != null)
+              Image.network(item.imageUrl!, height: 96,),
             Text(item.name),
             Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
-            Text("${item.address.regency} - ${item.user.name}"),
+            Text("${item.address.name}"),
+            Row(
+              spacing: 4,
+              children: [
+                if (item.rentCount.pending > 0)
+                  Text("Pending: ${item.rentCount.pending}"),
+                if (item.rentCount.ready > 0)
+                  Text("Ready: ${item.rentCount.ready}"),
+                if (item.rentCount.onRent > 0)
+                  Text("On Rent: ${item.rentCount.onRent}"),
+                if (item.rentCount.pendingReturn > 0)
+                  Text("Pending Return: ${item.rentCount.pendingReturn}"),
+                if (item.rentCount.late > 0)
+                  Text("Late: ${item.rentCount.late}"),
+              ],
+            ),
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import (
 	"openrent-server/auth"
 	"openrent-server/chat"
 	"openrent-server/message"
+	"openrent-server/my_product"
 	"openrent-server/owner_rent"
 	"openrent-server/product"
 	"openrent-server/rent"
@@ -41,6 +42,11 @@ var error_codes map[error]int = map[error]int{
 	product.ErrNotFound:               http.StatusNotFound,
 	product.ErrStockUnavailable:       http.StatusConflict,
 	product.ErrCannotRentOwnedProduct: http.StatusConflict,
+
+	my_product.ErrNotFound:             http.StatusNotFound,
+	my_product.ErrInvalidContentType:   http.StatusBadRequest,
+	my_product.ErrImageSizeExceedLimit: http.StatusBadRequest,
+	my_product.ErrImageNotFound:        http.StatusBadRequest,
 
 	rent.ErrNotFound:         http.StatusNotFound,
 	rent.ErrNotReady:         http.StatusConflict,

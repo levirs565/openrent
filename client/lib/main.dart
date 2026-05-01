@@ -68,7 +68,8 @@ void main() async {
           create: (_) => AddressDataSource(addressService: addressService),
         ),
         RepositoryProvider<ProductRepository>(
-          create: (_) => ProductDataSource(service: productService),
+          create: (_) =>
+              ProductDataSource(service: productService, dioUploader: Dio()),
         ),
         RepositoryProvider<ReviewRepository>(
           create: (_) => ReviewDataSource(reviewService: reviewService),
@@ -155,7 +156,10 @@ class _AppViewState extends State<AppView> {
                 _navigator.pushAndRemoveUntil(HomePage.route(), (_) => false);
               }
             } else if (state.state is AuthStateBiometricFailed) {
-              _navigator.pushAndRemoveUntil(BiometricFailedPage.route(), (_) => false);
+              _navigator.pushAndRemoveUntil(
+                BiometricFailedPage.route(),
+                (_) => false,
+              );
             }
           },
           child: child,

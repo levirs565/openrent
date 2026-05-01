@@ -26,6 +26,7 @@ import (
 	"openrent-server/embedding"
 	"openrent-server/message"
 	"openrent-server/models"
+	"openrent-server/my_product"
 	"openrent-server/notification"
 	"openrent-server/owner_rent"
 	"openrent-server/product"
@@ -167,9 +168,10 @@ func main() {
 	notificationService := notification.NewFCMService(messaging, db)
 	authService := auth.NewService(db, s3Client, s3Bucket)
 	addressService := address.NewService(db)
-	productService := product.NewService(db, embedder, notificationService)
-	ownerRentsService := owner_rent.NewService(db, notificationService)
-	rentsService := rent.NewService(db, notificationService)
+	productService := product.NewService(db, embedder, notificationService, s3Client, s3Bucket)
+	myProductService := my_product.NewService(db, embedder, s3Client, s3Bucket)
+	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
+	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket)
 	reviwsService := review.NewService(db)
 	chatService := chat.NewService(db, notificationService)
 	messageService := message.NewService(db)
@@ -182,6 +184,9 @@ func main() {
 
 	productController := product.NewController(productService)
 	productController.RegisterRoutes(e.Group("/products"))
+
+	myProductController := my_product.NewController(myProductService)
+	myProductController.RegisterRoutes(e.Group("/me/products"))
 
 	ownerRentController := owner_rent.NewController(ownerRentsService)
 	ownerRentController.RegisterRoutes(e.Group("/owner/rents"))

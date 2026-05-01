@@ -72,6 +72,7 @@ class _Item extends StatelessWidget {
             Navigator.of(context).push(MyOrderDetailPage.route(item.id)),
         child: Column(
           children: [
+            if (item.product.imageUrl != null) Image.network(item.product.imageUrl!, height: 96,),
             Text("${item.user.name} - ${item.product.name}"),
             Text("${item.startDate} - ${item.endDate}"),
             Text("${item.quantity} - ${item.state}"),

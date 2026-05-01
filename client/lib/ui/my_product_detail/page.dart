@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/components/review_card.dart';
+import 'package:openrent_client/ui/my_rental_detail/page.dart';
 import 'package:openrent_client/ui/product_form/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
 
@@ -30,8 +32,8 @@ class MyProductDetailPage extends StatelessWidget {
 }
 
 class _MyProductDetailPageContent extends StatelessWidget {
-  static String formatAddress(ProductAddress address) {
-    return "${address.detail}, ${address.district}, ${address.regency}, ${address.province}";
+  static String formatAddress(MyProductAddress address) {
+    return "${address.name} ${address.detail}, ${address.district}, ${address.regency}, ${address.province}";
   }
 
   @override
@@ -42,11 +44,13 @@ class _MyProductDetailPageContent extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: SnackBarAction(
-                label: "Refresh",
-                onPressed: () =>
-                    context.read<MyProductDetailCubit>().onRefresh(),
-              ),
+              action: state.error?.source != .data
+                  ? null
+                  : SnackBarAction(
+                      label: "Refresh",
+                      onPressed: () =>
+                          context.read<MyProductDetailCubit>().onRefresh(),
+                    ),
             ),
           );
           context.read<MyProductDetailCubit>().onErrorHandled(state.error!);
@@ -68,13 +72,27 @@ class _MyProductDetailPageContent extends StatelessWidget {
           child: Column(
             children: [
               if (state.isLoading) LinearProgressIndicator(),
+              if (state.data?.imageUrl != null)
+                Image.network(state.data!.imageUrl!),
+              OutlinedButton(
+                onPressed: !state.isCanUpload ? null : () async {
+                  final cubit = context.read<MyProductDetailCubit>();
+                  final picker = ImagePicker();
+                  final file = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (file != null) {
+                    cubit.onUploadImage(file);
+                  }
+                },
+                child: Text("Upload Image"),
+              ),
               Text("Price: ${state.data?.pricePerDay ?? "-"} per day"),
               Text("Late: ${state.data?.lateFeePerDay ?? "-"} per day"),
               Text(
                 "Address: ${state.data != null ? formatAddress(state.data!.address) : "-"}",
               ),
               Text("Stock ${state.data?.stock ?? "-"}"),
-              Text("User ${state.data?.user.name}"),
               Text("Descrption:"),
               Text(state.data?.description ?? "-"),
               Text("Reviews"),
@@ -88,8 +106,36 @@ class _MyProductDetailPageContent extends StatelessWidget {
                 ).push(ProductReviewsPage.route(state.id)),
                 child: Text("See More Reviews"),
               ),
+              Text("Rents"),
+              ...(state.data?.rents
+                      .map((item) => _RentCard(item: item))
+                      .toList() ??
+                  List.empty()),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RentCard extends StatelessWidget {
+  final MyProductRentItem item;
+
+  const _RentCard({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card.filled(
+      child: InkWell(
+        onTap: () =>
+            Navigator.of(context).push(MyRentalDetailPage.route(item.id)),
+        child: Column(
+          children: [
+            Text("${item.user.name}"),
+            Text("${item.startDate} - ${item.endDate}"),
+            Text("${item.quantity} - ${item.state}"),
+          ],
         ),
       ),
     );

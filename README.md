@@ -5,13 +5,13 @@
 - [x] Register and Login (Migrate to JWT is needed, Encryption?)
 - [x] Upload Profile
 - [x] Address Management
-- [ ] Product Management (Partial)
-  - [ ] Upload Image 
+- [x] Product Management (Partial)
+  - [x] Upload Image 
 - [ ] Rental Management (Owner)
 - [ ] Order Management (Renter)
 - [x] Chat
 - [x] Show Search Result in Map
-- [ ] Optional Biometric (after Login when opening App)
+- [x] Optional Biometric (after Login when opening App)
 - [ ] Local Database for Caching and Setting
 - [ ] Review for Teacher
 - [ ] Open time and close hour for owner

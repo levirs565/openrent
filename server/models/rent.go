@@ -57,6 +57,7 @@ type RentProductSnapshot struct {
 	Name          string
 	PricePerDay   int
 	LateFeePerDay int
+	ImageName     string `json:"image_name"`
 	Details       datatypes.JSONType[RentProductDetailsSnapshot]
 }
 

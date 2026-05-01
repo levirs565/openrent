@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyProductDetailState {
 
- int get id; bool get isLoading; ProductResponseItemDetail? get data; GeneralErrorData? get error;
+ int get id; DataStatus get dataStatus; bool get isImageUpload; MyProductResponseItemDetail? get data; MyProductDetailError? get error;
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyProductDetailStateCopyWith<MyProductDetailState> get copyWith => _$MyProductD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload)&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,isLoading,data,error);
+int get hashCode => Object.hash(runtimeType,id,dataStatus,isImageUpload,data,error);
 
 @override
 String toString() {
-  return 'MyProductDetailState(id: $id, isLoading: $isLoading, data: $data, error: $error)';
+  return 'MyProductDetailState(id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload, data: $data, error: $error)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MyProductDetailStateCopyWith<$Res>  {
   factory $MyProductDetailStateCopyWith(MyProductDetailState value, $Res Function(MyProductDetailState) _then) = _$MyProductDetailStateCopyWithImpl;
 @useResult
 $Res call({
- ProductResponseItemDetail? data, ErrorData<void>? error, int id, bool isLoading
+ MyProductResponseItemDetail? data, ErrorData<MyProductDetailErrorSource>? error, int id, DataStatus dataStatus, bool isImageUpload
 });
 
 
@@ -62,12 +62,13 @@ class _$MyProductDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? isLoading = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,}) {
   return _then(MyProductDetailState(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorData<void>?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as MyProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ErrorData<MyProductDetailErrorSource>?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,isImageUpload: null == isImageUpload ? _self.isImageUpload : isImageUpload // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
