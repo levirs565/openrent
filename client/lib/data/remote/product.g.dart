@@ -604,6 +604,7 @@ class _ProductService implements ProductService {
 
   @override
   Future<ProductImagePresignedResponse> createProductImagePresigned(
+    int id,
     ProductImagePresignedRequest request,
   ) async {
     final _extra = <String, dynamic>{};
@@ -615,7 +616,7 @@ class _ProductService implements ProductService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/me/products/{id}/image/presigned-url',
+            '/me/products/${id}/image/presigned-url',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -634,6 +635,7 @@ class _ProductService implements ProductService {
 
   @override
   Future<ActionResponse> confirmProductImage(
+    int id,
     ProductImageConfirmRequest request,
   ) async {
     final _extra = <String, dynamic>{};
@@ -645,7 +647,7 @@ class _ProductService implements ProductService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/me/products/{id}/image/confirm',
+            '/me/products/${id}/image/confirm',
             queryParameters: queryParameters,
             data: _data,
           )

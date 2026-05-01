@@ -40,10 +40,7 @@ abstract interface class ProductRepository {
     ProductAddRequest request,
   );
 
-  Future<Result<void>> uploadImage({
-    required int id,
-    required XFile file,
-  });
+  Future<Result<void>> uploadImage({required int id, required XFile file});
 }
 
 class ProductDataSource implements ProductRepository {
@@ -139,6 +136,7 @@ class ProductDataSource implements ProductRepository {
   }) async {
     try {
       final presigned = await service.createProductImagePresigned(
+        id,
         ProductImagePresignedRequest(
           size: await file.length(),
           contentType: file.mimeType ?? "image/jpeg",
@@ -158,7 +156,9 @@ class ProductDataSource implements ProductRepository {
         options: Options(headers: headers),
       );
       await service.confirmProductImage(
-          ProductImageConfirmRequest(name: presigned.name));
+        id,
+        ProductImageConfirmRequest(name: presigned.name),
+      );
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);

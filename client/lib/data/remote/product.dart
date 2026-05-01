@@ -46,11 +46,13 @@ abstract class ProductService {
 
   @POST("/me/products/{id}/image/presigned-url")
   Future<ProductImagePresignedResponse> createProductImagePresigned(
+      @Path("id") int id,
       @Body() ProductImagePresignedRequest request,
       );
 
   @POST("/me/products/{id}/image/confirm")
   Future<ActionResponse> confirmProductImage(
+      @Path("id") int id,
       @Body() ProductImageConfirmRequest request,
       );
 }
