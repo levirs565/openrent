@@ -170,7 +170,7 @@ func main() {
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder, notificationService, s3Client, s3Bucket)
 	myProductService := my_product.NewService(db, embedder, s3Client, s3Bucket)
-	ownerRentsService := owner_rent.NewService(db, notificationService)
+	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
 	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket)
 	reviwsService := review.NewService(db)
 	chatService := chat.NewService(db, notificationService)
