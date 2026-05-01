@@ -1,4 +1,4 @@
-package product
+package my_product
 
 import (
 	"openrent-server/core"
@@ -19,12 +19,7 @@ func NewController(s *Service) *Controller {
 func (ct *Controller) list(c *echo.Context) error {
 	user := core.GetUserSession(c)
 
-	payload := ListRequest{}
-	if err := core.BindAndValidate(c, &payload); err != nil {
-		return err
-	}
-
-	result, err := ct.service.List(c.Request().Context(), user.ID, payload)
+	result, err := ct.service.List(c.Request().Context(), user.ID)
 	if err != nil {
 		return err
 	}
@@ -38,7 +33,8 @@ func (ct *Controller) getById(c *echo.Context) error {
 		return err
 	}
 
-	result, err := ct.service.GetById(c.Request().Context(), payload.ID)
+	user := core.GetUserSession(c)
+	result, err := ct.service.GetById(c.Request().Context(), user.ID, payload.ID)
 	if err != nil {
 		return err
 	}
@@ -46,14 +42,44 @@ func (ct *Controller) getById(c *echo.Context) error {
 	return c.JSON(200, result)
 }
 
-func (ct *Controller) rent(c *echo.Context) error {
-	payload := RentRequest{}
+func (ct *Controller) add(c *echo.Context) error {
+	payload := AddRequest{}
 	if err := core.BindAndValidate(c, &payload); err != nil {
 		return err
 	}
 
 	user := core.GetUserSession(c)
-	err := ct.service.Rent(c.Request().Context(), user.ID, payload)
+	result, err := ct.service.Add(c.Request().Context(), user.ID, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, result)
+}
+
+func (ct *Controller) update(c *echo.Context) error {
+	payload := UpdateRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	user := core.GetUserSession(c)
+	result, err := ct.service.Update(c.Request().Context(), user.ID, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, result)
+}
+
+func (ct *Controller) delete(c *echo.Context) error {
+	payload := DeleteRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	user := core.GetUserSession(c)
+	err := ct.service.Delete(c.Request().Context(), user.ID, payload.ID)
 	if err != nil {
 		return err
 	}
@@ -61,26 +87,12 @@ func (ct *Controller) rent(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
-func (ct *Controller) listReview(c *echo.Context) error {
-	payload := ListReviewRequest{}
-	if err := core.BindAndValidate(c, &payload); err != nil {
-		return err
-	}
-
-	user := core.GetUserSession(c)
-	result, err := ct.service.ListReview(c.Request().Context(), user.ID, payload)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(200, result)
-}
-
 func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
 	g.GET("", ct.list)
+	g.POST("", ct.add)
 	g.GET("/:id", ct.getById)
-	g.POST("/:id/rent", ct.rent)
-	g.GET("/:id/reviews", ct.listReview)
+	g.PUT("/:id", ct.update)
+	g.DELETE("/:id", ct.delete)
 }

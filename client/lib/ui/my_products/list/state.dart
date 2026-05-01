@@ -7,7 +7,7 @@ part 'state.freezed.dart';
 @freezed
 class MyProductListState with _$MyProductListState {
   final bool isLoading;
-  final List<ProductResponseItemShort> data;
+  final List<MyProductResponseItemShort> data;
   final GeneralErrorData? error;
 
   MyProductListState({required this.isLoading, required this.data, this.error});

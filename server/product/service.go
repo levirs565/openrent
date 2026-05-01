@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/core"
 	"openrent-server/embedding"
 	"openrent-server/models"
 	"openrent-server/notification"
@@ -94,11 +95,6 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 	return mapped, nil
 }
 
-func (s *Service) embedProduct(ctx context.Context, name string, description string) ([]float32, error) {
-	content := fmt.Sprintf("Product: %s, Description: %s", name, description)
-	return s.embedder.Embed(ctx, content)
-}
-
 func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, error) {
 	model, err := gorm.G[models.Product](s.db).
 		Select(
@@ -161,19 +157,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
-	reviews, err := gorm.G[models.Review](s.db).
-		Select("reviews.id", "reviews.rating", "reviews.content").
-		Joins(
-			clause.JoinTarget{Association: "Rent"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("user_account_id", "renter_snapshot_name")
-				return nil
-			},
-		).
-		Where(`"Rent".product_id = ?`, id).
-		Limit(5).
-		Find(ctx)
-	// TODO Sort by AI
+	reviews, err := core.GetProductTopReviews(ctx, s.db, id)
 	if err != nil {
 		return ResponseItemDetail{}, err
 	}
@@ -183,121 +167,10 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
 			return modelToResponseShort(item)
 		}),
-		TopReviews: lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
-			return modelToReviewDetail(item)
+		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
+			return core.ReviewDetailFromModel(item)
 		}),
 	}, nil
-}
-
-func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (ResponseItem, error) {
-	model := addRequestToModel(product)
-	model.UserAccountID = userId
-	// Check address is deleted or not
-
-	embed, err := s.embedProduct(ctx, model.Name, model.Description)
-	if err != nil {
-		return ResponseItem{}, err
-	}
-	model.Embedding = pgvector.NewVector(embed)
-
-	err = gorm.G[models.Product](s.db).Create(ctx, &model)
-	if err != nil {
-		return ResponseItem{}, err
-	}
-
-	model, err = gorm.G[models.Product](s.db).
-		Select(
-			"products.id", "products.created_at", "products.updated_at",
-			"products.name", "products.price_per_day", "products.late_fee_per_day",
-			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id",
-		).
-		Joins(
-			clause.JoinTarget{Association: "UserAccount.Account"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("name")
-				return nil
-			},
-		).
-		Joins(
-			clause.JoinTarget{Association: "UserAddress"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("province", "regency", "district", "address_detail", "location")
-				return nil
-			},
-		).
-		Where("products.id = ?", model.ID).First(ctx)
-
-	if err != nil {
-		return ResponseItem{}, err
-	}
-
-	return modelToResponse(model), nil
-}
-
-func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest) (ResponseItem, error) {
-	model := addRequestToModel(product.AddRequest)
-	model.UserAccountID = userId
-	model.ID = product.ID
-
-	embed, err := s.embedProduct(ctx, model.Name, model.Description)
-	if err != nil {
-		return ResponseItem{}, err
-	}
-	model.Embedding = pgvector.NewVector(embed)
-
-	// TODO: Lock Stock
-	rows, err := gorm.G[models.Product](s.db).
-		Where("user_account_id = ? AND id = ?", userId, product.ID).
-		Updates(ctx, model)
-
-	if err != nil {
-		return ResponseItem{}, err
-	}
-	if rows == 0 {
-		return ResponseItem{}, ErrNotFound
-	}
-
-	model, err = gorm.G[models.Product](s.db).
-		Select(
-			"products.id", "products.created_at", "products.updated_at",
-			"products.name", "products.price_per_day", "products.late_fee_per_day",
-			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id",
-		).
-		Joins(
-			clause.JoinTarget{Association: "UserAccount.Account"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("name")
-				return nil
-			},
-		).
-		Joins(
-			clause.JoinTarget{Association: "UserAddress"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("province", "regency", "district", "address_detail", "location")
-				return nil
-			},
-		).
-		Where("products.id = ?", model.ID).First(ctx)
-	if err != nil {
-		return ResponseItem{}, err
-	}
-
-	return modelToResponse(model), nil
-}
-
-func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
-	rows, err := gorm.G[models.Product](s.db).
-		Where("user_account_id = ? and id = ?", userId, id).
-		Delete(ctx)
-	if err != nil {
-		return err
-	}
-	if rows == 0 {
-		return ErrNotFound
-	}
-	return nil
 }
 
 func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) error {
@@ -447,7 +320,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	return nil
 }
 
-func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]ReviewDetail, error) {
+func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
 	reviews, err := gorm.G[models.Review](s.db).
 		Select("reviews.id", "reviews.rating", "reviews.content").
 		Joins(
@@ -461,10 +334,10 @@ func (s *Service) ListReview(ctx context.Context, userId uint, request ListRevie
 		Find(ctx)
 
 	if err != nil {
-		return []ReviewDetail{}, nil
+		return []core.ReviewDetail{}, nil
 	}
 
-	return lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
-		return modelToReviewDetail(item)
+	return lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
+		return core.ReviewDetailFromModel(item)
 	}), nil
 }

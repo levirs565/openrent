@@ -25,11 +25,13 @@ abstract interface class ProductRepository {
 
   Future<Result<ProductResponseItemDetail>> getById({required int id});
 
-  Future<Result<List<ProductResponseItemShort>>> getMyProduct();
+  Future<Result<List<MyProductResponseItemShort>>> getMyProduct();
 
-  Future<Result<ProductResponseItem>> add(ProductAddRequest request);
+  Future<Result<MyProductResponseItemDetail>> getMyProductById({required int id});
 
-  Future<Result<ProductResponseItem>> update(int id, ProductAddRequest request);
+  Future<Result<MyProductResponseItem>> add(ProductAddRequest request);
+
+  Future<Result<MyProductResponseItem>> update(int id, ProductAddRequest request);
 }
 
 class ProductDataSource implements ProductRepository {
@@ -72,9 +74,9 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<List<ProductResponseItemShort>>> getMyProduct() async {
+  Future<Result<List<MyProductResponseItemShort>>> getMyProduct() async {
     try {
-      final result = await service.listProduct(owner: true);
+      final result = await service.getMyProductList();
       return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);
@@ -82,7 +84,17 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<ProductResponseItem>> add(ProductAddRequest request) async {
+  Future<Result<MyProductResponseItemDetail>> getMyProductById({required int id})async {
+    try {
+      final result = await service.getMyProductDetail(id);
+      return ResultSuccess(result);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<MyProductResponseItem>> add(ProductAddRequest request) async {
     try {
       final result = await service.addProduct(request);
       return ResultSuccess(result);
@@ -92,7 +104,7 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<ProductResponseItem>> update(
+  Future<Result<MyProductResponseItem>> update(
     int id,
     ProductAddRequest request,
   ) async {

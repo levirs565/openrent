@@ -26,6 +26,7 @@ import (
 	"openrent-server/embedding"
 	"openrent-server/message"
 	"openrent-server/models"
+	"openrent-server/my_product"
 	"openrent-server/notification"
 	"openrent-server/owner_rent"
 	"openrent-server/product"
@@ -168,6 +169,7 @@ func main() {
 	authService := auth.NewService(db, s3Client, s3Bucket)
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder, notificationService)
+	myProductService := my_product.NewService(db, embedder)
 	ownerRentsService := owner_rent.NewService(db, notificationService)
 	rentsService := rent.NewService(db, notificationService)
 	reviwsService := review.NewService(db)
@@ -182,6 +184,9 @@ func main() {
 
 	productController := product.NewController(productService)
 	productController.RegisterRoutes(e.Group("/products"))
+
+	myProductController := my_product.NewController(myProductService)
+	myProductController.RegisterRoutes(e.Group("/me/products"))
 
 	ownerRentController := owner_rent.NewController(ownerRentsService)
 	ownerRentController.RegisterRoutes(e.Group("/owner/rents"))

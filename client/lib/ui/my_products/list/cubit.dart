@@ -22,12 +22,12 @@ class MyProductListCubit extends Cubit<MyProductListState> {
     final result = await _productRepository.getMyProduct();
 
     switch (result) {
-      case ResultSuccess<List<ProductResponseItemShort>>():
+      case ResultSuccess<List<MyProductResponseItemShort>>():
         emit(state.copyWith(
           isLoading: false,
           data: result.data
         ));
-      case ResultError<List<ProductResponseItemShort>>():
+      case ResultError<List<MyProductResponseItemShort>>():
         emit(state.copyWith(
           isLoading: false,
           error: GeneralErrorData.general(message: result.message)

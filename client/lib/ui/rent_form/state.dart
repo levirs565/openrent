@@ -16,7 +16,7 @@ abstract class RentFormState with _$RentFormState {
 
   factory RentFormState({
     required int id,
-    required ProductResponseItem? data,
+    required ProductResponseItemDetail? data,
     required DateTime startDate,
     required DateTime endDate,
     required int? quantity,
