@@ -57,6 +57,8 @@ class _Content extends StatelessWidget {
         children: [
           if (state.isLoading) LinearProgressIndicator(),
           Text("Product"),
+          if (state.data?.product.imageUrl != null)
+            Image.network(state.data!.product.imageUrl!, height: 96),
           Text(state.data?.product.name ?? "-"),
           OutlinedButton(
             onPressed: state.data == null
@@ -88,7 +90,7 @@ class _Content extends StatelessWidget {
           Text(state.data?.quantity.toString() ?? "-"),
           if (state.data?.cancellation != null) ...[
             Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
-            Text("Cancel Note: ${state.data?.cancellation?.note}")
+            Text("Cancel Note: ${state.data?.cancellation?.note}"),
           ],
           if (state.data?.review != null) ...[
             Text("Review"),
