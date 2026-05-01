@@ -52,7 +52,7 @@ class MessagesCubit extends Cubit<MessagesState> {
         emit(
           state.copyWith(
             dataStatus: .success,
-            list: result.data.reversed.toList(),
+            list: result.data,
           ),
         );
       case ResultError<List<MessageResponseItem>>():

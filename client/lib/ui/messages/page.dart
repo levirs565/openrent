@@ -139,6 +139,7 @@ class _Content extends StatelessWidget {
                           ),
                         )
                       : ListView.separated(
+                          reverse: true,
                           itemCount: state.list.length,
                           separatorBuilder: (context, index) =>
                               const SizedBox(height: 12),
@@ -213,7 +214,7 @@ class _Item extends StatelessWidget {
   const _Item({super.key, required this.item});
 
   String _formatTimestamp(DateTime timestamp) {
-    return DateFormat('dd/MM/yyyy HH:mm').format(timestamp);
+    return DateFormat('dd/MM/yyyy HH:mm').format(timestamp.toLocal());
   }
 
   @override
