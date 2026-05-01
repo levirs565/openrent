@@ -1,35 +1,17 @@
-package product
+package my_product
 
 import (
 	"openrent-server/models"
 	"time"
 )
 
-type ListRequest struct {
-	Owner           bool     `query:"owner"`
-	Query           string   `query:"q"`
-	DisableAISearch bool     `query:"no_ai_search"`
-	Regions         []string `query:"regions"`
-	Lat             float64  `query:"lat"`
-	Lng             float64  `query:"lng" validate:"required_with=Lat"`
-	RadiusKM        int      `query:"radius_km" validate:"required_with=Lng"`
-}
-
-type UserData struct {
+type ResponseItemShortAddress struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-type ResponseItemShortAddress struct {
-	ID      uint    `json:"id"`
-	Regency string  `json:"regency"`
-	Lat     float64 `json:"lat"`
-	Lng     float64 `json:"lng"`
-}
-
 type ResponseItemShort struct {
 	ID          uint                     `json:"id"`
-	User        UserData                 `json:"user"`
 	CreatedAt   time.Time                `json:"created_at"`
 	UpdatedAt   time.Time                `json:"updated_at"`
 	Name        string                   `json:"name"`
@@ -41,15 +23,9 @@ type ResponseItemShort struct {
 func modelToResponseShort(model models.Product) ResponseItemShort {
 	return ResponseItemShort{
 		ID: model.ID,
-		User: UserData{
-			ID:   model.UserAccountID,
-			Name: model.UserAccount.Account.Name,
-		},
 		Address: ResponseItemShortAddress{
-			ID:      model.UserAddressID,
-			Regency: model.UserAddress.Regency,
-			Lat:     model.UserAddress.Location.Lat,
-			Lng:     model.UserAddress.Location.Lng,
+			ID:   model.UserAddressID,
+			Name: model.UserAddress.Name,
 		},
 		CreatedAt:   model.CreatedAt,
 		UpdatedAt:   model.UpdatedAt,
@@ -61,6 +37,7 @@ func modelToResponseShort(model models.Product) ResponseItemShort {
 
 type ResponseItemAddress struct {
 	ID            uint    `json:"id"`
+	Name          string  `json:"name"`
 	Province      string  `json:"province"`
 	Regency       string  `json:"regency"`
 	District      string  `json:"district"`
@@ -71,7 +48,6 @@ type ResponseItemAddress struct {
 
 type ResponseItem struct {
 	ID            uint                `json:"id"`
-	User          UserData            `json:"user"`
 	CreatedAt     time.Time           `json:"created_at"`
 	UpdatedAt     time.Time           `json:"updated_at"`
 	Name          string              `json:"name"`
@@ -85,12 +61,9 @@ type ResponseItem struct {
 func modelToResponse(model models.Product) ResponseItem {
 	return ResponseItem{
 		ID: model.ID,
-		User: UserData{
-			ID:   model.UserAccountID,
-			Name: model.UserAccount.Account.Name,
-		},
 		Address: ResponseItemAddress{
 			ID:            model.UserAddressID,
+			Name:          model.UserAddress.Name,
 			Province:      model.UserAddress.Province,
 			Regency:       model.UserAddress.Regency,
 			District:      model.UserAddress.District,
@@ -108,47 +81,31 @@ func modelToResponse(model models.Product) ResponseItem {
 	}
 }
 
-type ReviewDetail struct {
-	ID      uint     `json:"id"`
-	User    UserData `json:"user"`
-	Rating  uint     `json:"rating"`
-	Content string   `json:"content"`
+type AddRequest struct {
+	Name          string `json:"name" validate:"required"`
+	AddressID     uint   `json:"address_id" validate:"required"`
+	PricePerDay   int    `json:"price_per_day" validate:"required"`
+	LateFeePerDay int    `json:"late_fee_per_day" validate:"required"`
+	Stock         int    `json:"stock" validate:"required"`
+	Description   string `json:"description" validate:"required"`
 }
 
-func modelToReviewDetail(item models.Review) ReviewDetail {
-	return ReviewDetail{
-		ID: item.ID,
-		User: UserData{
-			ID:   item.Rent.UserAccountID,
-			Name: item.Rent.RenterSnapshotName,
-		},
-		Rating:  item.Rating,
-		Content: item.Content,
+func addRequestToModel(item AddRequest) models.Product {
+	return models.Product{
+		Name:          item.Name,
+		UserAddressID: item.AddressID,
+		PricePerDay:   item.PricePerDay,
+		LateFeePerDay: item.LateFeePerDay,
+		Stock:         item.Stock,
+		Description:   item.Description,
 	}
 }
 
-type ResponseItemDetail struct {
-	ResponseItem
-	Recommendations []ResponseItemShort `json:"recommendations"`
-	TopReviews      []ReviewDetail      `json:"top_reviews"`
-}
-
-type GetByIdRequest struct {
+type UpdateRequest struct {
+	AddRequest
 	ID uint `param:"id"`
 }
 
-// TODO: Validate EndDate > StartDate
-type RentRequest struct {
-	ID        uint      `param:"id"`
-	StartDate time.Time `json:"start_date" validate:"required"`
-	EndDate   time.Time `json:"end_date" validate:"required"`
-	Quantity  int       `json:"quantity" validate:"required"`
-}
-
-type ListReviewRequest struct {
+type DeleteRequest struct {
 	ID uint `param:"id"`
 }
-
-// TODO: Refactor
-
-// TODO: Sort by, ASC or DES, Paging?
