@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/core"
 	"openrent-server/embedding"
 	"openrent-server/models"
 	"openrent-server/notification"
@@ -156,19 +157,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
-	reviews, err := gorm.G[models.Review](s.db).
-		Select("reviews.id", "reviews.rating", "reviews.content").
-		Joins(
-			clause.JoinTarget{Association: "Rent"},
-			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
-				db.Select("user_account_id", "renter_snapshot_name")
-				return nil
-			},
-		).
-		Where(`"Rent".product_id = ?`, id).
-		Limit(5).
-		Find(ctx)
-	// TODO Sort by AI
+	reviews, err := core.GetProductTopReviews(ctx, s.db, id)
 	if err != nil {
 		return ResponseItemDetail{}, err
 	}
@@ -178,8 +167,8 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
 			return modelToResponseShort(item)
 		}),
-		TopReviews: lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
-			return modelToReviewDetail(item)
+		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
+			return core.ReviewDetailFromModel(item)
 		}),
 	}, nil
 }
@@ -331,7 +320,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	return nil
 }
 
-func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]ReviewDetail, error) {
+func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
 	reviews, err := gorm.G[models.Review](s.db).
 		Select("reviews.id", "reviews.rating", "reviews.content").
 		Joins(
@@ -345,10 +334,10 @@ func (s *Service) ListReview(ctx context.Context, userId uint, request ListRevie
 		Find(ctx)
 
 	if err != nil {
-		return []ReviewDetail{}, nil
+		return []core.ReviewDetail{}, nil
 	}
 
-	return lo.Map(reviews, func(item models.Review, index int) ReviewDetail {
-		return modelToReviewDetail(item)
+	return lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
+		return core.ReviewDetailFromModel(item)
 	}), nil
 }

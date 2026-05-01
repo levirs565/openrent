@@ -1,6 +1,7 @@
 package product
 
 import (
+	"openrent-server/core"
 	"openrent-server/models"
 	"time"
 )
@@ -15,11 +16,6 @@ type ListRequest struct {
 	RadiusKM        int      `query:"radius_km" validate:"required_with=Lng"`
 }
 
-type UserData struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
 type ResponseItemShortAddress struct {
 	ID      uint    `json:"id"`
 	Regency string  `json:"regency"`
@@ -29,7 +25,7 @@ type ResponseItemShortAddress struct {
 
 type ResponseItemShort struct {
 	ID          uint                     `json:"id"`
-	User        UserData                 `json:"user"`
+	User        core.UserData            `json:"user"`
 	CreatedAt   time.Time                `json:"created_at"`
 	UpdatedAt   time.Time                `json:"updated_at"`
 	Name        string                   `json:"name"`
@@ -41,7 +37,7 @@ type ResponseItemShort struct {
 func modelToResponseShort(model models.Product) ResponseItemShort {
 	return ResponseItemShort{
 		ID: model.ID,
-		User: UserData{
+		User: core.UserData{
 			ID:   model.UserAccountID,
 			Name: model.UserAccount.Account.Name,
 		},
@@ -71,7 +67,7 @@ type ResponseItemAddress struct {
 
 type ResponseItem struct {
 	ID            uint                `json:"id"`
-	User          UserData            `json:"user"`
+	User          core.UserData       `json:"user"`
 	CreatedAt     time.Time           `json:"created_at"`
 	UpdatedAt     time.Time           `json:"updated_at"`
 	Name          string              `json:"name"`
@@ -85,7 +81,7 @@ type ResponseItem struct {
 func modelToResponse(model models.Product) ResponseItem {
 	return ResponseItem{
 		ID: model.ID,
-		User: UserData{
+		User: core.UserData{
 			ID:   model.UserAccountID,
 			Name: model.UserAccount.Account.Name,
 		},
@@ -108,29 +104,10 @@ func modelToResponse(model models.Product) ResponseItem {
 	}
 }
 
-type ReviewDetail struct {
-	ID      uint     `json:"id"`
-	User    UserData `json:"user"`
-	Rating  uint     `json:"rating"`
-	Content string   `json:"content"`
-}
-
-func modelToReviewDetail(item models.Review) ReviewDetail {
-	return ReviewDetail{
-		ID: item.ID,
-		User: UserData{
-			ID:   item.Rent.UserAccountID,
-			Name: item.Rent.RenterSnapshotName,
-		},
-		Rating:  item.Rating,
-		Content: item.Content,
-	}
-}
-
 type ResponseItemDetail struct {
 	ResponseItem
 	Recommendations []ResponseItemShort `json:"recommendations"`
-	TopReviews      []ReviewDetail      `json:"top_reviews"`
+	TopReviews      []core.ReviewDetail `json:"top_reviews"`
 }
 
 type GetByIdRequest struct {

@@ -1,9 +1,22 @@
 package my_product
 
 import (
+	"openrent-server/core"
 	"openrent-server/models"
 	"time"
 )
+
+type GetByIdRequest struct {
+	ID uint `param:"id"`
+}
+
+type ResponseItemRentCount struct {
+	Pending       int `json:"pending"`
+	Ready         int `json:"ready"`
+	OnRent        int `json:"on_rent"`
+	PendingReturn int `json:"pending_return"`
+	Late          int `json:"late"`
+}
 
 type ResponseItemShortAddress struct {
 	ID   uint   `json:"id"`
@@ -18,21 +31,7 @@ type ResponseItemShort struct {
 	PricePerDay int                      `json:"price_per_day"`
 	Stock       int                      `json:"stock"`
 	Address     ResponseItemShortAddress `json:"address"`
-}
-
-func modelToResponseShort(model models.Product) ResponseItemShort {
-	return ResponseItemShort{
-		ID: model.ID,
-		Address: ResponseItemShortAddress{
-			ID:   model.UserAddressID,
-			Name: model.UserAddress.Name,
-		},
-		CreatedAt:   model.CreatedAt,
-		UpdatedAt:   model.UpdatedAt,
-		Name:        model.Name,
-		PricePerDay: model.PricePerDay,
-		Stock:       model.Stock,
-	}
+	RentCount   ResponseItemRentCount    `json:"rent_count"`
 }
 
 type ResponseItemAddress struct {
@@ -79,6 +78,11 @@ func modelToResponse(model models.Product) ResponseItem {
 		Stock:         model.Stock,
 		Description:   model.Description,
 	}
+}
+
+type ResponseItemDetail struct {
+	ResponseItem
+	TopReviews []core.ReviewDetail `json:"top_reviews"`
 }
 
 type AddRequest struct {
