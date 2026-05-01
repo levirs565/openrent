@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:openrent_client/data/remote/auth.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
 
@@ -27,17 +29,29 @@ abstract interface class ProductRepository {
 
   Future<Result<List<MyProductResponseItemShort>>> getMyProduct();
 
-  Future<Result<MyProductResponseItemDetail>> getMyProductById({required int id});
+  Future<Result<MyProductResponseItemDetail>> getMyProductById({
+    required int id,
+  });
 
   Future<Result<MyProductResponseItem>> add(ProductAddRequest request);
 
-  Future<Result<MyProductResponseItem>> update(int id, ProductAddRequest request);
+  Future<Result<MyProductResponseItem>> update(
+    int id,
+    ProductAddRequest request,
+  );
+
+  Future<Result<void>> uploadImage({
+    required int id,
+    required XFile file,
+  });
 }
 
 class ProductDataSource implements ProductRepository {
   final ProductService service;
+  final Dio _dioUploader;
 
-  ProductDataSource({required this.service});
+  ProductDataSource({required this.service, required Dio dioUploader})
+    : _dioUploader = dioUploader;
 
   @override
   Future<Result<List<ProductResponseItemShort>>> searchProduct({
@@ -84,7 +98,9 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<MyProductResponseItemDetail>> getMyProductById({required int id})async {
+  Future<Result<MyProductResponseItemDetail>> getMyProductById({
+    required int id,
+  }) async {
     try {
       final result = await service.getMyProductDetail(id);
       return ResultSuccess(result);
@@ -111,6 +127,39 @@ class ProductDataSource implements ProductRepository {
     try {
       final result = await service.updateProduct(id, request);
       return ResultSuccess(result);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
+  }
+
+  @override
+  Future<Result<void>> uploadImage({
+    required int id,
+    required XFile file,
+  }) async {
+    try {
+      final presigned = await service.createProductImagePresigned(
+        ProductImagePresignedRequest(
+          size: await file.length(),
+          contentType: file.mimeType ?? "image/jpeg",
+        ),
+      );
+      final headers = Map.fromEntries(
+        presigned.headers.entries.map((entry) {
+          if (entry.value.length == 1) {
+            return MapEntry(entry.key, entry.value.first);
+          }
+          return MapEntry(entry.key, entry.value);
+        }),
+      );
+      await _dioUploader.put(
+        presigned.url,
+        data: await file.readAsBytes(),
+        options: Options(headers: headers),
+      );
+      await service.confirmProductImage(
+          ProductImageConfirmRequest(name: presigned.name));
+      return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
     }

@@ -5,6 +5,8 @@ import 'package:openrent_client/data/remote/converter.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:retrofit/retrofit.dart';
 
+import 'auth.dart';
+
 part 'product.freezed.dart';
 part 'product.g.dart';
 
@@ -41,6 +43,16 @@ abstract class ProductService {
     @Path("id") int id,
     @Body() ProductAddRequest request,
   );
+
+  @POST("/me/products/{id}/image/presigned-url")
+  Future<ProductImagePresignedResponse> createProductImagePresigned(
+      @Body() ProductImagePresignedRequest request,
+      );
+
+  @POST("/me/products/{id}/image/confirm")
+  Future<ActionResponse> confirmProductImage(
+      @Body() ProductImageConfirmRequest request,
+      );
 }
 
 @JsonSerializable()
@@ -97,35 +109,22 @@ class ProductAddress {
   Map<String, dynamic> toJson() => _$ProductAddressToJson(this);
 }
 
-@JsonSerializable()
-class ProductResponseItemShort {
-  final int id;
-  final ProductUserData user;
-  @JsonKey(name: "created_at")
-  final DateTime createdAt;
-  @JsonKey(name: "updated_at")
-  final DateTime updatedAt;
-  final String name;
-  @JsonKey(name: "price_per_day")
-  final int pricePerDay;
-  final int stock;
-  final ProductShortAddress address;
-
-  ProductResponseItemShort({
-    required this.id,
-    required this.user,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.name,
-    required this.pricePerDay,
-    required this.stock,
-    required this.address,
-  });
+@freezed
+abstract class ProductResponseItemShort with _$ProductResponseItemShort {
+  const factory ProductResponseItemShort({
+    required int id,
+    required ProductUserData user,
+    @JsonKey(name: "created_at") required DateTime createdAt,
+    @JsonKey(name: "updated_at") required DateTime updatedAt,
+    required String name,
+    @JsonKey(name: "price_per_day") required int pricePerDay,
+    required int stock,
+    required ProductShortAddress address,
+    @JsonKey(name: "image_url") required String? imageUrl,
+  }) = _ProductResponseItemShort;
 
   factory ProductResponseItemShort.fromJson(Map<String, dynamic> json) =>
       _$ProductResponseItemShortFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProductResponseItemShortToJson(this);
 }
 
 @JsonSerializable()
@@ -157,6 +156,7 @@ abstract class ProductResponseItemDetail with _$ProductResponseItemDetail {
     required String description,
     required ProductAddress address,
     required List<ProductResponseItemShort> recommendations,
+    @JsonKey(name: "image_url") required String? imageUrl,
     @JsonKey(name: "top_reviews") required List<ProductReviewDetail> topReviews,
   }) = _ProductResponseItemDetail;
 
@@ -202,6 +202,7 @@ abstract class MyProductResponseItemShort with _$MyProductResponseItemShort {
     required int stock,
     required MyProductAddressShort address,
     @JsonKey(name: "rent_count") required MyProductRentCount rentCount,
+    @JsonKey(name: "image_url") required String? imageUrl,
   }) = _MyProductResponseItemShort;
 
   factory MyProductResponseItemShort.fromJson(Map<String, dynamic> json) =>
@@ -282,6 +283,7 @@ abstract class MyProductResponseItemDetail with _$MyProductResponseItemDetail {
     required MyProductAddress address,
     @JsonKey(name: "top_reviews") required List<ProductReviewDetail> topReviews,
     required List<MyProductRentItem> rents,
+    @JsonKey(name: "image_url") required String? imageUrl,
   }) = _MyProductResponseItemDetail;
 
   factory MyProductResponseItemDetail.fromJson(Map<String, dynamic> json) =>
@@ -301,4 +303,37 @@ abstract class MyProductRentItem with _$MyProductRentItem {
 
   factory MyProductRentItem.fromJson(Map<String, dynamic> json) =>
       _$MyProductRentItemFromJson(json);
+}
+
+@freezed
+abstract class ProductImagePresignedRequest with _$ProductImagePresignedRequest {
+  const factory ProductImagePresignedRequest({
+    required int size,
+    @JsonKey(name: "content_type") required String contentType,
+  }) = _ProductImagePresignedRequest;
+
+  factory ProductImagePresignedRequest.fromJson(Map<String, dynamic> json) =>
+      _$ProductImagePresignedRequestFromJson(json);
+}
+
+@freezed
+abstract class ProductImagePresignedResponse with _$ProductImagePresignedResponse {
+  const factory ProductImagePresignedResponse({
+    required String name,
+    required String url,
+    required String method,
+    required Map<String, List<String>> headers,
+  }) = _ProductImagePresignedResponse;
+
+  factory ProductImagePresignedResponse.fromJson(Map<String, dynamic> json) =>
+      _$ProductImagePresignedResponseFromJson(json);
+}
+
+@freezed
+abstract class ProductImageConfirmRequest with _$ProductImageConfirmRequest {
+  const factory ProductImageConfirmRequest({required String name}) =
+  _ProductImageConfirmRequest;
+
+  factory ProductImageConfirmRequest.fromJson(Map<String, dynamic> json) =>
+      _$ProductImageConfirmRequestFromJson(json);
 }

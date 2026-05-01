@@ -54,34 +54,6 @@ Map<String, dynamic> _$ProductAddressToJson(ProductAddress instance) =>
       'lng': instance.lng,
     };
 
-ProductResponseItemShort _$ProductResponseItemShortFromJson(
-  Map<String, dynamic> json,
-) => ProductResponseItemShort(
-  id: (json['id'] as num).toInt(),
-  user: ProductUserData.fromJson(json['user'] as Map<String, dynamic>),
-  createdAt: DateTime.parse(json['created_at'] as String),
-  updatedAt: DateTime.parse(json['updated_at'] as String),
-  name: json['name'] as String,
-  pricePerDay: (json['price_per_day'] as num).toInt(),
-  stock: (json['stock'] as num).toInt(),
-  address: ProductShortAddress.fromJson(
-    json['address'] as Map<String, dynamic>,
-  ),
-);
-
-Map<String, dynamic> _$ProductResponseItemShortToJson(
-  ProductResponseItemShort instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'user': instance.user,
-  'created_at': instance.createdAt.toIso8601String(),
-  'updated_at': instance.updatedAt.toIso8601String(),
-  'name': instance.name,
-  'price_per_day': instance.pricePerDay,
-  'stock': instance.stock,
-  'address': instance.address,
-};
-
 ProductReviewDetail _$ProductReviewDetailFromJson(Map<String, dynamic> json) =>
     ProductReviewDetail(
       (json['id'] as num).toInt(),
@@ -119,6 +91,36 @@ Map<String, dynamic> _$ProductAddRequestToJson(ProductAddRequest instance) =>
       'address_id': instance.addressId,
     };
 
+_ProductResponseItemShort _$ProductResponseItemShortFromJson(
+  Map<String, dynamic> json,
+) => _ProductResponseItemShort(
+  id: (json['id'] as num).toInt(),
+  user: ProductUserData.fromJson(json['user'] as Map<String, dynamic>),
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
+  name: json['name'] as String,
+  pricePerDay: (json['price_per_day'] as num).toInt(),
+  stock: (json['stock'] as num).toInt(),
+  address: ProductShortAddress.fromJson(
+    json['address'] as Map<String, dynamic>,
+  ),
+  imageUrl: json['image_url'] as String?,
+);
+
+Map<String, dynamic> _$ProductResponseItemShortToJson(
+  _ProductResponseItemShort instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'user': instance.user,
+  'created_at': instance.createdAt.toIso8601String(),
+  'updated_at': instance.updatedAt.toIso8601String(),
+  'name': instance.name,
+  'price_per_day': instance.pricePerDay,
+  'stock': instance.stock,
+  'address': instance.address,
+  'image_url': instance.imageUrl,
+};
+
 _ProductResponseItemDetail _$ProductResponseItemDetailFromJson(
   Map<String, dynamic> json,
 ) => _ProductResponseItemDetail(
@@ -135,6 +137,7 @@ _ProductResponseItemDetail _$ProductResponseItemDetailFromJson(
   recommendations: (json['recommendations'] as List<dynamic>)
       .map((e) => ProductResponseItemShort.fromJson(e as Map<String, dynamic>))
       .toList(),
+  imageUrl: json['image_url'] as String?,
   topReviews: (json['top_reviews'] as List<dynamic>)
       .map((e) => ProductReviewDetail.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -154,6 +157,7 @@ Map<String, dynamic> _$ProductResponseItemDetailToJson(
   'description': instance.description,
   'address': instance.address,
   'recommendations': instance.recommendations,
+  'image_url': instance.imageUrl,
   'top_reviews': instance.topReviews,
 };
 
@@ -172,6 +176,7 @@ _MyProductResponseItemShort _$MyProductResponseItemShortFromJson(
   rentCount: MyProductRentCount.fromJson(
     json['rent_count'] as Map<String, dynamic>,
   ),
+  imageUrl: json['image_url'] as String?,
 );
 
 Map<String, dynamic> _$MyProductResponseItemShortToJson(
@@ -185,6 +190,7 @@ Map<String, dynamic> _$MyProductResponseItemShortToJson(
   'stock': instance.stock,
   'address': instance.address,
   'rent_count': instance.rentCount,
+  'image_url': instance.imageUrl,
 };
 
 _MyProductAddressShort _$MyProductAddressShortFromJson(
@@ -286,6 +292,7 @@ _MyProductResponseItemDetail _$MyProductResponseItemDetailFromJson(
   rents: (json['rents'] as List<dynamic>)
       .map((e) => MyProductRentItem.fromJson(e as Map<String, dynamic>))
       .toList(),
+  imageUrl: json['image_url'] as String?,
 );
 
 Map<String, dynamic> _$MyProductResponseItemDetailToJson(
@@ -302,6 +309,7 @@ Map<String, dynamic> _$MyProductResponseItemDetailToJson(
   'address': instance.address,
   'top_reviews': instance.topReviews,
   'rents': instance.rents,
+  'image_url': instance.imageUrl,
 };
 
 _MyProductRentItem _$MyProductRentItemFromJson(Map<String, dynamic> json) =>
@@ -337,6 +345,49 @@ const _$RentStateEnumMap = {
   RentState.completed: 'completed',
   RentState.cancelled: 'cancelled',
 };
+
+_ProductImagePresignedRequest _$ProductImagePresignedRequestFromJson(
+  Map<String, dynamic> json,
+) => _ProductImagePresignedRequest(
+  size: (json['size'] as num).toInt(),
+  contentType: json['content_type'] as String,
+);
+
+Map<String, dynamic> _$ProductImagePresignedRequestToJson(
+  _ProductImagePresignedRequest instance,
+) => <String, dynamic>{
+  'size': instance.size,
+  'content_type': instance.contentType,
+};
+
+_ProductImagePresignedResponse _$ProductImagePresignedResponseFromJson(
+  Map<String, dynamic> json,
+) => _ProductImagePresignedResponse(
+  name: json['name'] as String,
+  url: json['url'] as String,
+  method: json['method'] as String,
+  headers: (json['headers'] as Map<String, dynamic>).map(
+    (k, e) =>
+        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+  ),
+);
+
+Map<String, dynamic> _$ProductImagePresignedResponseToJson(
+  _ProductImagePresignedResponse instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'url': instance.url,
+  'method': instance.method,
+  'headers': instance.headers,
+};
+
+_ProductImageConfirmRequest _$ProductImageConfirmRequestFromJson(
+  Map<String, dynamic> json,
+) => _ProductImageConfirmRequest(name: json['name'] as String);
+
+Map<String, dynamic> _$ProductImageConfirmRequestToJson(
+  _ProductImageConfirmRequest instance,
+) => <String, dynamic>{'name': instance.name};
 
 // dart format off
 
@@ -544,6 +595,66 @@ class _ProductService implements ProductService {
     late MyProductResponseItem _value;
     try {
       _value = MyProductResponseItem.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ProductImagePresignedResponse> createProductImagePresigned(
+    ProductImagePresignedRequest request,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<ProductImagePresignedResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/me/products/{id}/image/presigned-url',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProductImagePresignedResponse _value;
+    try {
+      _value = ProductImagePresignedResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ActionResponse> confirmProductImage(
+    ProductImageConfirmRequest request,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<ActionResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/me/products/{id}/image/confirm',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ActionResponse _value;
+    try {
+      _value = ActionResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
