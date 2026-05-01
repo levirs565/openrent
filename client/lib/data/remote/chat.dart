@@ -20,6 +20,7 @@ abstract class ChatResponseItem with _$ChatResponseItem {
   const factory ChatResponseItem({
     required int id,
     required String name,
+    @JsonKey(name: "image_url") required String? imageUrl,
     @JsonKey(name: "last_message") required MessageResponseItem lastMessage,
   }) = _ChatResponseItem;
 

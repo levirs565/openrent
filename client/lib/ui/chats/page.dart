@@ -102,7 +102,8 @@ class _Item extends StatelessWidget {
               CircleAvatar(
                 radius: 28,
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(
+                backgroundImage: item.imageUrl == null ? null : NetworkImage(item.imageUrl!),
+                child: item.imageUrl != null ? null : Text(
                   initials,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onPrimaryContainer,

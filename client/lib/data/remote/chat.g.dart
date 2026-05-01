@@ -10,6 +10,7 @@ _ChatResponseItem _$ChatResponseItemFromJson(Map<String, dynamic> json) =>
     _ChatResponseItem(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
+      imageUrl: json['image_url'] as String?,
       lastMessage: MessageResponseItem.fromJson(
         json['last_message'] as Map<String, dynamic>,
       ),
@@ -19,6 +20,7 @@ Map<String, dynamic> _$ChatResponseItemToJson(_ChatResponseItem instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'image_url': instance.imageUrl,
       'last_message': instance.lastMessage,
     };
 
