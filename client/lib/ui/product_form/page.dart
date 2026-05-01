@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/ui/components/controlled_text_field.dart';
+import 'package:openrent_client/ui/components/loading_button.dart';
 import 'package:openrent_client/ui/product_form/cubit.dart';
 import 'package:openrent_client/ui/product_form/state.dart';
 
@@ -30,7 +31,7 @@ class ProductFormPage extends StatelessWidget {
       child: ScaffoldMessenger(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(id == null ? "Add Product" : "Edit Product"),
+            title: Text(id == null ? "Tambah Produk" : "Edit Produk"),
           ),
           body: _ProductFormPageContent(),
         ),
@@ -75,108 +76,198 @@ class _ProductFormPageContent extends StatelessWidget {
           context.read<ProductFormCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => Column(
-        children: [
-          if (state.isLoading) LinearProgressIndicator(),
-          _ProductFormTextField(
-            selector: (state) => state.name,
-            builder: (controller) => TextField(
-              controller: controller,
-              readOnly: !state.canEdit,
-              onChanged: (name) =>
-                  context.read<ProductFormCubit>().onNameChanged(name),
-              decoration: InputDecoration(label: Text("Name")),
-            ),
-          ),
-          // TODO: Shortcut to add new address
-          _ProductFormTextField(
-            selector: (state) =>
-                state.addressList
-                    .firstWhereOrNull((item) => item.id == state.addressId)
-                    ?.name ??
-                "",
-            builder: (controller) => DropdownMenu<int>(
-              controller: controller,
-              selectOnly: true,
-              enabled: state.canEdit,
-              label: Text("Address"),
-              dropdownMenuEntries: state.addressList
-                  .map(
-                    (item) => DropdownMenuEntry(
-                      value: item.id,
-                      label: item.name,
-                      labelWidget: Column(
+      builder: (context, state) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 620),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (state.isLoading) const LinearProgressIndicator(),
+                  if (state.isLoading) const SizedBox(height: 16),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(item.name),
-                          Text(
-                            "${item.detail}, ${item.district}, ${item.regency}, ${item.province}",
+                          _ProductFormTextField(
+                            selector: (state) => state.name,
+                            builder: (controller) => TextField(
+                              controller: controller,
+                              readOnly: !state.canEdit,
+                              onChanged: (name) => context
+                                  .read<ProductFormCubit>()
+                                  .onNameChanged(name),
+                              decoration: const InputDecoration(
+                                labelText: 'Nama Produk',
+                                hintText: 'Contoh: Kamera DSLR',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          _ProductFormTextField(
+                            selector: (state) =>
+                                state.addressList
+                                    .firstWhereOrNull(
+                                      (item) => item.id == state.addressId,
+                                    )
+                                    ?.name ??
+                                '',
+                            builder: (controller) => DropdownMenu<int>(
+                              controller: controller,
+                              selectOnly: true,
+                              enabled: state.canEdit,
+                              label: const Text('Alamat'),
+                              dropdownMenuEntries: state.addressList
+                                  .map(
+                                    (item) => DropdownMenuEntry(
+                                      value: item.id,
+                                      label: item.name,
+                                      labelWidget: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(item.name),
+                                          Text(
+                                            '${item.detail}, ${item.district}, ${item.regency}, ${item.province}',
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onSelected: (value) => context
+                                  .read<ProductFormCubit>()
+                                  .onAddressChanged(value),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _ProductFormTextField(
+                                  selector: (state) =>
+                                      state.pricePerDay?.toString() ?? '',
+                                  builder: (controller) => TextField(
+                                    controller: controller,
+                                    readOnly: !state.canEdit,
+                                    onChanged: (pricePerDay) => context
+                                        .read<ProductFormCubit>()
+                                        .onPricePerDayChanged(
+                                          int.tryParse(pricePerDay),
+                                        ),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Harga/hari',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: _ProductFormTextField(
+                                  selector: (state) =>
+                                      state.lateFeePerDay?.toString() ?? '',
+                                  builder: (controller) => TextField(
+                                    controller: controller,
+                                    readOnly: !state.canEdit,
+                                    onChanged: (lateFeePerDay) => context
+                                        .read<ProductFormCubit>()
+                                        .onLateFeePerDayChanged(
+                                          int.tryParse(lateFeePerDay),
+                                        ),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Denda/hari',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _ProductFormTextField(
+                                  selector: (state) =>
+                                      state.stock?.toString() ?? '',
+                                  builder: (controller) => TextField(
+                                    controller: controller,
+                                    readOnly: !state.canEdit,
+                                    onChanged: (stock) => context
+                                        .read<ProductFormCubit>()
+                                        .onStockChanged(int.tryParse(stock)),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Stok',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          _ProductFormTextField(
+                            selector: (state) => state.description,
+                            builder: (controller) => TextField(
+                              controller: controller,
+                              readOnly: !state.canEdit,
+                              onChanged: (description) => context
+                                  .read<ProductFormCubit>()
+                                  .onDescriptionChanged(description),
+                              decoration: const InputDecoration(
+                                labelText: 'Deskripsi',
+                                hintText:
+                                    'Berikan informasi penting tentang produk',
+                              ),
+                              maxLines: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          LoadingButton(
+                            isLoading: state.submissionStatus == .loading,
+                            onPressed: !state.canSubmit
+                                ? null
+                                : () => context
+                                      .read<ProductFormCubit>()
+                                      .onSubmit(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              child: Text(
+                                state.id == null
+                                    ? 'Tambah produk'
+                                    : 'Simpan perubahan',
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  )
-                  .toList(),
-              onSelected: (value) =>
-                  context.read<ProductFormCubit>().onAddressChanged(value),
+                  ),
+                ],
+              ),
             ),
           ),
-          _ProductFormTextField(
-            selector: (state) => state.pricePerDay?.toString() ?? "",
-            builder: (controller) => TextField(
-              controller: controller,
-              readOnly: !state.canEdit,
-              onChanged: (pricePerDay) => context
-                  .read<ProductFormCubit>()
-                  .onPricePerDayChanged(int.tryParse(pricePerDay)),
-              decoration: InputDecoration(label: Text("Price Per Day")),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-          ),
-          _ProductFormTextField(
-            selector: (state) => state.lateFeePerDay?.toString() ?? "",
-            builder: (controller) => TextField(
-              controller: controller,
-              readOnly: !state.canEdit,
-              onChanged: (lateFeePerDay) => context
-                  .read<ProductFormCubit>()
-                  .onLateFeePerDayChanged(int.tryParse(lateFeePerDay)),
-              decoration: InputDecoration(label: Text("Late Fee Per Day")),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-          ),
-          _ProductFormTextField(
-            selector: (state) => state.stock?.toString() ?? "",
-            builder: (controller) => TextField(
-              controller: controller,
-              readOnly: !state.canEdit,
-              onChanged: (stock) => context
-                  .read<ProductFormCubit>()
-                  .onStockChanged(int.tryParse(stock)),
-              decoration: InputDecoration(label: Text("Stock")),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-          ),
-          _ProductFormTextField(
-            selector: (state) => state.description,
-            builder: (controller) => TextField(
-              controller: controller,
-              readOnly: !state.canEdit,
-              onChanged: (description) => context
-                  .read<ProductFormCubit>()
-                  .onDescriptionChanged(description),
-              decoration: InputDecoration(label: Text("Description")),
-            ),
-          ),
-          OutlinedButton(
-            onPressed: !state.canSubmit
-                ? null
-                : () => context.read<ProductFormCubit>().onSubmit(),
-            child: Text(state.id == null ? "Add" : "Edit"),
-          ),
-        ],
+        ),
       ),
     );
   }
