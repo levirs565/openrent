@@ -36,37 +36,43 @@ class MessagesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: BlocProvider(
-        create: (context) =>
-            MessagesCubit(otherUserId: otherUserId, repository: context.read()),
-        child: _Content(
+        create: (context) => MessagesCubit(
+          otherUserId: otherUserId,
+          repository: context.read(),
+          userRepository: context.read(),
           otherUserName: otherUserName,
           otherUserAvatarUrl: otherUserAvatarUrl,
         ),
+        child: _Content(),
       ),
     );
   }
 }
 
 class _Content extends StatelessWidget {
-  final String? otherUserName;
-  final String? otherUserAvatarUrl;
-
-  const _Content({super.key, this.otherUserName, this.otherUserAvatarUrl});
+  const _Content({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MessagesCubit, MessagesState>(
       listener: (context, state) {
         if (state.error != null) {
+          final source = state.error!.source;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: state.error!.source == .actionSend
+              action: source == .actionSend
                   ? null
                   : SnackBarAction(
                       label: "Refresh",
-                      onPressed: () =>
-                          context.read<MessagesCubit>().onRefresh(),
+                      onPressed: () {
+                        final cubit = context.read<MessagesCubit>();
+                        if (source == .data) {
+                          cubit.onRefresh();
+                        } else {
+                          cubit.onRefreshUser();
+                        }
+                      }
                     ),
             ),
           );
@@ -83,13 +89,13 @@ class _Content extends StatelessWidget {
               CircleAvatar(
                 radius: 18,
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                backgroundImage: otherUserAvatarUrl != null
-                    ? NetworkImage(otherUserAvatarUrl!)
+                backgroundImage: state.otherUserAvatarUrl != null
+                    ? NetworkImage(state.otherUserAvatarUrl!)
                     : null,
-                child: otherUserAvatarUrl != null
+                child: state.otherUserAvatarUrl != null
                     ? null
                     : Text(
-                        _avatarInitials(otherUserName),
+                        _avatarInitials(state.otherUserName),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: Theme.of(
@@ -105,15 +111,10 @@ class _Content extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      otherUserName ?? 'Messages',
+                      state.otherUserName ?? 'Messages',
                       style: Theme.of(context).textTheme.titleMedium,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (otherUserName != null)
-                      Text(
-                        'Obrolan dengan ${otherUserName!.split(' ').first}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
                   ],
                 ),
               ),

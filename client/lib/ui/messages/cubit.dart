@@ -4,28 +4,38 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/remote/message.dart';
+import 'package:openrent_client/data/remote/user.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/user.dart';
 import 'package:openrent_client/ui/messages/state.dart';
 
 class MessagesCubit extends Cubit<MessagesState> {
   final MessageRepository _repository;
+  final UserRepository _userRepository;
   StreamSubscription? _fcmSubscription;
 
   MessagesCubit({
     required int otherUserId,
+    required String? otherUserName,
+    required String? otherUserAvatarUrl,
     required MessageRepository repository,
-  }) : _repository = repository,
+    required UserRepository userRepository,
+  }) : _userRepository = userRepository,
+       _repository = repository,
        super(
          MessagesState(
            otherUserId: otherUserId,
            list: List.empty(),
            dataStatus: .initial,
+           userStatus: .initial,
            currentMessage: "",
            isActionLoading: false,
            error: null,
+           otherUserName: otherUserName,
+           otherUserAvatarUrl: otherUserAvatarUrl,
          ),
        ) {
-    onRefresh();
+    onRefreshUser();
     _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
       if (event.data["type"] == "message" &&
           int.tryParse(event.data["other_id"]) == state.otherUserId) {
@@ -40,6 +50,33 @@ class MessagesCubit extends Cubit<MessagesState> {
     return super.close();
   }
 
+  void onRefreshUser() async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(userStatus: .loading));
+
+    final result = await _userRepository.getById(id: state.otherUserId);
+
+    switch (result) {
+      case ResultSuccess<UserResponseItemShort>():
+        emit(
+          state.copyWith(
+            userStatus: .success,
+            otherUserName: result.data.name,
+            otherUserAvatarUrl: result.data.avatarUrl,
+          ),
+        );
+        onRefresh();
+      case ResultError<UserResponseItemShort>():
+        emit(
+          state.copyWith(
+            userStatus: .fail,
+            error: .new(source: .dataUser, message: result.message),
+          ),
+        );
+    }
+  }
+
   void onRefresh() async {
     if (state.isLoading) return;
 
@@ -49,12 +86,7 @@ class MessagesCubit extends Cubit<MessagesState> {
 
     switch (result) {
       case ResultSuccess<List<MessageResponseItem>>():
-        emit(
-          state.copyWith(
-            dataStatus: .success,
-            list: result.data,
-          ),
-        );
+        emit(state.copyWith(dataStatus: .success, list: result.data));
       case ResultError<List<MessageResponseItem>>():
         emit(
           state.copyWith(

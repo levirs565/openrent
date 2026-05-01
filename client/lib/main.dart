@@ -14,11 +14,13 @@ import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/order.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
+import 'package:openrent_client/data/remote/user.dart';
 import 'package:openrent_client/data/rent.dart';
 import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/review.dart';
 import 'package:openrent_client/data/settings.dart';
+import 'package:openrent_client/data/user.dart';
 import 'package:openrent_client/ui/biometric_failed.dart';
 import 'package:openrent_client/ui/home.dart';
 import 'package:openrent_client/ui/login/page.dart';
@@ -54,6 +56,7 @@ void main() async {
   final orderService = OrderService(dioInstance);
   final messageService = MessageService(dioInstance);
   final chatService = ChatService(dioInstance);
+  final userService = UserService(dioInstance);
   final locationIQService = LocationIQService(Dio());
 
   runApp(
@@ -92,6 +95,9 @@ void main() async {
         ),
         RepositoryProvider<ChatRepository>(
           create: (_) => ChatDataSource(chatService: chatService),
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (_) => UserDataSource(service: userService),
         ),
         RepositoryProvider<SettingsRepository>(
           create: (_) => SettingsDataSource(),

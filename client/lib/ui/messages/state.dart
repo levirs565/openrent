@@ -5,7 +5,7 @@ import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
-enum MessagesErrorSource { data, actionSend }
+enum MessagesErrorSource { data, dataUser, actionSend }
 
 typedef MessagesError = ErrorData<MessagesErrorSource>;
 
@@ -17,8 +17,11 @@ abstract class MessagesState with _$MessagesState {
 
   const factory MessagesState({
     required int otherUserId,
+    required String? otherUserName,
+    required String? otherUserAvatarUrl,
     required List<MessageResponseItem> list,
     required DataStatus dataStatus,
+    required DataStatus userStatus,
     required String currentMessage,
     required bool isActionLoading,
     required MessagesError? error,
@@ -26,11 +29,14 @@ abstract class MessagesState with _$MessagesState {
 
   bool get isValid => currentMessage.isNotEmpty;
 
-  bool get canEdit => dataStatus == .success && !isActionLoading;
+  bool get canEdit =>
+      dataStatus == .success && userStatus == .success && !isActionLoading;
 
-  bool get isLoading =>
-      dataStatus == .loading || isActionLoading;
+  bool get isLoading => dataStatus == .loading || isActionLoading;
 
   bool get canSubmit =>
-      isValid && !isActionLoading && dataStatus == .success;
+      isValid &&
+      !isActionLoading &&
+      dataStatus == .success &&
+      userStatus == .success;
 }
