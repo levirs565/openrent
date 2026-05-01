@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:openrent_client/data/remote/chat.dart';
 import 'package:openrent_client/ui/chats/cubit.dart';
 import 'package:openrent_client/ui/chats/state.dart';
@@ -40,10 +41,29 @@ class _Content extends StatelessWidget {
           context.read<ChatsCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => ListView.builder(
-        itemCount: state.list.length,
-        itemBuilder: (context, index) =>
-            _Item(item: state.list.elementAt(index)),
+      builder: (context, state) => SafeArea(
+        child: state.list.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'Belum ada chat. Mulai percakapan dengan penyewa atau pemilik.',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            : ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                itemCount: state.list.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) =>
+                    _Item(item: state.list.elementAt(index)),
+              ),
       ),
     );
   }
@@ -56,11 +76,68 @@ class _Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () => Navigator.of(context).push(MessagesPage.route(otherUserId: item.id)),
-      title: Text(item.name),
-      subtitle: Text(
-        "${item.lastMessage.createdAt} - ${item.lastMessage.message}",
+    final dateLabel = DateFormat(
+      'dd/MM/yyyy HH:mm',
+    ).format(item.lastMessage.createdAt.toLocal());
+
+    final initials = item.name
+        .split(' ')
+        .where((part) => part.isNotEmpty)
+        .map((part) => part[0].toUpperCase())
+        .take(2)
+        .join();
+
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => Navigator.of(context).push(
+          MessagesPage.route(otherUserId: item.id, otherUserName: item.name),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                child: Text(
+                  initials,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.lastMessage.message ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                dateLabel,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.right,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
