@@ -137,9 +137,9 @@ class ProductFormCubit extends Cubit<ProductFormState> {
         : await _productRepository.update(state.id!, request);
 
     switch (result) {
-      case ResultSuccess<ProductResponseItem>():
+      case ResultSuccess<MyProductResponseItem>():
         emit(state.copyWith(submissionStatus: .finished));
-      case ResultError<ProductResponseItem>():
+      case ResultError<MyProductResponseItem>():
         emit(
           state.copyWith(
             submissionStatus: .idle,

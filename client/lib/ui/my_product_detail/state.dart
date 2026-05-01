@@ -8,7 +8,7 @@ part 'state.freezed.dart';
 class MyProductDetailState with _$MyProductDetailState {
   final int id;
   final bool isLoading;
-  final ProductResponseItemDetail? data;
+  final MyProductResponseItemDetail? data;
   final GeneralErrorData? error;
 
   MyProductDetailState({

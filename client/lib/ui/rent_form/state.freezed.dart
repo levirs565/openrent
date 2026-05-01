@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RentFormState {
 
- int get id; ProductResponseItem? get data; DateTime get startDate; DateTime get endDate; int? get quantity; DataStatus get dataStatus;// TODO: must send rent id after succcess
+ int get id; ProductResponseItemDetail? get data; DateTime get startDate; DateTime get endDate; int? get quantity; DataStatus get dataStatus;// TODO: must send rent id after succcess
  ActionStatus get actionStatus; RentFormError? get error;
 /// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -46,11 +46,11 @@ abstract mixin class $RentFormStateCopyWith<$Res>  {
   factory $RentFormStateCopyWith(RentFormState value, $Res Function(RentFormState) _then) = _$RentFormStateCopyWithImpl;
 @useResult
 $Res call({
- int id, ProductResponseItem? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
+ int id, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
 });
 
 
-$ErrorDataCopyWith<RentFormErrorSource, $Res>? get error;
+$ProductResponseItemDetailCopyWith<$Res>? get data;$ErrorDataCopyWith<RentFormErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -67,7 +67,7 @@ class _$RentFormStateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ProductResponseItem?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as ProductResponseItemDetail?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: freezed == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
@@ -77,6 +77,18 @@ as RentFormError?,
   ));
 }
 /// Create a copy of RentFormState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProductResponseItemDetailCopyWith<$Res>? get data {
+    if (_self.data == null) {
+    return null;
+  }
+
+  return $ProductResponseItemDetailCopyWith<$Res>(_self.data!, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}/// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -170,7 +182,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProductResponseItem? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RentFormState() when $default != null:
 return $default(_that.id,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
@@ -191,7 +203,7 @@ return $default(_that.id,_that.data,_that.startDate,_that.endDate,_that.quantity
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProductResponseItem? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)  $default,) {final _that = this;
 switch (_that) {
 case _RentFormState():
 return $default(_that.id,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
@@ -211,7 +223,7 @@ return $default(_that.id,_that.data,_that.startDate,_that.endDate,_that.quantity
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProductResponseItem? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,) {final _that = this;
 switch (_that) {
 case _RentFormState() when $default != null:
 return $default(_that.id,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
@@ -230,7 +242,7 @@ class _RentFormState extends RentFormState {
   
 
 @override final  int id;
-@override final  ProductResponseItem? data;
+@override final  ProductResponseItemDetail? data;
 @override final  DateTime startDate;
 @override final  DateTime endDate;
 @override final  int? quantity;
@@ -269,11 +281,11 @@ abstract mixin class _$RentFormStateCopyWith<$Res> implements $RentFormStateCopy
   factory _$RentFormStateCopyWith(_RentFormState value, $Res Function(_RentFormState) _then) = __$RentFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- int id, ProductResponseItem? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
+ int id, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
 });
 
 
-@override $ErrorDataCopyWith<RentFormErrorSource, $Res>? get error;
+@override $ProductResponseItemDetailCopyWith<$Res>? get data;@override $ErrorDataCopyWith<RentFormErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -290,7 +302,7 @@ class __$RentFormStateCopyWithImpl<$Res>
   return _then(_RentFormState(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ProductResponseItem?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as ProductResponseItemDetail?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: freezed == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
@@ -301,6 +313,18 @@ as RentFormError?,
 }
 
 /// Create a copy of RentFormState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProductResponseItemDetailCopyWith<$Res>? get data {
+    if (_self.data == null) {
+    return null;
+  }
+
+  return $ProductResponseItemDetailCopyWith<$Res>(_self.data!, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}/// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

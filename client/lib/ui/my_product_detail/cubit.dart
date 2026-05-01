@@ -25,12 +25,12 @@ class MyProductDetailCubit extends Cubit<MyProductDetailState> {
   void _refresh() async {
     emit(state.copyWith(isLoading: true));
 
-    final result = await _productRepository.getById(id: state.id);
+    final result = await _productRepository.getMyProductById(id: state.id);
 
     switch (result) {
-      case ResultSuccess<ProductResponseItemDetail>():
+      case ResultSuccess<MyProductResponseItemDetail>():
         emit(state.copyWith(isLoading: false, data: result.data));
-      case ResultError<ProductResponseItemDetail>():
+      case ResultError<MyProductResponseItemDetail>():
         emit(
           state.copyWith(
             isLoading: false,
