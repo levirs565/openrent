@@ -59,6 +59,8 @@ class _Content extends StatelessWidget {
         children: [
           if (state.isLoading) LinearProgressIndicator(),
           Text("Product"),
+          if (state.data?.product.imageUrl != null)
+            Image.network(state.data!.product.imageUrl!, height: 96,),
           Text(state.data?.product.name ?? "-"),
           OutlinedButton(
             onPressed: state.data == null
