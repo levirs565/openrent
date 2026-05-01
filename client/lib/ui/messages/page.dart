@@ -8,12 +8,27 @@ import 'package:intl/intl.dart';
 
 class MessagesPage extends StatelessWidget {
   final int otherUserId;
+  final String? otherUserName;
+  final String? otherUserAvatarUrl;
 
-  const MessagesPage({super.key, required this.otherUserId});
+  const MessagesPage({
+    super.key,
+    required this.otherUserId,
+    this.otherUserName,
+    this.otherUserAvatarUrl,
+  });
 
-  static Route<void> route({required int otherUserId}) {
+  static Route<void> route({
+    required int otherUserId,
+    String? otherUserName,
+    String? otherUserAvatarUrl,
+  }) {
     return MaterialPageRoute<void>(
-      builder: (_) => MessagesPage(otherUserId: otherUserId),
+      builder: (_) => MessagesPage(
+        otherUserId: otherUserId,
+        otherUserName: otherUserName,
+        otherUserAvatarUrl: otherUserAvatarUrl,
+      ),
     );
   }
 
@@ -23,14 +38,20 @@ class MessagesPage extends StatelessWidget {
       child: BlocProvider(
         create: (context) =>
             MessagesCubit(otherUserId: otherUserId, repository: context.read()),
-        child: _Content(),
+        child: _Content(
+          otherUserName: otherUserName,
+          otherUserAvatarUrl: otherUserAvatarUrl,
+        ),
       ),
     );
   }
 }
 
 class _Content extends StatelessWidget {
-  const _Content({super.key});
+  final String? otherUserName;
+  final String? otherUserAvatarUrl;
+
+  const _Content({super.key, this.otherUserName, this.otherUserAvatarUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +75,50 @@ class _Content extends StatelessWidget {
       },
       builder: (context, state) => Scaffold(
         appBar: AppBar(
-          title: const Text('Messages'),
-          centerTitle: true,
+          titleSpacing: 0,
+          centerTitle: false,
           elevation: 0,
+          title: Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundImage: otherUserAvatarUrl != null
+                    ? NetworkImage(otherUserAvatarUrl!)
+                    : null,
+                child: otherUserAvatarUrl != null
+                    ? null
+                    : Text(
+                        _avatarInitials(otherUserName),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      otherUserName ?? 'Messages',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (otherUserName != null)
+                      Text(
+                        'Obrolan dengan ${otherUserName!.split(' ').first}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         body: SafeArea(
           child: Column(
@@ -131,6 +193,17 @@ class _Content extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _avatarInitials(String? name) {
+    if (name == null || name.isEmpty) return 'U';
+    final initials = name
+        .split(' ')
+        .where((part) => part.isNotEmpty)
+        .map((part) => part[0].toUpperCase())
+        .take(2)
+        .join();
+    return initials.isEmpty ? 'U' : initials;
   }
 }
 
