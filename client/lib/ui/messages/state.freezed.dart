@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MessagesState {
 
- int get otherUserId; List<MessageResponseItem> get list; DataStatus get dataStatus; String get currentMessage; bool get isActionLoading; MessagesError? get error;
+ int get otherUserId; String? get otherUserName; String? get otherUserAvatarUrl; List<MessageResponseItem> get list; DataStatus get dataStatus; DataStatus get userStatus; String get currentMessage; bool get isActionLoading; MessagesError? get error;
 /// Create a copy of MessagesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MessagesStateCopyWith<MessagesState> get copyWith => _$MessagesStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesState&&(identical(other.otherUserId, otherUserId) || other.otherUserId == otherUserId)&&const DeepCollectionEquality().equals(other.list, list)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.currentMessage, currentMessage) || other.currentMessage == currentMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesState&&(identical(other.otherUserId, otherUserId) || other.otherUserId == otherUserId)&&(identical(other.otherUserName, otherUserName) || other.otherUserName == otherUserName)&&(identical(other.otherUserAvatarUrl, otherUserAvatarUrl) || other.otherUserAvatarUrl == otherUserAvatarUrl)&&const DeepCollectionEquality().equals(other.list, list)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus)&&(identical(other.currentMessage, currentMessage) || other.currentMessage == currentMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,otherUserId,const DeepCollectionEquality().hash(list),dataStatus,currentMessage,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,otherUserId,otherUserName,otherUserAvatarUrl,const DeepCollectionEquality().hash(list),dataStatus,userStatus,currentMessage,isActionLoading,error);
 
 @override
 String toString() {
-  return 'MessagesState(otherUserId: $otherUserId, list: $list, dataStatus: $dataStatus, currentMessage: $currentMessage, isActionLoading: $isActionLoading, error: $error)';
+  return 'MessagesState(otherUserId: $otherUserId, otherUserName: $otherUserName, otherUserAvatarUrl: $otherUserAvatarUrl, list: $list, dataStatus: $dataStatus, userStatus: $userStatus, currentMessage: $currentMessage, isActionLoading: $isActionLoading, error: $error)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MessagesStateCopyWith<$Res>  {
   factory $MessagesStateCopyWith(MessagesState value, $Res Function(MessagesState) _then) = _$MessagesStateCopyWithImpl;
 @useResult
 $Res call({
- int otherUserId, List<MessageResponseItem> list, DataStatus dataStatus, String currentMessage, bool isActionLoading, MessagesError? error
+ int otherUserId, String? otherUserName, String? otherUserAvatarUrl, List<MessageResponseItem> list, DataStatus dataStatus, DataStatus userStatus, String currentMessage, bool isActionLoading, MessagesError? error
 });
 
 
@@ -62,11 +62,14 @@ class _$MessagesStateCopyWithImpl<$Res>
 
 /// Create a copy of MessagesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? otherUserId = null,Object? list = null,Object? dataStatus = null,Object? currentMessage = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? otherUserId = null,Object? otherUserName = freezed,Object? otherUserAvatarUrl = freezed,Object? list = null,Object? dataStatus = null,Object? userStatus = null,Object? currentMessage = null,Object? isActionLoading = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 otherUserId: null == otherUserId ? _self.otherUserId : otherUserId // ignore: cast_nullable_to_non_nullable
-as int,list: null == list ? _self.list : list // ignore: cast_nullable_to_non_nullable
+as int,otherUserName: freezed == otherUserName ? _self.otherUserName : otherUserName // ignore: cast_nullable_to_non_nullable
+as String?,otherUserAvatarUrl: freezed == otherUserAvatarUrl ? _self.otherUserAvatarUrl : otherUserAvatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,list: null == list ? _self.list : list // ignore: cast_nullable_to_non_nullable
 as List<MessageResponseItem>,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,userStatus: null == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,currentMessage: null == currentMessage ? _self.currentMessage : currentMessage // ignore: cast_nullable_to_non_nullable
 as String,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -167,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int otherUserId,  List<MessageResponseItem> list,  DataStatus dataStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int otherUserId,  String? otherUserName,  String? otherUserAvatarUrl,  List<MessageResponseItem> list,  DataStatus dataStatus,  DataStatus userStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MessagesState() when $default != null:
-return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
+return $default(_that.otherUserId,_that.otherUserName,_that.otherUserAvatarUrl,_that.list,_that.dataStatus,_that.userStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
   return orElse();
 
 }
@@ -188,10 +191,10 @@ return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int otherUserId,  List<MessageResponseItem> list,  DataStatus dataStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int otherUserId,  String? otherUserName,  String? otherUserAvatarUrl,  List<MessageResponseItem> list,  DataStatus dataStatus,  DataStatus userStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)  $default,) {final _that = this;
 switch (_that) {
 case _MessagesState():
-return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
+return $default(_that.otherUserId,_that.otherUserName,_that.otherUserAvatarUrl,_that.list,_that.dataStatus,_that.userStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +211,10 @@ return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int otherUserId,  List<MessageResponseItem> list,  DataStatus dataStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int otherUserId,  String? otherUserName,  String? otherUserAvatarUrl,  List<MessageResponseItem> list,  DataStatus dataStatus,  DataStatus userStatus,  String currentMessage,  bool isActionLoading,  MessagesError? error)?  $default,) {final _that = this;
 switch (_that) {
 case _MessagesState() when $default != null:
-return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
+return $default(_that.otherUserId,_that.otherUserName,_that.otherUserAvatarUrl,_that.list,_that.dataStatus,_that.userStatus,_that.currentMessage,_that.isActionLoading,_that.error);case _:
   return null;
 
 }
@@ -223,10 +226,12 @@ return $default(_that.otherUserId,_that.list,_that.dataStatus,_that.currentMessa
 
 
 class _MessagesState extends MessagesState {
-  const _MessagesState({required this.otherUserId, required final  List<MessageResponseItem> list, required this.dataStatus, required this.currentMessage, required this.isActionLoading, required this.error}): _list = list,super._();
+  const _MessagesState({required this.otherUserId, required this.otherUserName, required this.otherUserAvatarUrl, required final  List<MessageResponseItem> list, required this.dataStatus, required this.userStatus, required this.currentMessage, required this.isActionLoading, required this.error}): _list = list,super._();
   
 
 @override final  int otherUserId;
+@override final  String? otherUserName;
+@override final  String? otherUserAvatarUrl;
  final  List<MessageResponseItem> _list;
 @override List<MessageResponseItem> get list {
   if (_list is EqualUnmodifiableListView) return _list;
@@ -235,6 +240,7 @@ class _MessagesState extends MessagesState {
 }
 
 @override final  DataStatus dataStatus;
+@override final  DataStatus userStatus;
 @override final  String currentMessage;
 @override final  bool isActionLoading;
 @override final  MessagesError? error;
@@ -249,16 +255,16 @@ _$MessagesStateCopyWith<_MessagesState> get copyWith => __$MessagesStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesState&&(identical(other.otherUserId, otherUserId) || other.otherUserId == otherUserId)&&const DeepCollectionEquality().equals(other._list, _list)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.currentMessage, currentMessage) || other.currentMessage == currentMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesState&&(identical(other.otherUserId, otherUserId) || other.otherUserId == otherUserId)&&(identical(other.otherUserName, otherUserName) || other.otherUserName == otherUserName)&&(identical(other.otherUserAvatarUrl, otherUserAvatarUrl) || other.otherUserAvatarUrl == otherUserAvatarUrl)&&const DeepCollectionEquality().equals(other._list, _list)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus)&&(identical(other.currentMessage, currentMessage) || other.currentMessage == currentMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,otherUserId,const DeepCollectionEquality().hash(_list),dataStatus,currentMessage,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,otherUserId,otherUserName,otherUserAvatarUrl,const DeepCollectionEquality().hash(_list),dataStatus,userStatus,currentMessage,isActionLoading,error);
 
 @override
 String toString() {
-  return 'MessagesState(otherUserId: $otherUserId, list: $list, dataStatus: $dataStatus, currentMessage: $currentMessage, isActionLoading: $isActionLoading, error: $error)';
+  return 'MessagesState(otherUserId: $otherUserId, otherUserName: $otherUserName, otherUserAvatarUrl: $otherUserAvatarUrl, list: $list, dataStatus: $dataStatus, userStatus: $userStatus, currentMessage: $currentMessage, isActionLoading: $isActionLoading, error: $error)';
 }
 
 
@@ -269,7 +275,7 @@ abstract mixin class _$MessagesStateCopyWith<$Res> implements $MessagesStateCopy
   factory _$MessagesStateCopyWith(_MessagesState value, $Res Function(_MessagesState) _then) = __$MessagesStateCopyWithImpl;
 @override @useResult
 $Res call({
- int otherUserId, List<MessageResponseItem> list, DataStatus dataStatus, String currentMessage, bool isActionLoading, MessagesError? error
+ int otherUserId, String? otherUserName, String? otherUserAvatarUrl, List<MessageResponseItem> list, DataStatus dataStatus, DataStatus userStatus, String currentMessage, bool isActionLoading, MessagesError? error
 });
 
 
@@ -286,11 +292,14 @@ class __$MessagesStateCopyWithImpl<$Res>
 
 /// Create a copy of MessagesState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? otherUserId = null,Object? list = null,Object? dataStatus = null,Object? currentMessage = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? otherUserId = null,Object? otherUserName = freezed,Object? otherUserAvatarUrl = freezed,Object? list = null,Object? dataStatus = null,Object? userStatus = null,Object? currentMessage = null,Object? isActionLoading = null,Object? error = freezed,}) {
   return _then(_MessagesState(
 otherUserId: null == otherUserId ? _self.otherUserId : otherUserId // ignore: cast_nullable_to_non_nullable
-as int,list: null == list ? _self._list : list // ignore: cast_nullable_to_non_nullable
+as int,otherUserName: freezed == otherUserName ? _self.otherUserName : otherUserName // ignore: cast_nullable_to_non_nullable
+as String?,otherUserAvatarUrl: freezed == otherUserAvatarUrl ? _self.otherUserAvatarUrl : otherUserAvatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,list: null == list ? _self._list : list // ignore: cast_nullable_to_non_nullable
 as List<MessageResponseItem>,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,userStatus: null == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,currentMessage: null == currentMessage ? _self.currentMessage : currentMessage // ignore: cast_nullable_to_non_nullable
 as String,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"openrent-server/core"
 	"openrent-server/models"
 
 	"github.com/alexedwards/argon2id"
@@ -131,23 +132,12 @@ func (s *Service) GetUserState(ctx context.Context, id uint) (UserStateReponse, 
 		return UserStateReponse{}, err
 	}
 
-	var avatarURL *string
-	if account.User != nil && account.User.AvatarName != "" {
-		url := fmt.Sprintf(
-			"%s/%s/%s",
-			*s.s3.Options().BaseEndpoint,
-			s.s3Bucket,
-			formatAvatarKey(id, account.User.AvatarName, false),
-		)
-		avatarURL = &url
-	}
-
 	return UserStateReponse{
 		ID:        account.ID,
 		Email:     account.Email,
 		Name:      account.Name,
 		Role:      account.Role,
-		AvatarURL: avatarURL,
+		AvatarURL: core.FormatUserAvatarUrl(s.s3, s.s3Bucket, id, account.User.AvatarName),
 	}, nil
 }
 
@@ -158,16 +148,9 @@ type AvatarPresignResponse struct {
 	Headers map[string][]string `json:"headers"`
 }
 
-func formatAvatarKey(userId uint, name string, temp bool) string {
-	if temp {
-		return fmt.Sprintf("temp/user/%d/avatar/%s", userId, name)
-	}
-	return fmt.Sprintf("public/user/%d/avatar/%s", userId, name)
-}
-
 func (s *Service) GetUserAvatarPresignedURL(ctx context.Context, userId uint, fileSize int64, contentType string) (AvatarPresignResponse, error) {
 	name := uuid.NewString()
-	key := formatAvatarKey(userId, name, true)
+	key := core.FormatUserAvatarKey(userId, name, true)
 	presignClient := s3.NewPresignClient(s.s3)
 
 	const maxSizeBytes int64 = 5 * 1024 * 1024 // 5 MB
@@ -206,7 +189,7 @@ func (s *Service) ConfirmUserAvatar(ctx context.Context, userId uint, name strin
 		return err
 	}
 
-	tempKey := formatAvatarKey(userId, name, true)
+	tempKey := core.FormatUserAvatarKey(userId, name, true)
 
 	head, err := s.s3.HeadObject(ctx, &s3.HeadObjectInput{
 		Bucket: aws.String(s.s3Bucket),
@@ -221,7 +204,7 @@ func (s *Service) ConfirmUserAvatar(ctx context.Context, userId uint, name strin
 		return ErrAvatarNotFound
 	}
 
-	finalKey := formatAvatarKey(userId, name, false)
+	finalKey := core.FormatUserAvatarKey(userId, name, false)
 
 	_, err = s.s3.CopyObject(ctx, &s3.CopyObjectInput{
 		Bucket:      aws.String(s.s3Bucket),
@@ -247,7 +230,7 @@ func (s *Service) ConfirmUserAvatar(ctx context.Context, userId uint, name strin
 	if model.AvatarName != "" {
 		_, err = s.s3.DeleteObject(ctx, &s3.DeleteObjectInput{
 			Bucket: aws.String(s.s3Bucket),
-			Key:    aws.String(formatAvatarKey(userId, model.AvatarName, false)),
+			Key:    aws.String(core.FormatUserAvatarKey(userId, model.AvatarName, false)),
 		})
 
 		if err != nil {

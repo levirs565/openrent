@@ -32,6 +32,7 @@ import (
 	"openrent-server/product"
 	"openrent-server/rent"
 	"openrent-server/review"
+	"openrent-server/user"
 
 	"github.com/wader/gormstore/v2"
 )
@@ -173,8 +174,9 @@ func main() {
 	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
 	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket)
 	reviwsService := review.NewService(db)
-	chatService := chat.NewService(db, notificationService)
+	chatService := chat.NewService(db, notificationService, s3Client, s3Bucket)
 	messageService := message.NewService(db)
+	userService := user.NewService(db, s3Client, s3Bucket)
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
@@ -202,6 +204,9 @@ func main() {
 
 	messageController := message.NewController(messageService)
 	messageController.RegisterRoutes(e.Group("/messages"))
+
+	userController := user.NewController(userService)
+	userController.RegisterRoutes(e.Group("/users"))
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

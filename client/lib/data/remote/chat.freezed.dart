@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChatResponseItem {
 
- int get id; String get name;@JsonKey(name: "last_message") MessageResponseItem get lastMessage;
+ int get id; String get name;@JsonKey(name: "image_url") String? get imageUrl;@JsonKey(name: "last_message") MessageResponseItem get lastMessage;
 /// Create a copy of ChatResponseItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ChatResponseItemCopyWith<ChatResponseItem> get copyWith => _$ChatResponseItemCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatResponseItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatResponseItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,lastMessage);
+int get hashCode => Object.hash(runtimeType,id,name,imageUrl,lastMessage);
 
 @override
 String toString() {
-  return 'ChatResponseItem(id: $id, name: $name, lastMessage: $lastMessage)';
+  return 'ChatResponseItem(id: $id, name: $name, imageUrl: $imageUrl, lastMessage: $lastMessage)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ChatResponseItemCopyWith<$Res>  {
   factory $ChatResponseItemCopyWith(ChatResponseItem value, $Res Function(ChatResponseItem) _then) = _$ChatResponseItemCopyWithImpl;
 @useResult
 $Res call({
- int id, String name,@JsonKey(name: "last_message") MessageResponseItem lastMessage
+ int id, String name,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "last_message") MessageResponseItem lastMessage
 });
 
 
@@ -65,11 +65,12 @@ class _$ChatResponseItemCopyWithImpl<$Res>
 
 /// Create a copy of ChatResponseItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? lastMessage = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? imageUrl = freezed,Object? lastMessage = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
 as MessageResponseItem,
   ));
 }
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChatResponseItem() when $default != null:
-return $default(_that.id,_that.name,_that.lastMessage);case _:
+return $default(_that.id,_that.name,_that.imageUrl,_that.lastMessage);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.id,_that.name,_that.lastMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)  $default,) {final _that = this;
 switch (_that) {
 case _ChatResponseItem():
-return $default(_that.id,_that.name,_that.lastMessage);case _:
+return $default(_that.id,_that.name,_that.imageUrl,_that.lastMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.id,_that.name,_that.lastMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "last_message")  MessageResponseItem lastMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _ChatResponseItem() when $default != null:
-return $default(_that.id,_that.name,_that.lastMessage);case _:
+return $default(_that.id,_that.name,_that.imageUrl,_that.lastMessage);case _:
   return null;
 
 }
@@ -220,11 +221,12 @@ return $default(_that.id,_that.name,_that.lastMessage);case _:
 @JsonSerializable()
 
 class _ChatResponseItem implements ChatResponseItem {
-  const _ChatResponseItem({required this.id, required this.name, @JsonKey(name: "last_message") required this.lastMessage});
+  const _ChatResponseItem({required this.id, required this.name, @JsonKey(name: "image_url") required this.imageUrl, @JsonKey(name: "last_message") required this.lastMessage});
   factory _ChatResponseItem.fromJson(Map<String, dynamic> json) => _$ChatResponseItemFromJson(json);
 
 @override final  int id;
 @override final  String name;
+@override@JsonKey(name: "image_url") final  String? imageUrl;
 @override@JsonKey(name: "last_message") final  MessageResponseItem lastMessage;
 
 /// Create a copy of ChatResponseItem
@@ -240,16 +242,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatResponseItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatResponseItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,lastMessage);
+int get hashCode => Object.hash(runtimeType,id,name,imageUrl,lastMessage);
 
 @override
 String toString() {
-  return 'ChatResponseItem(id: $id, name: $name, lastMessage: $lastMessage)';
+  return 'ChatResponseItem(id: $id, name: $name, imageUrl: $imageUrl, lastMessage: $lastMessage)';
 }
 
 
@@ -260,7 +262,7 @@ abstract mixin class _$ChatResponseItemCopyWith<$Res> implements $ChatResponseIt
   factory _$ChatResponseItemCopyWith(_ChatResponseItem value, $Res Function(_ChatResponseItem) _then) = __$ChatResponseItemCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name,@JsonKey(name: "last_message") MessageResponseItem lastMessage
+ int id, String name,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "last_message") MessageResponseItem lastMessage
 });
 
 
@@ -277,11 +279,12 @@ class __$ChatResponseItemCopyWithImpl<$Res>
 
 /// Create a copy of ChatResponseItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? lastMessage = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? imageUrl = freezed,Object? lastMessage = null,}) {
   return _then(_ChatResponseItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
 as MessageResponseItem,
   ));
 }

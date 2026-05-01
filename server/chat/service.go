@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/core"
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
 
 	"firebase.google.com/go/v4/messaging"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,12 +26,16 @@ var ErrCannotSendToSelf = errors.New("cannot send to self")
 type Service struct {
 	db           *gorm.DB
 	notification notification.Service
+	s3           *s3.Client
+	s3Bucket     string
 }
 
-func NewService(db *gorm.DB, notification notification.Service) *Service {
+func NewService(db *gorm.DB, notification notification.Service, s3 *s3.Client, s3Bucket string) *Service {
 	return &Service{
 		db:           db,
 		notification: notification,
+		s3:           s3,
+		s3Bucket:     s3Bucket,
 	}
 }
 
@@ -115,6 +121,7 @@ func (s *Service) ListChats(ctx context.Context, userId uint) ([]ChatResponseIte
 		c.sender_id
 	`).
 		Order(clause.OrderBy{Expression: gorm.Expr("other_id, created_at DESC")}).
+		Joins("OtherUser", s.db.Select("avatar_name")).
 		Joins("OtherUser.Account", s.db.Select("name")).
 		Find(&model).Error
 	if err != nil {
@@ -125,6 +132,7 @@ func (s *Service) ListChats(ctx context.Context, userId uint) ([]ChatResponseIte
 		return ChatResponseItem{
 			ID:          item.OtherID,
 			Name:        item.OtherUser.Account.Name,
+			ImageURL:    core.FormatUserAvatarUrl(s.s3, s.s3Bucket, item.OtherID, item.OtherUser.AvatarName),
 			LastMessage: modelToResponseItem(item.Message, userId),
 		}
 	})

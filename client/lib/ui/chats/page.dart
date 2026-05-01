@@ -93,7 +93,11 @@ class _Item extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () => Navigator.of(context).push(
-          MessagesPage.route(otherUserId: item.id, otherUserName: item.name),
+          MessagesPage.route(
+            otherUserId: item.id,
+            otherUserName: item.name,
+            otherUserAvatarUrl: item.imageUrl,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -102,13 +106,21 @@ class _Item extends StatelessWidget {
               CircleAvatar(
                 radius: 28,
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(
-                  initials,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                backgroundImage: item.imageUrl == null
+                    ? null
+                    : NetworkImage(item.imageUrl!),
+                child: item.imageUrl != null
+                    ? null
+                    : Text(
+                        initials,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
               ),
               const SizedBox(width: 16),
               Expanded(
