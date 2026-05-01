@@ -87,6 +87,39 @@ func (ct *Controller) delete(c *echo.Context) error {
 	return c.JSON(200, core.CreateActionResponse(true))
 }
 
+func (ct *Controller) imagePresignedURL(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := ImagePresignedRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	response, err := ct.service.GetImagePresignedURL(
+		c.Request().Context(), user.ID, payload,
+	)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, response)
+}
+
+func (ct *Controller) imageConfirm(c *echo.Context) error {
+	user := core.GetUserSession(c)
+	payload := ImageConfirmRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+	err := ct.service.ConfirmImage(c.Request().Context(), user.ID, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, core.CreateActionResponse(true))
+}
+
 func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.Use(core.NewGuardRoleMiddleware(core.GuardRoleUser))
 
@@ -95,4 +128,6 @@ func (ct *Controller) RegisterRoutes(g *echo.Group) {
 	g.GET("/:id", ct.getById)
 	g.PUT("/:id", ct.update)
 	g.DELETE("/:id", ct.delete)
+	g.POST("/:id/image/presigned-url", ct.imagePresignedURL)
+	g.POST("/:id/image/confirm", ct.imageConfirm)
 }

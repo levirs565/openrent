@@ -160,9 +160,9 @@ type AvatarPresignResponse struct {
 
 func formatAvatarKey(userId uint, name string, temp bool) string {
 	if temp {
-		return fmt.Sprintf("temp/%d/avatar/%s", userId, name)
+		return fmt.Sprintf("temp/user/%d/avatar/%s", userId, name)
 	}
-	return fmt.Sprintf("public/%d/avatar/%s", userId, name)
+	return fmt.Sprintf("public/user/%d/avatar/%s", userId, name)
 }
 
 func (s *Service) GetUserAvatarPresignedURL(ctx context.Context, userId uint, fileSize int64, contentType string) (AvatarPresignResponse, error) {

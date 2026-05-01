@@ -18,5 +18,6 @@ type Product struct {
 	Stock         int
 	Description   string
 	Embedding     pgvector.Vector `gorm:"type:vector(768)"`
+	ImageName     string
 	Rent          []Rent
 }

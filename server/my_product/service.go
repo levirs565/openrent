@@ -7,7 +7,12 @@ import (
 	"openrent-server/core"
 	"openrent-server/embedding"
 	"openrent-server/models"
+	"strings"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/google/uuid"
 	"github.com/pgvector/pgvector-go"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
@@ -15,16 +20,23 @@ import (
 )
 
 var ErrNotFound = errors.New("product not found")
+var ErrInvalidContentType = errors.New("invalid content type")
+var ErrImageSizeExceedLimit = errors.New("avatar size exceeds limits")
+var ErrImageNotFound = errors.New("avatar not found")
 
 type Service struct {
 	db       *gorm.DB
 	embedder embedding.AIEmbedder
+	s3       *s3.Client
+	s3Bucket string
 }
 
-func NewService(db *gorm.DB, embedder embedding.AIEmbedder) *Service {
+func NewService(db *gorm.DB, embedder embedding.AIEmbedder, s3 *s3.Client, s3Bucket string) *Service {
 	return &Service{
 		db:       db,
 		embedder: embedder,
+		s3:       s3,
+		s3Bucket: s3Bucket,
 	}
 }
 
@@ -44,7 +56,7 @@ func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItemShort, e
 			`
 				products.id, products.created_at, products.updated_at,
 				products.name, products.price_per_day, products.stock,
-				products.user_address_id,
+				products.user_address_id, products.image_name,
 				"UserAddress".name AS "UserAddress__name",
 				? AS pending_rent_count,
 				? AS ready_rent_count,
@@ -109,6 +121,7 @@ func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItemShort, e
 			Name:        item.Name,
 			PricePerDay: item.PricePerDay,
 			Stock:       item.Stock,
+			ImageURL:    core.FormatProductImageUrl(s.s3, s.s3Bucket, item.ID, item.ImageName),
 			RentCount: ResponseItemRentCount{
 				Pending:       item.PendingRentCount,
 				Ready:         item.ReadyRentCount,
@@ -127,6 +140,7 @@ func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_address_id",
+			"products.image_name",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAddress"},
@@ -173,6 +187,7 @@ func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseIt
 
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
+		ImageURL:     core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
 		Rents: lo.Map(rents, func(item models.Rent, index int) RentItem {
 			return modelToRentItem(item)
 		}),
@@ -279,5 +294,101 @@ func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
 	if rows == 0 {
 		return ErrNotFound
 	}
+	return nil
+}
+
+func (s *Service) GetImagePresignedURL(ctx context.Context, userId uint, request ImagePresignedRequest) (ImagePresignResponse, error) {
+	count, err := gorm.G[models.Product](s.db).
+		Where("user_account_id = ? and id = ?", userId, request.ID).
+		Count(ctx, "*")
+	if err != nil {
+		return ImagePresignResponse{}, err
+	}
+	if count == 0 {
+		return ImagePresignResponse{}, ErrNotFound
+	}
+
+	name := uuid.NewString()
+	key := core.FormatProductImageKey(request.ID, name, true)
+	presignClient := s3.NewPresignClient(s.s3)
+
+	const maxSizeBytes int64 = 5 * 1024 * 1024 // 5 MB
+
+	if request.Size > maxSizeBytes {
+		return ImagePresignResponse{}, ErrImageSizeExceedLimit
+	}
+
+	if !strings.HasPrefix(request.ContentType, "image/") {
+		return ImagePresignResponse{}, ErrInvalidContentType
+	}
+
+	req, err := presignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+		Bucket:        aws.String(s.s3Bucket),
+		Key:           aws.String(key),
+		ContentLength: aws.Int64(request.Size),
+		ContentType:   &request.ContentType,
+	}, s3.WithPresignExpires(60*time.Minute))
+
+	if err != nil {
+		return ImagePresignResponse{}, err
+	}
+
+	return ImagePresignResponse{
+		Name:    name,
+		URL:     req.URL,
+		Method:  req.Method,
+		Headers: req.SignedHeader,
+	}, nil
+}
+
+func (s *Service) ConfirmImage(ctx context.Context, userId uint, request ImageConfirmRequest) error {
+	count, err := gorm.G[models.Product](s.db).
+		Where("user_account_id = ? and id = ?", userId, request.ID).
+		Count(ctx, "*")
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return ErrNotFound
+	}
+
+	tempKey := core.FormatProductImageKey(request.ID, request.Name, true)
+
+	head, err := s.s3.HeadObject(ctx, &s3.HeadObjectInput{
+		Bucket: aws.String(s.s3Bucket),
+		Key:    aws.String(tempKey),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if head.ContentLength == nil {
+		return ErrImageNotFound
+	}
+
+	finalKey := core.FormatProductImageKey(request.ID, request.Name, false)
+
+	_, err = s.s3.CopyObject(ctx, &s3.CopyObjectInput{
+		Bucket:      aws.String(s.s3Bucket),
+		Key:         aws.String(finalKey),
+		CopySource:  aws.String(fmt.Sprintf("%s/%s", s.s3Bucket, tempKey)),
+		ContentType: head.ContentType,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	rows, err := gorm.G[models.Product](s.db).Where("id = ?", request.ID).Update(ctx, "image_name", request.Name)
+
+	if rows == 0 {
+		return ErrNotFound
+	}
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
