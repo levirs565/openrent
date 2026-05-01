@@ -25,7 +25,7 @@ abstract interface class ProductRepository {
 
   Future<Result<ProductResponseItemDetail>> getById({required int id});
 
-  Future<Result<List<ProductResponseItemShort>>> getMyProduct();
+  Future<Result<List<MyProductResponseItemShort>>> getMyProduct();
 
   Future<Result<ProductResponseItem>> add(ProductAddRequest request);
 
@@ -72,9 +72,9 @@ class ProductDataSource implements ProductRepository {
   }
 
   @override
-  Future<Result<List<ProductResponseItemShort>>> getMyProduct() async {
+  Future<Result<List<MyProductResponseItemShort>>> getMyProduct() async {
     try {
-      final result = await service.listProduct(owner: true);
+      final result = await service.getMyProductList();
       return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);

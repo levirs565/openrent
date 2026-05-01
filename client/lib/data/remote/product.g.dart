@@ -186,6 +186,65 @@ Map<String, dynamic> _$ProductAddRequestToJson(ProductAddRequest instance) =>
       'address_id': instance.addressId,
     };
 
+_MyProductResponseItemShort _$MyProductResponseItemShortFromJson(
+  Map<String, dynamic> json,
+) => _MyProductResponseItemShort(
+  id: (json['id'] as num).toInt(),
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
+  name: json['name'] as String,
+  pricePerDay: (json['price_per_day'] as num).toInt(),
+  stock: (json['stock'] as num).toInt(),
+  address: MyProductAddressShort.fromJson(
+    json['address'] as Map<String, dynamic>,
+  ),
+  rentCount: MyProductRentCount.fromJson(
+    json['rent_count'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$MyProductResponseItemShortToJson(
+  _MyProductResponseItemShort instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'created_at': instance.createdAt.toIso8601String(),
+  'updated_at': instance.updatedAt.toIso8601String(),
+  'name': instance.name,
+  'price_per_day': instance.pricePerDay,
+  'stock': instance.stock,
+  'address': instance.address,
+  'rent_count': instance.rentCount,
+};
+
+_MyProductAddressShort _$MyProductAddressShortFromJson(
+  Map<String, dynamic> json,
+) => _MyProductAddressShort(
+  id: (json['id'] as num).toInt(),
+  name: json['name'] as String,
+);
+
+Map<String, dynamic> _$MyProductAddressShortToJson(
+  _MyProductAddressShort instance,
+) => <String, dynamic>{'id': instance.id, 'name': instance.name};
+
+_MyProductRentCount _$MyProductRentCountFromJson(Map<String, dynamic> json) =>
+    _MyProductRentCount(
+      pending: (json['pending'] as num).toInt(),
+      ready: (json['ready'] as num).toInt(),
+      onRent: (json['on_rent'] as num).toInt(),
+      pendingReturn: (json['pending_return'] as num).toInt(),
+      late: (json['late'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$MyProductRentCountToJson(_MyProductRentCount instance) =>
+    <String, dynamic>{
+      'pending': instance.pending,
+      'ready': instance.ready,
+      'on_rent': instance.onRent,
+      'pending_return': instance.pendingReturn,
+      'late': instance.late,
+    };
+
 // dart format off
 
 // **************************************************************************
@@ -282,6 +341,38 @@ class _ProductService implements ProductService {
   }
 
   @override
+  Future<List<MyProductResponseItemShort>> getMyProductList() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<MyProductResponseItemShort>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/me/products/',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<MyProductResponseItemShort> _value;
+    try {
+      _value = _result.data!
+          .map(
+            (dynamic i) =>
+                MyProductResponseItemShort.fromJson(i as Map<String, dynamic>),
+          )
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<ProductResponseItem> addProduct(ProductAddRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -292,7 +383,7 @@ class _ProductService implements ProductService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/products',
+            '/me/products',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -323,7 +414,7 @@ class _ProductService implements ProductService {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/products/${id}',
+            '/me/products/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

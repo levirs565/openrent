@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 
+part 'product.freezed.dart';
 part 'product.g.dart';
 
 @RestApi()
@@ -23,10 +25,13 @@ abstract class ProductService {
   @GET("/products/{id}")
   Future<ProductResponseItemDetail> getProduct(@Path("id") int id);
 
-  @POST("/products")
+  @GET("/me/products/")
+  Future<List<MyProductResponseItemShort>> getMyProductList();
+
+  @POST("/me/products")
   Future<ProductResponseItem> addProduct(@Body() ProductAddRequest request);
 
-  @PUT("/products/{id}")
+  @PUT("/me/products/{id}")
   Future<ProductResponseItem> updateProduct(
     @Path("id") int id,
     @Body() ProductAddRequest request,
@@ -221,4 +226,46 @@ class ProductAddRequest {
       _$ProductAddRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductAddRequestToJson(this);
+}
+
+@freezed
+abstract class MyProductResponseItemShort with _$MyProductResponseItemShort {
+  const factory MyProductResponseItemShort({
+    required int id,
+    @JsonKey(name: "created_at") required DateTime createdAt,
+    @JsonKey(name: "updated_at") required DateTime updatedAt,
+    required String name,
+    @JsonKey(name: "price_per_day") required int pricePerDay,
+    required int stock,
+    required MyProductAddressShort address,
+    @JsonKey(name: "rent_count") required MyProductRentCount rentCount,
+  }) = _MyProductResponseItemShort;
+
+  factory MyProductResponseItemShort.fromJson(Map<String, dynamic> json) =>
+      _$MyProductResponseItemShortFromJson(json);
+}
+
+@freezed
+abstract class MyProductAddressShort with _$MyProductAddressShort {
+  const factory MyProductAddressShort({
+    required int id,
+    required String name,
+  }) = _MyProductAddressShort;
+
+  factory MyProductAddressShort.fromJson(Map<String, dynamic> json) =>
+      _$MyProductAddressShortFromJson(json);
+}
+
+@freezed
+abstract class MyProductRentCount with _$MyProductRentCount {
+  const factory MyProductRentCount({
+    required int pending,
+    required int ready,
+    @JsonKey(name: "on_rent") required int onRent,
+    @JsonKey(name: "pending_return") required int pendingReturn,
+    required int late,
+  }) = _MyProductRentCount;
+
+  factory MyProductRentCount.fromJson(Map<String, dynamic> json) =>
+      _$MyProductRentCountFromJson(json);
 }
