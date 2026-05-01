@@ -34,6 +34,7 @@ type ResponseItemShort struct {
 	Stock       int                      `json:"stock"`
 	Address     ResponseItemShortAddress `json:"address"`
 	RentCount   ResponseItemRentCount    `json:"rent_count"`
+	ImageURL    *string                  `json:"image_url"`
 }
 
 type ResponseItemAddress struct {
@@ -112,6 +113,7 @@ func modelToRentItem(model models.Rent) RentItem {
 
 type ResponseItemDetail struct {
 	ResponseItem
+	ImageURL   *string             `json:"image_url"`
 	TopReviews []core.ReviewDetail `json:"top_reviews"`
 	Rents      []RentItem          `json:"rents"`
 }
@@ -143,4 +145,22 @@ type UpdateRequest struct {
 
 type DeleteRequest struct {
 	ID uint `param:"id"`
+}
+
+type ImagePresignedRequest struct {
+	ID          uint   `param:"id"`
+	Size        int64  `json:"size" validate:"required,min=1"`
+	ContentType string `json:"content_type" validate:"required"`
+}
+
+type ImageConfirmRequest struct {
+	ID   uint   `param:"id"`
+	Name string `json:"name" validate:"required"`
+}
+
+type ImagePresignResponse struct {
+	Name    string              `json:"name"`
+	URL     string              `json:"url"`
+	Method  string              `json:"method"`
+	Headers map[string][]string `json:"headers"`
 }

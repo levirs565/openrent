@@ -10,10 +10,15 @@ _RentalProductShort _$RentalProductShortFromJson(Map<String, dynamic> json) =>
     _RentalProductShort(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
+      imageUrl: json['image_url'] as String?,
     );
 
 Map<String, dynamic> _$RentalProductShortToJson(_RentalProductShort instance) =>
-    <String, dynamic>{'id': instance.id, 'name': instance.name};
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'image_url': instance.imageUrl,
+    };
 
 _RentalUserShort _$RentalUserShortFromJson(Map<String, dynamic> json) =>
     _RentalUserShort(

@@ -62,6 +62,7 @@ class _ProductDetailPageContent extends StatelessWidget {
           child: Column(
             children: [
               if (state.isLoading) LinearProgressIndicator(),
+              if (state.data?.imageUrl != null) Image.network(state.data!.imageUrl!),
               Text("Price: ${state.data?.pricePerDay ?? "-"} per day"),
               Text("Late: ${state.data?.lateFeePerDay ?? "-"} per day"),
               Text(

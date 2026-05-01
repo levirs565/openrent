@@ -29,8 +29,11 @@ abstract class OrderService {
 
 @freezed
 abstract class OrderProductShort with _$OrderProductShort {
-  factory OrderProductShort({required int id, required String name}) =
-      _OrderProductShort;
+  factory OrderProductShort({
+    required int id,
+    required String name,
+    @JsonKey(name: "image_url") required String? imageUrl,
+  }) = _OrderProductShort;
 
   factory OrderProductShort.fromJson(Map<String, Object?> json) =>
       _$OrderProductShortFromJson(json);

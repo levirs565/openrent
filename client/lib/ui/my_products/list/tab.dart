@@ -80,6 +80,8 @@ class _MyProductsItem extends StatelessWidget {
             Navigator.of(context).push(MyProductDetailPage.route(item.id)),
         child: Column(
           children: [
+            if (item.imageUrl != null)
+              Image.network(item.imageUrl!, height: 96,),
             Text(item.name),
             Text("${item.pricePerDay} Per Day - ${item.stock} Stock"),
             Text("${item.address.name}"),

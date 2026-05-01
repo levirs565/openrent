@@ -36,8 +36,11 @@ abstract class RentalService {
 
 @freezed
 abstract class RentalProductShort with _$RentalProductShort {
-  const factory RentalProductShort({required int id, required String name}) =
-      _RentalProductShort;
+  const factory RentalProductShort({
+    required int id,
+    required String name,
+    @JsonKey(name: "image_url") required String? imageUrl,
+  }) = _RentalProductShort;
 
   factory RentalProductShort.fromJson(Map<String, Object?> json) =>
       _$RentalProductShortFromJson(json);

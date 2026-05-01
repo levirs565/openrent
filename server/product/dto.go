@@ -32,6 +32,7 @@ type ResponseItemShort struct {
 	PricePerDay int                      `json:"price_per_day"`
 	Stock       int                      `json:"stock"`
 	Address     ResponseItemShortAddress `json:"address"`
+	ImageURL    *string                  `json:"image_url"`
 }
 
 func modelToResponseShort(model models.Product) ResponseItemShort {
@@ -108,6 +109,7 @@ type ResponseItemDetail struct {
 	ResponseItem
 	Recommendations []ResponseItemShort `json:"recommendations"`
 	TopReviews      []core.ReviewDetail `json:"top_reviews"`
+	ImageURL        *string             `json:"image_url"`
 }
 
 type GetByIdRequest struct {

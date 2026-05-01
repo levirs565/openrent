@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
@@ -10,9 +11,19 @@ import 'state.dart';
 class MyProductDetailCubit extends Cubit<MyProductDetailState> {
   final ProductRepository _productRepository;
 
-  MyProductDetailCubit({required int id, required ProductRepository productRepository})
-    : _productRepository = productRepository,
-      super(MyProductDetailState(id: id, isLoading: false, data: null)) {
+  MyProductDetailCubit({
+    required int id,
+    required ProductRepository productRepository,
+  }) : _productRepository = productRepository,
+       super(
+         MyProductDetailState(
+           id: id,
+           data: null,
+           error: null,
+           dataStatus: .initial,
+           isImageUpload: false,
+         ),
+       ) {
     _refresh();
   }
 
@@ -23,18 +34,42 @@ class MyProductDetailCubit extends Cubit<MyProductDetailState> {
   }
 
   void _refresh() async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(dataStatus: .loading));
 
     final result = await _productRepository.getMyProductById(id: state.id);
 
     switch (result) {
       case ResultSuccess<MyProductResponseItemDetail>():
-        emit(state.copyWith(isLoading: false, data: result.data));
+        emit(state.copyWith(dataStatus: .success, data: result.data));
       case ResultError<MyProductResponseItemDetail>():
         emit(
           state.copyWith(
-            isLoading: false,
-            error: GeneralErrorData.general(message: result.message),
+            dataStatus: .fail,
+            error: .new(source: .data, message: result.message),
+          ),
+        );
+    }
+  }
+
+  void onUploadImage(XFile file) async {
+    if (state.isLoading) return;
+
+    emit(state.copyWith(isImageUpload: true));
+
+    final result = await _productRepository.uploadImage(
+      id: state.id,
+      file: file,
+    );
+
+    switch (result) {
+      case ResultSuccess<void>():
+        emit(state.copyWith(isImageUpload: false));
+        _refresh();
+      case ResultError<void>():
+        emit(
+          state.copyWith(
+            isImageUpload: false,
+            error: .new(source: .actionImageUpload, message: result.message),
           ),
         );
     }

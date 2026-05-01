@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"firebase.google.com/go/v4/messaging"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/pgvector/pgvector-go"
 	"github.com/samber/lo"
 	"gorm.io/datatypes"
@@ -26,13 +27,20 @@ type Service struct {
 	db           *gorm.DB
 	embedder     embedding.AIEmbedder
 	notification notification.Service
+	s3           *s3.Client
+	s3Bucket     string
 }
 
-func NewService(db *gorm.DB, embedder embedding.AIEmbedder, notification notification.Service) *Service {
+func NewService(
+	db *gorm.DB, embedder embedding.AIEmbedder, notification notification.Service,
+	s3 *s3.Client, s3Bucket string,
+) *Service {
 	return &Service{
 		db:           db,
 		embedder:     embedder,
 		notification: notification,
+		s3:           s3,
+		s3Bucket:     s3Bucket,
 	}
 }
 
@@ -44,6 +52,7 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.stock",
 			"products.user_account_id", "products.user_address_id",
+			"products.image_name",
 		).
 		Joins("UserAccount.Account", s.db.Select("name")).
 		Joins("UserAddress", s.db.Select("regency", "location"))
@@ -90,7 +99,9 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 	}
 
 	var mapped = lo.Map(products, func(item models.Product, index int) ResponseItemShort {
-		return modelToResponseShort(item)
+		result := modelToResponseShort(item)
+		result.ImageURL = core.FormatProductImageUrl(s.s3, s.s3Bucket, item.ID, item.ImageName)
+		return result
 	})
 	return mapped, nil
 }
@@ -101,7 +112,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id", "products.embedding",
+			"products.user_address_id", "products.embedding", "products.image_name",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},
@@ -170,6 +181,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
 			return core.ReviewDetailFromModel(item)
 		}),
+		ImageURL: core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
 	}, nil
 }
 
@@ -233,6 +245,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			Select(
 				"products.name", "products.price_per_day",
 				"products.late_fee_per_day", "products.description",
+				"products.image_name",
 			).
 			Joins(
 				clause.JoinTarget{Association: "UserAddress"},
@@ -273,6 +286,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 				Name:          model.Name,
 				PricePerDay:   model.PricePerDay,
 				LateFeePerDay: model.LateFeePerDay,
+				ImageName:     model.ImageName,
 				Details: datatypes.NewJSONType(models.RentProductDetailsSnapshot{
 					Description: model.Description,
 					UserAddress: models.RentAddressSnapshot{

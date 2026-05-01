@@ -242,29 +242,34 @@ class AuthDataSource implements AuthRepository {
 
   @override
   Future<Result<void>> uploadAvatar(XFile file) async {
-    final presigned = await service.createAvatarPresignedUrl(
-      UserAvatarPresignedRequest(
-        size: await file.length(),
-        contentType: file.mimeType ?? "image/jpeg",
-      ),
-    );
-    final headers = Map.fromEntries(
-      presigned.headers.entries.map((entry) {
-        if (entry.value.length == 1) {
-          return MapEntry(entry.key, entry.value.first);
-        }
-        return MapEntry(entry.key, entry.value);
-      }),
-    );
-    log(jsonEncode(presigned.toJson()));
-    await _dioUploaded.put(
-      presigned.url,
-      data: await file.readAsBytes(),
-      options: Options(headers: headers),
-    );
-    await service.confirmAvatar(UserAvatarConfirmRequest(name: presigned.name));
-    _stateTriggerController.add(null);
-    return ResultSuccess(null);
+    try {
+      final presigned = await service.createAvatarPresignedUrl(
+        UserAvatarPresignedRequest(
+          size: await file.length(),
+          contentType: file.mimeType ?? "image/jpeg",
+        ),
+      );
+      final headers = Map.fromEntries(
+        presigned.headers.entries.map((entry) {
+          if (entry.value.length == 1) {
+            return MapEntry(entry.key, entry.value.first);
+          }
+          return MapEntry(entry.key, entry.value);
+        }),
+      );
+      log(jsonEncode(presigned.toJson()));
+      await _dioUploaded.put(
+        presigned.url,
+        data: await file.readAsBytes(),
+        options: Options(headers: headers),
+      );
+      await service.confirmAvatar(
+          UserAvatarConfirmRequest(name: presigned.name));
+      _stateTriggerController.add(null);
+      return ResultSuccess(null);
+    } catch (e) {
+      return mapDioErrorToResult(e);
+    }
   }
 
   @override
