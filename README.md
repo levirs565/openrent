@@ -11,7 +11,7 @@
 - [ ] Order Management (Renter)
 - [x] Chat
 - [x] Show Search Result in Map
-- [ ] Optional Biometric (after Login when opening App)
+- [x] Optional Biometric (after Login when opening App)
 - [ ] Local Database for Caching and Setting
 - [ ] Review for Teacher
 - [ ] Open time and close hour for owner
