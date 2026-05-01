@@ -75,24 +75,75 @@ class _Content extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        // TODO: Progressbar when upload
-                        CircleAvatar(
-                          radius: 28,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primaryContainer,
-                          backgroundImage: user?.avatarUrl == null
-                              ? null
-                              : NetworkImage(user!.avatarUrl!),
-                          child: user?.avatarUrl != null
-                              ? null
-                              : Icon(
-                                  Icons.person,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                                  size: 32,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            CircleAvatar(
+                              radius: 28,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primaryContainer,
+                              backgroundImage: user?.avatarUrl == null
+                                  ? null
+                                  : NetworkImage(user!.avatarUrl!),
+                              child: user?.avatarUrl != null
+                                  ? null
+                                  : Icon(
+                                      Icons.person,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
+                                      size: 32,
+                                    ),
+                            ),
+                            Positioned(
+                              bottom: -2,
+                              right: -2,
+                              child: Material(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceVariant,
+                                shape: const CircleBorder(),
+                                child: InkWell(
+                                  onTap: state.isUploadingAvatar
+                                      ? null
+                                      : () async {
+                                          final cubit = context
+                                              .read<ProfileCubit>();
+                                          final picker = ImagePicker();
+                                          final file = await picker.pickImage(
+                                            source: ImageSource.gallery,
+                                          );
+                                          if (file != null) {
+                                            cubit.onUploadAvatar(file);
+                                          }
+                                        },
+                                  customBorder: const CircleBorder(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: state.isUploadingAvatar
+                                        ? SizedBox(
+                                            height: 18,
+                                            width: 18,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurfaceVariant,
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.edit,
+                                            size: 18,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                          ),
+                                  ),
                                 ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -121,25 +172,6 @@ class _Content extends StatelessWidget {
 
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: state.isUploadingAvatar
-                  ? null
-                  : () async {
-                      final cubit = context.read<ProfileCubit>();
-                      final picker = ImagePicker();
-                      final file = await picker.pickImage(
-                        source: ImageSource.gallery,
-                      );
-                      if (file != null) {
-                        cubit.onUploadAvatar(file);
-                      }
-                    },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 14),
-                child: Text('Upload Avatar'),
-              ),
-            ),
-            const SizedBox(height: 12),
-            FilledButton(
               onPressed: () =>
                   Navigator.of(context).push(MyAddressesPage.route()),
               child: const Padding(
@@ -147,7 +179,7 @@ class _Content extends StatelessWidget {
                 child: Text('Alamat Saya'),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
             FilledButton(
               onPressed: () =>
                   Navigator.of(context).push(FragileDeliveryGame.route()),
