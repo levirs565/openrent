@@ -21,6 +21,21 @@ func FormatProductImageUrl(client *s3.Client, bucketName string, productId uint,
 	return &result
 }
 
+func FormatUserAvatarKey(userId uint, name string, temp bool) string {
+	if temp {
+		return fmt.Sprintf("temp/user/%d/avatar/%s", userId, name)
+	}
+	return fmt.Sprintf("public/user/%d/avatar/%s", userId, name)
+}
+
+func FormatUserAvatarUrl(client *s3.Client, bucketName string, userId uint, name string) *string {
+	if name == "" {
+		return nil
+	}
+	result := FormatS3PublicUrl(client, bucketName, FormatUserAvatarKey(userId, name, false))
+	return &result
+}
+
 func FormatS3PublicUrl(client *s3.Client, bucketName string, key string) string {
 	return fmt.Sprintf(
 		"%s/%s/%s",
