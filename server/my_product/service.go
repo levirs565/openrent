@@ -51,7 +51,7 @@ func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItemShort, e
 	}
 
 	var products []productWithRents
-	err := gorm.G[models.Product](s.db.Debug()).
+	err := gorm.G[models.Product](s.db).
 		Select(
 			`
 				products.id, products.created_at, products.updated_at,

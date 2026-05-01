@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/core"
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
 
 	"firebase.google.com/go/v4/messaging"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -23,12 +25,16 @@ var ErrReviewDuplicated = errors.New("review is duplicated")
 type Service struct {
 	db           *gorm.DB
 	notification notification.Service
+	s3           *s3.Client
+	s3Bucket     string
 }
 
-func NewService(db *gorm.DB, notification notification.Service) *Service {
+func NewService(db *gorm.DB, notification notification.Service, s3 *s3.Client, s3Bucket string) *Service {
 	return &Service{
 		db:           db,
 		notification: notification,
+		s3:           s3,
+		s3Bucket:     s3Bucket,
 	}
 }
 
@@ -38,6 +44,7 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
 			"rents.quantity", "rents.product_id", "rents.user_account_id",
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
+			"rents.product_snapshot_image_name",
 		).
 		Joins(
 			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
@@ -61,7 +68,9 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 	}
 
 	list := lo.Map(result, func(item models.Rent, index int) ResponseItem {
-		return modelToResponseItem(item)
+		result := modelToResponseItem(item)
+		result.Product.ImageURL = core.FormatProductImageUrl(s.s3, s.s3Bucket, item.ProductID, item.ProductSnapshot.ImageName)
+		return result
 	})
 	return list, nil
 }
@@ -73,6 +82,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"rents.quantity", "rents.product_id", "rents.user_account_id",
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
 			"rents.cancel_reason", "rents.cancel_reason_note",
+			"rents.product_snapshot_image_name",
 		).
 		Joins(
 			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
@@ -99,7 +109,9 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 		return ResponseItemDetails{}, err
 	}
 
-	return modelToResponseItemDetails(result), nil
+	response := modelToResponseItemDetails(result)
+	response.Product.ImageURL = core.FormatProductImageUrl(s.s3, s.s3Bucket, result.ProductID, result.ProductSnapshot.ImageName)
+	return response, nil
 }
 
 func (s *Service) receive(ctx context.Context, userId uint, id uint) error {

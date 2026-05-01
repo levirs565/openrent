@@ -245,6 +245,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			Select(
 				"products.name", "products.price_per_day",
 				"products.late_fee_per_day", "products.description",
+				"products.image_name",
 			).
 			Joins(
 				clause.JoinTarget{Association: "UserAddress"},
@@ -285,6 +286,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 				Name:          model.Name,
 				PricePerDay:   model.PricePerDay,
 				LateFeePerDay: model.LateFeePerDay,
+				ImageName:     model.ImageName,
 				Details: datatypes.NewJSONType(models.RentProductDetailsSnapshot{
 					Description: model.Description,
 					UserAddress: models.RentAddressSnapshot{
