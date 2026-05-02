@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileState {
 
- bool get canUseBiometric; bool get isBiometricOn; bool get isUploadingAvatar; GeneralErrorData? get error;
+ bool get isUploadingAvatar; GeneralErrorData? get error;
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ProfileStateCopyWith<ProfileState> get copyWith => _$ProfileStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.isUploadingAvatar, isUploadingAvatar) || other.isUploadingAvatar == isUploadingAvatar)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.isUploadingAvatar, isUploadingAvatar) || other.isUploadingAvatar == isUploadingAvatar)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,isUploadingAvatar,error);
+int get hashCode => Object.hash(runtimeType,isUploadingAvatar,error);
 
 @override
 String toString() {
-  return 'ProfileState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, isUploadingAvatar: $isUploadingAvatar, error: $error)';
+  return 'ProfileState(isUploadingAvatar: $isUploadingAvatar, error: $error)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ProfileStateCopyWith<$Res>  {
   factory $ProfileStateCopyWith(ProfileState value, $Res Function(ProfileState) _then) = _$ProfileStateCopyWithImpl;
 @useResult
 $Res call({
- bool canUseBiometric, bool isBiometricOn, bool isUploadingAvatar, GeneralErrorData? error
+ bool isUploadingAvatar, GeneralErrorData? error
 });
 
 
@@ -62,11 +62,9 @@ class _$ProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? isUploadingAvatar = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isUploadingAvatar = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
-canUseBiometric: null == canUseBiometric ? _self.canUseBiometric : canUseBiometric // ignore: cast_nullable_to_non_nullable
-as bool,isBiometricOn: null == isBiometricOn ? _self.isBiometricOn : isBiometricOn // ignore: cast_nullable_to_non_nullable
-as bool,isUploadingAvatar: null == isUploadingAvatar ? _self.isUploadingAvatar : isUploadingAvatar // ignore: cast_nullable_to_non_nullable
+isUploadingAvatar: null == isUploadingAvatar ? _self.isUploadingAvatar : isUploadingAvatar // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
   ));
@@ -165,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  bool isUploadingAvatar,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isUploadingAvatar,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileState() when $default != null:
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvatar,_that.error);case _:
+return $default(_that.isUploadingAvatar,_that.error);case _:
   return orElse();
 
 }
@@ -186,10 +184,10 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvata
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  bool isUploadingAvatar,  GeneralErrorData? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isUploadingAvatar,  GeneralErrorData? error)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileState():
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvatar,_that.error);case _:
+return $default(_that.isUploadingAvatar,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +204,10 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvata
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool canUseBiometric,  bool isBiometricOn,  bool isUploadingAvatar,  GeneralErrorData? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isUploadingAvatar,  GeneralErrorData? error)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileState() when $default != null:
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvatar,_that.error);case _:
+return $default(_that.isUploadingAvatar,_that.error);case _:
   return null;
 
 }
@@ -221,11 +219,9 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.isUploadingAvata
 
 
 class _ProfileState implements ProfileState {
-  const _ProfileState({required this.canUseBiometric, required this.isBiometricOn, required this.isUploadingAvatar, required this.error});
+  const _ProfileState({required this.isUploadingAvatar, required this.error});
   
 
-@override final  bool canUseBiometric;
-@override final  bool isBiometricOn;
 @override final  bool isUploadingAvatar;
 @override final  GeneralErrorData? error;
 
@@ -239,16 +235,16 @@ _$ProfileStateCopyWith<_ProfileState> get copyWith => __$ProfileStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.isUploadingAvatar, isUploadingAvatar) || other.isUploadingAvatar == isUploadingAvatar)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileState&&(identical(other.isUploadingAvatar, isUploadingAvatar) || other.isUploadingAvatar == isUploadingAvatar)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,isUploadingAvatar,error);
+int get hashCode => Object.hash(runtimeType,isUploadingAvatar,error);
 
 @override
 String toString() {
-  return 'ProfileState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, isUploadingAvatar: $isUploadingAvatar, error: $error)';
+  return 'ProfileState(isUploadingAvatar: $isUploadingAvatar, error: $error)';
 }
 
 
@@ -259,7 +255,7 @@ abstract mixin class _$ProfileStateCopyWith<$Res> implements $ProfileStateCopyWi
   factory _$ProfileStateCopyWith(_ProfileState value, $Res Function(_ProfileState) _then) = __$ProfileStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool canUseBiometric, bool isBiometricOn, bool isUploadingAvatar, GeneralErrorData? error
+ bool isUploadingAvatar, GeneralErrorData? error
 });
 
 
@@ -276,11 +272,9 @@ class __$ProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? isUploadingAvatar = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isUploadingAvatar = null,Object? error = freezed,}) {
   return _then(_ProfileState(
-canUseBiometric: null == canUseBiometric ? _self.canUseBiometric : canUseBiometric // ignore: cast_nullable_to_non_nullable
-as bool,isBiometricOn: null == isBiometricOn ? _self.isBiometricOn : isBiometricOn // ignore: cast_nullable_to_non_nullable
-as bool,isUploadingAvatar: null == isUploadingAvatar ? _self.isUploadingAvatar : isUploadingAvatar // ignore: cast_nullable_to_non_nullable
+isUploadingAvatar: null == isUploadingAvatar ? _self.isUploadingAvatar : isUploadingAvatar // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
   ));

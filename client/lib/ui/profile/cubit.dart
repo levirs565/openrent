@@ -20,41 +20,10 @@ class ProfileCubit extends Cubit<ProfileState> {
        _settingsRepository = settingsRepository,
        super(
          ProfileState(
-           canUseBiometric: false,
-           isBiometricOn: settingsRepository.getNeedBiometric(),
            isUploadingAvatar: false,
            error: null,
          ),
-       ) {
-    isBiometricSupported().then(
-      (value) => {emit(state.copyWith(canUseBiometric: value))},
-    );
-  }
-
-  void onToggleBiometrics() async {
-    if (!state.canUseBiometric) return;
-    final nextValue = !state.isBiometricOn;
-    if (!nextValue) {
-      try {
-        final biometricResult = await biometricAuthenticate(
-          reason: "Authenticate to disable biometric",
-        );
-        if (!biometricResult) {
-          emit(
-            state.copyWith(error: .general(message: "Authentication failed")),
-          );
-          return;
-        }
-      } catch (e) {
-        emit(
-          state.copyWith(error: .general(message: "Authentication failed: $e")),
-        );
-        return;
-      }
-    }
-    _settingsRepository.setNeedBiometric(nextValue);
-    emit(state.copyWith(isBiometricOn: nextValue));
-  }
+       );
 
   void onUploadAvatar(XFile file) async {
     if (state.isUploadingAvatar) return;

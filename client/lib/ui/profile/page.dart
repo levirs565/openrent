@@ -8,6 +8,7 @@ import 'package:openrent_client/ui/my_addresses/page.dart';
 import 'package:openrent_client/ui/profile/cubit.dart';
 import 'package:openrent_client/ui/profile/state.dart';
 import 'package:openrent_client/ui/game/page.dart';
+import 'package:openrent_client/ui/settings/page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -190,14 +191,10 @@ class _Content extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             FilledButton(
-              onPressed: !state.canUseBiometric
-                  ? null
-                  : () => context.read<ProfileCubit>().onToggleBiometrics(),
+              onPressed:() => Navigator.of(context).push(SettingsPage.route()),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 14),
-                child: state.isBiometricOn
-                    ? Text('Nonaktifkan Biometric')
-                    : Text("Aktifkan Biometric"),
+                child: Text("Settings")
               ),
             ),
             const SizedBox(height: 12),
