@@ -13,3 +13,4 @@ Box getSettingsBox() {
 
 const needBiometricKey = "needBiometric";
 const currencyKey = "currency";
+const timeZoneKey = "timezone";

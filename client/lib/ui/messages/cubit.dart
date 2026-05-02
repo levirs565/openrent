@@ -6,8 +6,10 @@ import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/remote/message.dart';
 import 'package:openrent_client/data/remote/user.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/data/user.dart';
 import 'package:openrent_client/ui/messages/state.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class MessagesCubit extends Cubit<MessagesState> {
   final MessageRepository _repository;
@@ -20,6 +22,7 @@ class MessagesCubit extends Cubit<MessagesState> {
     required String? otherUserAvatarUrl,
     required MessageRepository repository,
     required UserRepository userRepository,
+    required SettingsRepository settingsRepository,
   }) : _userRepository = userRepository,
        _repository = repository,
        super(
@@ -33,6 +36,7 @@ class MessagesCubit extends Cubit<MessagesState> {
            error: null,
            otherUserName: otherUserName,
            otherUserAvatarUrl: otherUserAvatarUrl,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     onRefreshUser();
@@ -86,7 +90,19 @@ class MessagesCubit extends Cubit<MessagesState> {
 
     switch (result) {
       case ResultSuccess<List<MessageResponseItem>>():
-        emit(state.copyWith(dataStatus: .success, list: result.data));
+        emit(
+          state.copyWith(
+            dataStatus: .success,
+            list: result.data.map(
+              (item) => item.copyWith(
+                createdAt: tz.TZDateTime.from(
+                  item.createdAt,
+                  state.timeZone,
+                ),
+              ),
+            ).toList(),
+          ),
+        );
       case ResultError<List<MessageResponseItem>>():
         emit(
           state.copyWith(

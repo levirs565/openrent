@@ -79,6 +79,21 @@ class _Content extends StatelessWidget {
                   .onCurrencyChanged(value ?? "IDR"),
             ),
           ),
+          ControlledTextField<SettingsCubit, SettingsState>(
+            selector: (state) => state.timeZoneList[state.timeZone] ?? "",
+            builder: (controller) => DropdownMenu<String>(
+              controller: controller,
+              selectOnly: true,
+              enabled: state.currencyStatus == .success,
+              label: const Text('Time Zone'),
+              dropdownMenuEntries: state.timeZoneList.entries
+                  .map((item) => DropdownMenuEntry(value: item.key, label: item.value))
+                  .toList(),
+              onSelected: (value) => context
+                  .read<SettingsCubit>()
+                  .onTimeZoneChanged(value ?? "Asia/Jakarta"),
+            ),
+          ),
         ],
       ),
     );

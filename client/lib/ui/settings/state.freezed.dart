@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SettingsState {
 
- bool get canUseBiometric; bool get isBiometricOn; String get currency; DataStatus get currencyStatus; List<String> get currencyList; GeneralErrorData? get error;
+ bool get canUseBiometric; bool get isBiometricOn; String get currency; DataStatus get currencyStatus; List<String> get currencyList; String get timeZone; Map<String, String> get timeZoneList; GeneralErrorData? get error;
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SettingsStateCopyWith<SettingsState> get copyWith => _$SettingsStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.currencyStatus, currencyStatus) || other.currencyStatus == currencyStatus)&&const DeepCollectionEquality().equals(other.currencyList, currencyList)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.currencyStatus, currencyStatus) || other.currencyStatus == currencyStatus)&&const DeepCollectionEquality().equals(other.currencyList, currencyList)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone)&&const DeepCollectionEquality().equals(other.timeZoneList, timeZoneList)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,currency,currencyStatus,const DeepCollectionEquality().hash(currencyList),error);
+int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,currency,currencyStatus,const DeepCollectionEquality().hash(currencyList),timeZone,const DeepCollectionEquality().hash(timeZoneList),error);
 
 @override
 String toString() {
-  return 'SettingsState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, currency: $currency, currencyStatus: $currencyStatus, currencyList: $currencyList, error: $error)';
+  return 'SettingsState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, currency: $currency, currencyStatus: $currencyStatus, currencyList: $currencyList, timeZone: $timeZone, timeZoneList: $timeZoneList, error: $error)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SettingsStateCopyWith<$Res>  {
   factory $SettingsStateCopyWith(SettingsState value, $Res Function(SettingsState) _then) = _$SettingsStateCopyWithImpl;
 @useResult
 $Res call({
- bool canUseBiometric, bool isBiometricOn, String currency, DataStatus currencyStatus, List<String> currencyList, GeneralErrorData? error
+ bool canUseBiometric, bool isBiometricOn, String currency, DataStatus currencyStatus, List<String> currencyList, String timeZone, Map<String, String> timeZoneList, GeneralErrorData? error
 });
 
 
@@ -62,14 +62,16 @@ class _$SettingsStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? currency = null,Object? currencyStatus = null,Object? currencyList = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? currency = null,Object? currencyStatus = null,Object? currencyList = null,Object? timeZone = null,Object? timeZoneList = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 canUseBiometric: null == canUseBiometric ? _self.canUseBiometric : canUseBiometric // ignore: cast_nullable_to_non_nullable
 as bool,isBiometricOn: null == isBiometricOn ? _self.isBiometricOn : isBiometricOn // ignore: cast_nullable_to_non_nullable
 as bool,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as String,currencyStatus: null == currencyStatus ? _self.currencyStatus : currencyStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,currencyList: null == currencyList ? _self.currencyList : currencyList // ignore: cast_nullable_to_non_nullable
-as List<String>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<String>,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as String,timeZoneList: null == timeZoneList ? _self.timeZoneList : timeZoneList // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
   ));
 }
@@ -167,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  String timeZone,  Map<String, String> timeZoneList,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SettingsState() when $default != null:
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.error);case _:
+return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.timeZone,_that.timeZoneList,_that.error);case _:
   return orElse();
 
 }
@@ -188,10 +190,10 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  GeneralErrorData? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  String timeZone,  Map<String, String> timeZoneList,  GeneralErrorData? error)  $default,) {final _that = this;
 switch (_that) {
 case _SettingsState():
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.error);case _:
+return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.timeZone,_that.timeZoneList,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +210,10 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  GeneralErrorData? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool canUseBiometric,  bool isBiometricOn,  String currency,  DataStatus currencyStatus,  List<String> currencyList,  String timeZone,  Map<String, String> timeZoneList,  GeneralErrorData? error)?  $default,) {final _that = this;
 switch (_that) {
 case _SettingsState() when $default != null:
-return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.error);case _:
+return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.currencyStatus,_that.currencyList,_that.timeZone,_that.timeZoneList,_that.error);case _:
   return null;
 
 }
@@ -223,7 +225,7 @@ return $default(_that.canUseBiometric,_that.isBiometricOn,_that.currency,_that.c
 
 
 class _SettingsState implements SettingsState {
-  const _SettingsState({required this.canUseBiometric, required this.isBiometricOn, required this.currency, required this.currencyStatus, required final  List<String> currencyList, required this.error}): _currencyList = currencyList;
+  const _SettingsState({required this.canUseBiometric, required this.isBiometricOn, required this.currency, required this.currencyStatus, required final  List<String> currencyList, required this.timeZone, required final  Map<String, String> timeZoneList, required this.error}): _currencyList = currencyList,_timeZoneList = timeZoneList;
   
 
 @override final  bool canUseBiometric;
@@ -235,6 +237,14 @@ class _SettingsState implements SettingsState {
   if (_currencyList is EqualUnmodifiableListView) return _currencyList;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_currencyList);
+}
+
+@override final  String timeZone;
+ final  Map<String, String> _timeZoneList;
+@override Map<String, String> get timeZoneList {
+  if (_timeZoneList is EqualUnmodifiableMapView) return _timeZoneList;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_timeZoneList);
 }
 
 @override final  GeneralErrorData? error;
@@ -249,16 +259,16 @@ _$SettingsStateCopyWith<_SettingsState> get copyWith => __$SettingsStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.currencyStatus, currencyStatus) || other.currencyStatus == currencyStatus)&&const DeepCollectionEquality().equals(other._currencyList, _currencyList)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsState&&(identical(other.canUseBiometric, canUseBiometric) || other.canUseBiometric == canUseBiometric)&&(identical(other.isBiometricOn, isBiometricOn) || other.isBiometricOn == isBiometricOn)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.currencyStatus, currencyStatus) || other.currencyStatus == currencyStatus)&&const DeepCollectionEquality().equals(other._currencyList, _currencyList)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone)&&const DeepCollectionEquality().equals(other._timeZoneList, _timeZoneList)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,currency,currencyStatus,const DeepCollectionEquality().hash(_currencyList),error);
+int get hashCode => Object.hash(runtimeType,canUseBiometric,isBiometricOn,currency,currencyStatus,const DeepCollectionEquality().hash(_currencyList),timeZone,const DeepCollectionEquality().hash(_timeZoneList),error);
 
 @override
 String toString() {
-  return 'SettingsState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, currency: $currency, currencyStatus: $currencyStatus, currencyList: $currencyList, error: $error)';
+  return 'SettingsState(canUseBiometric: $canUseBiometric, isBiometricOn: $isBiometricOn, currency: $currency, currencyStatus: $currencyStatus, currencyList: $currencyList, timeZone: $timeZone, timeZoneList: $timeZoneList, error: $error)';
 }
 
 
@@ -269,7 +279,7 @@ abstract mixin class _$SettingsStateCopyWith<$Res> implements $SettingsStateCopy
   factory _$SettingsStateCopyWith(_SettingsState value, $Res Function(_SettingsState) _then) = __$SettingsStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool canUseBiometric, bool isBiometricOn, String currency, DataStatus currencyStatus, List<String> currencyList, GeneralErrorData? error
+ bool canUseBiometric, bool isBiometricOn, String currency, DataStatus currencyStatus, List<String> currencyList, String timeZone, Map<String, String> timeZoneList, GeneralErrorData? error
 });
 
 
@@ -286,14 +296,16 @@ class __$SettingsStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? currency = null,Object? currencyStatus = null,Object? currencyList = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? canUseBiometric = null,Object? isBiometricOn = null,Object? currency = null,Object? currencyStatus = null,Object? currencyList = null,Object? timeZone = null,Object? timeZoneList = null,Object? error = freezed,}) {
   return _then(_SettingsState(
 canUseBiometric: null == canUseBiometric ? _self.canUseBiometric : canUseBiometric // ignore: cast_nullable_to_non_nullable
 as bool,isBiometricOn: null == isBiometricOn ? _self.isBiometricOn : isBiometricOn // ignore: cast_nullable_to_non_nullable
 as bool,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as String,currencyStatus: null == currencyStatus ? _self.currencyStatus : currencyStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,currencyList: null == currencyList ? _self._currencyList : currencyList // ignore: cast_nullable_to_non_nullable
-as List<String>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<String>,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as String,timeZoneList: null == timeZoneList ? _self._timeZoneList : timeZoneList // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
   ));
 }
