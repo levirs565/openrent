@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyRentalConfirmReturnState {
 
- RentalResponseItemDetails get rental; int? get payment; int? get lateFinePayment; int? get damageFinePayment; bool get isLoading; bool get isFinished; GeneralErrorData? get error;
+ RentalResponseItemDetails get rental; DataStatus get exchangeRateStatus; ExchangeRateResponse? get exchangeRate; String get selectedFromCurrency; double? get payment; double? get lateFinePayment; double? get damageFinePayment; bool get isSubmitLoading; bool get isFinished; GeneralErrorData? get error;
 /// Create a copy of MyRentalConfirmReturnState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyRentalConfirmReturnStateCopyWith<MyRentalConfirmReturnState> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyRentalConfirmReturnState&&(identical(other.rental, rental) || other.rental == rental)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyRentalConfirmReturnState&&(identical(other.rental, rental) || other.rental == rental)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedFromCurrency, selectedFromCurrency) || other.selectedFromCurrency == selectedFromCurrency)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment)&&(identical(other.isSubmitLoading, isSubmitLoading) || other.isSubmitLoading == isSubmitLoading)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rental,payment,lateFinePayment,damageFinePayment,isLoading,isFinished,error);
+int get hashCode => Object.hash(runtimeType,rental,exchangeRateStatus,exchangeRate,selectedFromCurrency,payment,lateFinePayment,damageFinePayment,isSubmitLoading,isFinished,error);
 
 @override
 String toString() {
-  return 'MyRentalConfirmReturnState(rental: $rental, payment: $payment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment, isLoading: $isLoading, isFinished: $isFinished, error: $error)';
+  return 'MyRentalConfirmReturnState(rental: $rental, exchangeRateStatus: $exchangeRateStatus, exchangeRate: $exchangeRate, selectedFromCurrency: $selectedFromCurrency, payment: $payment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment, isSubmitLoading: $isSubmitLoading, isFinished: $isFinished, error: $error)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $MyRentalConfirmReturnStateCopyWith<$Res>  {
   factory $MyRentalConfirmReturnStateCopyWith(MyRentalConfirmReturnState value, $Res Function(MyRentalConfirmReturnState) _then) = _$MyRentalConfirmReturnStateCopyWithImpl;
 @useResult
 $Res call({
- RentalResponseItemDetails rental, int? payment, int? lateFinePayment, int? damageFinePayment, bool isLoading, bool isFinished, GeneralErrorData? error
+ RentalResponseItemDetails rental, DataStatus exchangeRateStatus, ExchangeRateResponse? exchangeRate, String selectedFromCurrency, double? payment, double? lateFinePayment, double? damageFinePayment, bool isSubmitLoading, bool isFinished, GeneralErrorData? error
 });
 
 
-$RentalResponseItemDetailsCopyWith<$Res> get rental;$ErrorDataCopyWith<void, $Res>? get error;
+$RentalResponseItemDetailsCopyWith<$Res> get rental;$ExchangeRateResponseCopyWith<$Res>? get exchangeRate;$ErrorDataCopyWith<void, $Res>? get error;
 
 }
 /// @nodoc
@@ -62,13 +62,16 @@ class _$MyRentalConfirmReturnStateCopyWithImpl<$Res>
 
 /// Create a copy of MyRentalConfirmReturnState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? rental = null,Object? payment = freezed,Object? lateFinePayment = freezed,Object? damageFinePayment = freezed,Object? isLoading = null,Object? isFinished = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? rental = null,Object? exchangeRateStatus = null,Object? exchangeRate = freezed,Object? selectedFromCurrency = null,Object? payment = freezed,Object? lateFinePayment = freezed,Object? damageFinePayment = freezed,Object? isSubmitLoading = null,Object? isFinished = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 rental: null == rental ? _self.rental : rental // ignore: cast_nullable_to_non_nullable
-as RentalResponseItemDetails,payment: freezed == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
-as int?,lateFinePayment: freezed == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
-as int?,damageFinePayment: freezed == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
-as int?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as RentalResponseItemDetails,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedFromCurrency: null == selectedFromCurrency ? _self.selectedFromCurrency : selectedFromCurrency // ignore: cast_nullable_to_non_nullable
+as String,payment: freezed == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as double?,lateFinePayment: freezed == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
+as double?,damageFinePayment: freezed == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
+as double?,isSubmitLoading: null == isSubmitLoading ? _self.isSubmitLoading : isSubmitLoading // ignore: cast_nullable_to_non_nullable
 as bool,isFinished: null == isFinished ? _self.isFinished : isFinished // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
@@ -82,6 +85,18 @@ $RentalResponseItemDetailsCopyWith<$Res> get rental {
   
   return $RentalResponseItemDetailsCopyWith<$Res>(_self.rental, (value) {
     return _then(_self.copyWith(rental: value));
+  });
+}/// Create a copy of MyRentalConfirmReturnState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
   });
 }/// Create a copy of MyRentalConfirmReturnState
 /// with the given fields replaced by the non-null parameter values.
@@ -177,10 +192,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RentalResponseItemDetails rental,  int? payment,  int? lateFinePayment,  int? damageFinePayment,  bool isLoading,  bool isFinished,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RentalResponseItemDetails rental,  DataStatus exchangeRateStatus,  ExchangeRateResponse? exchangeRate,  String selectedFromCurrency,  double? payment,  double? lateFinePayment,  double? damageFinePayment,  bool isSubmitLoading,  bool isFinished,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyRentalConfirmReturnState() when $default != null:
-return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isLoading,_that.isFinished,_that.error);case _:
+return $default(_that.rental,_that.exchangeRateStatus,_that.exchangeRate,_that.selectedFromCurrency,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isSubmitLoading,_that.isFinished,_that.error);case _:
   return orElse();
 
 }
@@ -198,10 +213,10 @@ return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFin
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RentalResponseItemDetails rental,  int? payment,  int? lateFinePayment,  int? damageFinePayment,  bool isLoading,  bool isFinished,  GeneralErrorData? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RentalResponseItemDetails rental,  DataStatus exchangeRateStatus,  ExchangeRateResponse? exchangeRate,  String selectedFromCurrency,  double? payment,  double? lateFinePayment,  double? damageFinePayment,  bool isSubmitLoading,  bool isFinished,  GeneralErrorData? error)  $default,) {final _that = this;
 switch (_that) {
 case _MyRentalConfirmReturnState():
-return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isLoading,_that.isFinished,_that.error);case _:
+return $default(_that.rental,_that.exchangeRateStatus,_that.exchangeRate,_that.selectedFromCurrency,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isSubmitLoading,_that.isFinished,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -218,10 +233,10 @@ return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFin
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RentalResponseItemDetails rental,  int? payment,  int? lateFinePayment,  int? damageFinePayment,  bool isLoading,  bool isFinished,  GeneralErrorData? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RentalResponseItemDetails rental,  DataStatus exchangeRateStatus,  ExchangeRateResponse? exchangeRate,  String selectedFromCurrency,  double? payment,  double? lateFinePayment,  double? damageFinePayment,  bool isSubmitLoading,  bool isFinished,  GeneralErrorData? error)?  $default,) {final _that = this;
 switch (_that) {
 case _MyRentalConfirmReturnState() when $default != null:
-return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isLoading,_that.isFinished,_that.error);case _:
+return $default(_that.rental,_that.exchangeRateStatus,_that.exchangeRate,_that.selectedFromCurrency,_that.payment,_that.lateFinePayment,_that.damageFinePayment,_that.isSubmitLoading,_that.isFinished,_that.error);case _:
   return null;
 
 }
@@ -233,14 +248,17 @@ return $default(_that.rental,_that.payment,_that.lateFinePayment,_that.damageFin
 
 
 class _MyRentalConfirmReturnState extends MyRentalConfirmReturnState {
-  const _MyRentalConfirmReturnState({required this.rental, required this.payment, required this.lateFinePayment, required this.damageFinePayment, required this.isLoading, required this.isFinished, required this.error}): super._();
+  const _MyRentalConfirmReturnState({required this.rental, required this.exchangeRateStatus, required this.exchangeRate, required this.selectedFromCurrency, required this.payment, required this.lateFinePayment, required this.damageFinePayment, required this.isSubmitLoading, required this.isFinished, required this.error}): super._();
   
 
 @override final  RentalResponseItemDetails rental;
-@override final  int? payment;
-@override final  int? lateFinePayment;
-@override final  int? damageFinePayment;
-@override final  bool isLoading;
+@override final  DataStatus exchangeRateStatus;
+@override final  ExchangeRateResponse? exchangeRate;
+@override final  String selectedFromCurrency;
+@override final  double? payment;
+@override final  double? lateFinePayment;
+@override final  double? damageFinePayment;
+@override final  bool isSubmitLoading;
 @override final  bool isFinished;
 @override final  GeneralErrorData? error;
 
@@ -254,16 +272,16 @@ _$MyRentalConfirmReturnStateCopyWith<_MyRentalConfirmReturnState> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyRentalConfirmReturnState&&(identical(other.rental, rental) || other.rental == rental)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyRentalConfirmReturnState&&(identical(other.rental, rental) || other.rental == rental)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedFromCurrency, selectedFromCurrency) || other.selectedFromCurrency == selectedFromCurrency)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment)&&(identical(other.isSubmitLoading, isSubmitLoading) || other.isSubmitLoading == isSubmitLoading)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rental,payment,lateFinePayment,damageFinePayment,isLoading,isFinished,error);
+int get hashCode => Object.hash(runtimeType,rental,exchangeRateStatus,exchangeRate,selectedFromCurrency,payment,lateFinePayment,damageFinePayment,isSubmitLoading,isFinished,error);
 
 @override
 String toString() {
-  return 'MyRentalConfirmReturnState(rental: $rental, payment: $payment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment, isLoading: $isLoading, isFinished: $isFinished, error: $error)';
+  return 'MyRentalConfirmReturnState(rental: $rental, exchangeRateStatus: $exchangeRateStatus, exchangeRate: $exchangeRate, selectedFromCurrency: $selectedFromCurrency, payment: $payment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment, isSubmitLoading: $isSubmitLoading, isFinished: $isFinished, error: $error)';
 }
 
 
@@ -274,11 +292,11 @@ abstract mixin class _$MyRentalConfirmReturnStateCopyWith<$Res> implements $MyRe
   factory _$MyRentalConfirmReturnStateCopyWith(_MyRentalConfirmReturnState value, $Res Function(_MyRentalConfirmReturnState) _then) = __$MyRentalConfirmReturnStateCopyWithImpl;
 @override @useResult
 $Res call({
- RentalResponseItemDetails rental, int? payment, int? lateFinePayment, int? damageFinePayment, bool isLoading, bool isFinished, GeneralErrorData? error
+ RentalResponseItemDetails rental, DataStatus exchangeRateStatus, ExchangeRateResponse? exchangeRate, String selectedFromCurrency, double? payment, double? lateFinePayment, double? damageFinePayment, bool isSubmitLoading, bool isFinished, GeneralErrorData? error
 });
 
 
-@override $RentalResponseItemDetailsCopyWith<$Res> get rental;@override $ErrorDataCopyWith<void, $Res>? get error;
+@override $RentalResponseItemDetailsCopyWith<$Res> get rental;@override $ExchangeRateResponseCopyWith<$Res>? get exchangeRate;@override $ErrorDataCopyWith<void, $Res>? get error;
 
 }
 /// @nodoc
@@ -291,13 +309,16 @@ class __$MyRentalConfirmReturnStateCopyWithImpl<$Res>
 
 /// Create a copy of MyRentalConfirmReturnState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? rental = null,Object? payment = freezed,Object? lateFinePayment = freezed,Object? damageFinePayment = freezed,Object? isLoading = null,Object? isFinished = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? rental = null,Object? exchangeRateStatus = null,Object? exchangeRate = freezed,Object? selectedFromCurrency = null,Object? payment = freezed,Object? lateFinePayment = freezed,Object? damageFinePayment = freezed,Object? isSubmitLoading = null,Object? isFinished = null,Object? error = freezed,}) {
   return _then(_MyRentalConfirmReturnState(
 rental: null == rental ? _self.rental : rental // ignore: cast_nullable_to_non_nullable
-as RentalResponseItemDetails,payment: freezed == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
-as int?,lateFinePayment: freezed == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
-as int?,damageFinePayment: freezed == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
-as int?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as RentalResponseItemDetails,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedFromCurrency: null == selectedFromCurrency ? _self.selectedFromCurrency : selectedFromCurrency // ignore: cast_nullable_to_non_nullable
+as String,payment: freezed == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as double?,lateFinePayment: freezed == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
+as double?,damageFinePayment: freezed == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
+as double?,isSubmitLoading: null == isSubmitLoading ? _self.isSubmitLoading : isSubmitLoading // ignore: cast_nullable_to_non_nullable
 as bool,isFinished: null == isFinished ? _self.isFinished : isFinished // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as GeneralErrorData?,
@@ -312,6 +333,18 @@ $RentalResponseItemDetailsCopyWith<$Res> get rental {
   
   return $RentalResponseItemDetailsCopyWith<$Res>(_self.rental, (value) {
     return _then(_self.copyWith(rental: value));
+  });
+}/// Create a copy of MyRentalConfirmReturnState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
   });
 }/// Create a copy of MyRentalConfirmReturnState
 /// with the given fields replaced by the non-null parameter values.

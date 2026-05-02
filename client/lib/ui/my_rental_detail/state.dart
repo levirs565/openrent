@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/rental.dart';
@@ -38,6 +40,8 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
             (DateUtils.dateOnly(
               data!.returnedAt ?? DateTime.now(),
             ).difference(data!.endDate).inDays);
+  int get estimatedTotalPrice => estimatedPrice + estimatedLateFine;
+  int get estimatedPendingPrice => max(estimatedTotalPrice - (data?.payment.initial ?? 0), 0);
 
   int get totalPayment => data == null
       ? 0

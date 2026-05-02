@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
@@ -13,37 +15,83 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
 
   const factory MyRentalConfirmReturnState({
     required RentalResponseItemDetails rental,
-    required int? payment,
-    required int? lateFinePayment,
-    required int? damageFinePayment,
-    required bool isLoading,
+    required DataStatus exchangeRateStatus,
+    required ExchangeRateResponse? exchangeRate,
+    required String selectedFromCurrency,
+    required double? payment,
+    required double? lateFinePayment,
+    required double? damageFinePayment,
+    required bool isSubmitLoading,
     required bool isFinished,
     required GeneralErrorData? error,
   }) = _MyRentalConfirmReturnState;
 
+  int? convertFromCurrency(double? amount) {
+    if (amount == null ||
+        exchangeRate == null ||
+        !exchangeRate!.conversionRates.containsKey(selectedFromCurrency)) {
+      return null;
+    }
+    return (amount / exchangeRate!.conversionRates[selectedFromCurrency]!)
+        .round();
+  }
+
+  double? convertToCurrency(int? amount) {
+    if (amount == null ||
+        exchangeRate == null ||
+        !exchangeRate!.conversionRates.containsKey(selectedFromCurrency)) {
+      return null;
+    }
+    return (amount.toDouble() *
+        exchangeRate!.conversionRates[selectedFromCurrency]!);
+  }
+
+  bool get isLoading => exchangeRateStatus == .loading || isSubmitLoading;
+  bool get canEdit => exchangeRateStatus == .success && !isSubmitLoading;
+
+  int? get paymentIdr => convertFromCurrency(payment);
+
+  int? get lateFinePaymentIdr => convertFromCurrency(lateFinePayment);
+
+  int? get damageFinePaymentIdr => convertFromCurrency(damageFinePayment);
+
   bool get isValid =>
-      payment != null &&
-      payment! >= 0 &&
-      lateFinePayment != null &&
-      lateFinePayment! >= 0 &&
-      damageFinePayment != null &&
-      damageFinePayment! >= 0;
+      exchangeRateStatus == .success &&
+      !isSubmitLoading &&
+      paymentIdr != null &&
+      paymentIdr! >= 0 &&
+      lateFinePaymentIdr != null &&
+      lateFinePaymentIdr! >= 0 &&
+      damageFinePaymentIdr != null &&
+      damageFinePaymentIdr! >= 0;
 
   bool get canSubmit => isValid && !isLoading;
 
-  int get estimatedPrice =>
+  int get estimatedPriceIdr =>
       rental.product.pricePerDay *
       (rental.endDate.difference(rental.startDate).inDays + 1);
 
   int get estimatedFinalPayment =>
-      max(estimatedPrice - rental.payment.initial!, 0);
+      max(estimatedPriceIdr - rental.payment.initial!, 0);
 
   // TODO: Check is right?
-  int get estimatedLateFine =>
+  int get estimatedLateFineIdr =>
       rental.product.lateFeePerDay *
       (DateUtils.dateOnly(DateTime.now()).difference(rental.endDate).inDays);
 
-  int get totalPayment => (payment ?? 0) + (lateFinePayment ?? 0) + (damageFinePayment ?? 0);
+  double? get estimatedPrice => convertToCurrency(estimatedPriceIdr);
 
-  int get totalPrice => totalPayment + rental.payment.initial!;
+  double? get estimatedFinalPaymentIdr =>
+      convertToCurrency(estimatedFinalPayment);
+
+  double? get estimatedLateFine => convertToCurrency(estimatedLateFineIdr);
+
+  double get totalPayment =>
+      (payment ?? 0) + (lateFinePayment ?? 0) + (damageFinePayment ?? 0);
+
+  int? get totalPaymentIdr => convertFromCurrency(totalPayment);
+
+  int? get totalPriceIdr => totalPaymentIdr == null
+      ? null
+      : totalPaymentIdr! + rental.payment.initial!;
 }

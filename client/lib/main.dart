@@ -8,12 +8,14 @@ import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/chat.dart';
+import 'package:openrent_client/data/exchange_rates.dart';
 import 'package:openrent_client/data/local/settings.dart';
 import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/message.dart';
 import 'package:openrent_client/data/order.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/base.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/user.dart';
 import 'package:openrent_client/data/rent.dart';
 import 'package:openrent_client/data/rental.dart';
@@ -57,6 +59,7 @@ void main() async {
   final messageService = MessageService(dioInstance);
   final chatService = ChatService(dioInstance);
   final userService = UserService(dioInstance);
+  final exchangeRateService = ExchangeRateService(dioInstance);
   final locationIQService = LocationIQService(Dio());
 
   runApp(
@@ -98,6 +101,10 @@ void main() async {
         ),
         RepositoryProvider<UserRepository>(
           create: (_) => UserDataSource(service: userService),
+        ),
+        RepositoryProvider<ExchangeRatesRepository>(
+          create: (_) =>
+              ExchangeRatesDataSource(exchangeRateService: exchangeRateService),
         ),
         RepositoryProvider<SettingsRepository>(
           create: (_) => SettingsDataSource(),

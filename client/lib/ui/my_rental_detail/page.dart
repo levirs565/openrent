@@ -99,18 +99,24 @@ class _Content extends StatelessWidget {
               Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
               Text("Cancel Note: ${state.data?.cancellation?.note}"),
             ],
-            Text("Estimated Price: ${state.estimatedPrice}"),
-            Text("Estimated Late Fine: ${state.estimatedLateFine}"),
+            Text("Estimated Price: ${state.estimatedPrice} IDR"),
+            Text("Estimated Late Fine: ${state.estimatedLateFine} IDR"),
+            if (state.data?.payment.initial != null && state.data?.payment.finalAmount == null) ...[
+              Text("Estimated Total Payment: ${state.estimatedTotalPrice} IDR"),
+            ],
             if (state.data?.payment.initial != null)
-              Text("Initial Payment: ${state.data?.payment.initial}"),
+              Text("Initial Payment: ${state.data?.payment.initial} IDR"),
+            if (state.data?.payment.initial != null && state.data?.payment.finalAmount == null) ...[
+              Text("Estimated Pending Payment: ${state.estimatedPendingPrice} IDR")
+            ],
             if (state.data?.payment.finalAmount != null)
-              Text("Late Payment: ${state.data?.payment.finalAmount}"),
+              Text("Final Payment: ${state.data?.payment.finalAmount} IDR"),
             if (state.data?.payment.lateFine != null)
-              Text("Late Fine Payment: ${state.data?.payment.lateFine}"),
+              Text("Late Fine Payment: ${state.data?.payment.lateFine} IDR"),
             if (state.data?.payment.damageFine != null)
-              Text("Damage Fine Payment: ${state.data?.payment.damageFine}"),
+              Text("Damage Fine Payment: ${state.data?.payment.damageFine} IDR"),
             if (state.data?.payment.finalAmount != null)
-              Text("Total Payment: ${state.totalPayment}"),
+              Text("Total Payment: ${state.totalPayment} IDR"),
             if (state.data?.review != null) ...[
               Text("Review"),
               Text("${state.data?.review?.rating} start"),

@@ -1,29 +1,58 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/data/exchange_rates.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
-import 'package:openrent_client/ui/core/error_data.dart';
 
 import 'state.dart';
 
 class MyRentalHandoverCubit extends Cubit<MyRentalHandoverState> {
   final RentalRepository _rentalRepository;
+  final ExchangeRatesRepository _exchangeRatesRepository;
 
   MyRentalHandoverCubit({
     required RentalResponseItemDetails rental,
     required RentalRepository rentalRepository,
-  }) : _rentalRepository = rentalRepository,
+    required ExchangeRatesRepository exchangeRatesRepository,
+  }) : _exchangeRatesRepository = exchangeRatesRepository,
+       _rentalRepository = rentalRepository,
        super(
-        MyRentalHandoverState(
+         MyRentalHandoverState(
            rental: rental,
+           exchangeRate: null,
+           exchangeRateStatus: .initial,
+           selectedFromCurrency: "IDR",
            payment: null,
-           isLoading: false,
+           isSubmitLoading: false,
            isFinished: false,
            error: null,
          ),
-       );
+       ) {
+    onRefreshExchangeRate();
+  }
 
-  void onPaymentChanged(int? payment) {
+  void onRefreshExchangeRate() async {
+    if (state.exchangeRateStatus == .loading) return;
+
+    final result = await _exchangeRatesRepository.get();
+
+    switch (result) {
+      case ResultSuccess<ExchangeRateResponse>():
+        emit(state.copyWith(exchangeRateStatus: .success, exchangeRate: result.data));
+      case ResultError<ExchangeRateResponse>():
+        emit(state.copyWith(
+          exchangeRateStatus: .fail,
+          error: .general(message: result.message)
+        ));
+    }
+  }
+
+  void onFromCurrencyChanged(String currency) {
+    emit(state.copyWith(selectedFromCurrency: currency));
+  }
+
+  void onPaymentChanged(double? payment) {
     emit(state.copyWith(payment: payment));
   }
 
@@ -34,11 +63,11 @@ class MyRentalHandoverCubit extends Cubit<MyRentalHandoverState> {
   void onSubmit() async {
     if (!state.canSubmit) return;
 
-    emit(state.copyWith(isLoading: true, error: null));
+    emit(state.copyWith(isSubmitLoading: true, error: null));
 
     final result = await _rentalRepository.handover(
       id: state.rental.id,
-      payment: state.payment!,
+      payment: state.paymentIdr!,
     );
 
     switch (result) {
@@ -47,8 +76,8 @@ class MyRentalHandoverCubit extends Cubit<MyRentalHandoverState> {
       case ResultError<void>():
         emit(
           state.copyWith(
-            isLoading: false,
-            error: GeneralErrorData.general(message: result.message),
+            isSubmitLoading: false,
+            error: .general(message: result.message),
           ),
         );
     }
