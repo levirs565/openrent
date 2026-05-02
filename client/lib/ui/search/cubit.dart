@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/exchange_rates.dart';
+import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
@@ -15,15 +17,19 @@ import 'package:stream_transform/stream_transform.dart';
 class SearchCubit extends Cubit<SearchState> {
   final ProductRepository repository;
   final ExchangeRatesRepository _exchangeRatesRepository;
+  final LocationRepository _locationRepository;
   final _searchController = StreamController<String>();
   StreamSubscription? _searchSubscription;
+  StreamSubscription? _locationSubscription;
   CancelToken? _cancelToken;
 
   SearchCubit({
     required this.repository,
     required ExchangeRatesRepository exchangeRatesRepository,
     required SettingsRepository settingsRepository,
-  }) : _exchangeRatesRepository = exchangeRatesRepository,
+    required LocationRepository locationRepository,
+  }) : _locationRepository = locationRepository,
+       _exchangeRatesRepository = exchangeRatesRepository,
        super(
          SearchState(
            result: List.empty(),
@@ -33,12 +39,20 @@ class SearchCubit extends Cubit<SearchState> {
            exchangeRate: null,
            selectedCurrency: settingsRepository.getCurrency(),
            exchangeRateStatus: .initial,
+           currentPosition: null,
          ),
        ) {
     _searchSubscription = _searchController.stream
         .debounce(Duration(milliseconds: 500))
         .distinct()
         .listen((_doSearch));
+    _locationSubscription = _locationRepository.watchCurrentLocation().listen((
+      data,
+    ) {
+      if (data is ResultSuccess<LatLng>) {
+        emit(state.copyWith(currentPosition: data.data));
+      }
+    });
     onRefreshExchangeRate();
   }
 

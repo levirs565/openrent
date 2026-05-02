@@ -27,6 +27,7 @@ class ProductFormPage extends StatelessWidget {
         id: id,
         addressRepository: context.read(),
         productRepository: context.read(),
+        locationRepository: context.read(),
       ),
       child: ScaffoldMessenger(
         child: Scaffold(
@@ -58,7 +59,7 @@ class _ProductFormPageContent extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: source == .submit
+              action: source == .submit || source == .nearbyAddress
                   ? null
                   : SnackBarAction(
                       label: "Refresh",
@@ -120,6 +121,7 @@ class _ProductFormPageContent extends StatelessWidget {
                                     ?.name ??
                                 '',
                             builder: (controller) => DropdownMenu<int>(
+                              expandedInsets: EdgeInsets.zero,
                               controller: controller,
                               selectOnly: true,
                               enabled: state.canEdit,
@@ -148,6 +150,18 @@ class _ProductFormPageContent extends StatelessWidget {
                               onSelected: (value) => context
                                   .read<ProductFormCubit>()
                                   .onAddressChanged(value),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          FilledButton.tonal(
+                            onPressed: state.isNearbyAddressLoading
+                                ? null
+                                : () => context
+                                      .read<ProductFormCubit>()
+                                      .onSelectNearbyAddress(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              child: Text("Pilih Alamat Terdekat"),
                             ),
                           ),
                           const SizedBox(height: 18),

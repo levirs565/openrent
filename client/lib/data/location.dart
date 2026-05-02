@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/remote/locationiq.dart';
 import 'package:openrent_client/data/resource.dart';
@@ -9,6 +10,7 @@ class ReverseGeocodingResult {
   final String? countryCode;
   final String? province;
   final String? regency;
+
   // final String? district;
 
   ReverseGeocodingResult({
@@ -24,6 +26,9 @@ abstract interface class LocationRepository {
     required LatLng position,
     CancelToken? cancelToken,
   });
+
+  Future<Result<LatLng>> getCurrentLocation();
+  Stream<Result<LatLng>> watchCurrentLocation();
 }
 
 class LocationDataSource implements LocationRepository {
@@ -70,5 +75,55 @@ class LocationDataSource implements LocationRepository {
       }
       return ResultError(e.toString());
     }
+  }
+
+  Future<Result<void>> ensureLocationPermission() async {
+    final enabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!enabled) {
+      return ResultError("Location is disabled");
+    }
+
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      final result = await Geolocator.requestPermission();
+      if (result == LocationPermission.denied) {
+        return ResultError("Location permission is denied");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return ResultError("Location permission is denied forever");
+    }
+
+    return ResultSuccess(null);
+  }
+
+  @override
+  Future<Result<LatLng>> getCurrentLocation() async {
+    final permissionResult = await ensureLocationPermission();
+    if (permissionResult is ResultError) {
+      return ResultError(permissionResult.message);
+    }
+
+    final position = await Geolocator.getCurrentPosition();
+    return ResultSuccess(LatLng(position.latitude, position.longitude));
+  }
+
+  @override
+  Stream<Result<LatLng>> watchCurrentLocation() async* {
+    final permissionResult = await ensureLocationPermission();
+    if (permissionResult is ResultError) {
+      yield ResultError(permissionResult.message);
+      return;
+    }
+
+    final position = await Geolocator.getCurrentPosition();
+    yield  ResultSuccess(LatLng(position.latitude, position.longitude));
+    yield* Geolocator.getPositionStream(locationSettings: LocationSettings(
+      accuracy: LocationAccuracy.best,
+      distanceFilter: 100
+    )).map(
+      (element) => ResultSuccess(LatLng(element.latitude, element.longitude)),
+    );
   }
 }
