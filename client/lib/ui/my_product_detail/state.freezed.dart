@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyProductDetailState {
 
- int get id; DataStatus get dataStatus; bool get isImageUpload; MyProductResponseItemDetail? get data; MyProductDetailError? get error;
+ MyProductResponseItemDetail? get data; MyProductDetailError? get error; int get id; DataStatus get dataStatus; bool get isImageUpload;
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyProductDetailStateCopyWith<MyProductDetailState> get copyWith => _$MyProductD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload)&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,dataStatus,isImageUpload,data,error);
+int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload);
 
 @override
 String toString() {
-  return 'MyProductDetailState(id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload, data: $data, error: $error)';
+  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $MyProductDetailStateCopyWith<$Res>  {
   factory $MyProductDetailStateCopyWith(MyProductDetailState value, $Res Function(MyProductDetailState) _then) = _$MyProductDetailStateCopyWithImpl;
 @useResult
 $Res call({
- MyProductResponseItemDetail? data, ErrorData<MyProductDetailErrorSource>? error, int id, DataStatus dataStatus, bool isImageUpload
+ MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload
 });
 
 
-
+$MyProductResponseItemDetailCopyWith<$Res>? get data;$ErrorDataCopyWith<MyProductDetailErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -63,16 +63,40 @@ class _$MyProductDetailStateCopyWithImpl<$Res>
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,}) {
-  return _then(MyProductDetailState(
+  return _then(_self.copyWith(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as MyProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorData<MyProductDetailErrorSource>?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as MyProductDetailError?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isImageUpload: null == isImageUpload ? _self.isImageUpload : isImageUpload // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
+/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MyProductResponseItemDetailCopyWith<$Res>? get data {
+    if (_self.data == null) {
+    return null;
+  }
 
+  return $MyProductResponseItemDetailCopyWith<$Res>(_self.data!, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<MyProductDetailErrorSource, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
+
+  return $ErrorDataCopyWith<MyProductDetailErrorSource, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 
@@ -90,10 +114,11 @@ extension MyProductDetailStatePatterns on MyProductDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MyProductDetailState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -111,10 +136,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MyProductDetailState value)  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -131,10 +157,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MyProductDetailState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -151,9 +178,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState() when $default != null:
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
   return orElse();
 
 }
@@ -171,9 +199,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState():
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,14 +219,113 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)?  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MyProductDetailState() when $default != null:
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
   return null;
 
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _MyProductDetailState extends MyProductDetailState {
+  const _MyProductDetailState({required this.data, required this.error, required this.id, required this.dataStatus, required this.isImageUpload}): super._();
+  
+
+@override final  MyProductResponseItemDetail? data;
+@override final  MyProductDetailError? error;
+@override final  int id;
+@override final  DataStatus dataStatus;
+@override final  bool isImageUpload;
+
+/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MyProductDetailStateCopyWith<_MyProductDetailState> get copyWith => __$MyProductDetailStateCopyWithImpl<_MyProductDetailState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload);
+
+@override
+String toString() {
+  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MyProductDetailStateCopyWith<$Res> implements $MyProductDetailStateCopyWith<$Res> {
+  factory _$MyProductDetailStateCopyWith(_MyProductDetailState value, $Res Function(_MyProductDetailState) _then) = __$MyProductDetailStateCopyWithImpl;
+@override @useResult
+$Res call({
+ MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload
+});
+
+
+@override $MyProductResponseItemDetailCopyWith<$Res>? get data;@override $ErrorDataCopyWith<MyProductDetailErrorSource, $Res>? get error;
+
+}
+/// @nodoc
+class __$MyProductDetailStateCopyWithImpl<$Res>
+    implements _$MyProductDetailStateCopyWith<$Res> {
+  __$MyProductDetailStateCopyWithImpl(this._self, this._then);
+
+  final _MyProductDetailState _self;
+  final $Res Function(_MyProductDetailState) _then;
+
+/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,}) {
+  return _then(_MyProductDetailState(
+data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as MyProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as MyProductDetailError?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,isImageUpload: null == isImageUpload ? _self.isImageUpload : isImageUpload // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MyProductResponseItemDetailCopyWith<$Res>? get data {
+    if (_self.data == null) {
+    return null;
+  }
+
+  return $MyProductResponseItemDetailCopyWith<$Res>(_self.data!, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}/// Create a copy of MyProductDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<MyProductDetailErrorSource, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
+
+  return $ErrorDataCopyWith<MyProductDetailErrorSource, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 // dart format on

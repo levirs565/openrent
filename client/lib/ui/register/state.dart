@@ -5,22 +5,17 @@ import 'package:openrent_client/ui/core/error_data.dart';
 part 'state.freezed.dart';
 
 @freezed
-class RegisterState with _$RegisterState {
-  final String email;
-  final String name;
-  final String password;
-  final String repeatPassword;
-  final ActionStatus submissionStatus;
-  final GeneralErrorData? error;
+abstract class RegisterState with _$RegisterState {
+  const RegisterState._();
 
-  RegisterState({
-    required this.email,
-    required this.name,
-    required this.password,
-    required this.repeatPassword,
-    required this.submissionStatus,
-    this.error,
-  });
+  const factory RegisterState({
+    required String email,
+    required String name,
+    required String password,
+    required String repeatPassword,
+    required ActionStatus submissionStatus,
+    GeneralErrorData? error,
+  }) = _RegisterState;
 
   bool get isValid => password == repeatPassword;
 }

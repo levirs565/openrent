@@ -10,7 +10,9 @@ class MyProductListCubit extends Cubit<MyProductListState> {
 
   MyProductListCubit({required ProductRepository productRepository})
     : _productRepository = productRepository,
-      super(MyProductListState(isLoading: false, data: List.empty())) {
+      super(
+        MyProductListState(isLoading: false, data: List.empty(), error: null),
+      ) {
     onRefresh();
   }
 
@@ -23,15 +25,14 @@ class MyProductListCubit extends Cubit<MyProductListState> {
 
     switch (result) {
       case ResultSuccess<List<MyProductResponseItemShort>>():
-        emit(state.copyWith(
-          isLoading: false,
-          data: result.data
-        ));
+        emit(state.copyWith(isLoading: false, data: result.data));
       case ResultError<List<MyProductResponseItemShort>>():
-        emit(state.copyWith(
-          isLoading: false,
-          error: GeneralErrorData.general(message: result.message)
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            error: GeneralErrorData.general(message: result.message),
+          ),
+        );
     }
   }
 

@@ -45,11 +45,11 @@ abstract mixin class $LoginStateCopyWith<$Res>  {
   factory $LoginStateCopyWith(LoginState value, $Res Function(LoginState) _then) = _$LoginStateCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, bool isSubmit, ErrorData<void>? error
+ String email, String password, bool isSubmit, GeneralErrorData? error
 });
 
 
-
+$ErrorDataCopyWith<void, $Res>? get error;
 
 }
 /// @nodoc
@@ -63,15 +63,27 @@ class _$LoginStateCopyWithImpl<$Res>
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? isSubmit = null,Object? error = freezed,}) {
-  return _then(LoginState(
+  return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,isSubmit: null == isSubmit ? _self.isSubmit : isSubmit // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorData<void>?,
+as GeneralErrorData?,
   ));
 }
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<void, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
 
+  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 
@@ -89,10 +101,11 @@ extension LoginStatePatterns on LoginState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LoginState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _:
+case _LoginState() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -110,10 +123,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LoginState value)  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _LoginState():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -130,10 +144,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LoginState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _LoginState() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -150,9 +165,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String password,  bool isSubmit,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _:
+case _LoginState() when $default != null:
+return $default(_that.email,_that.password,_that.isSubmit,_that.error);case _:
   return orElse();
 
 }
@@ -170,9 +186,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String password,  bool isSubmit,  GeneralErrorData? error)  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _LoginState():
+return $default(_that.email,_that.password,_that.isSubmit,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -189,14 +206,99 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String password,  bool isSubmit,  GeneralErrorData? error)?  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _LoginState() when $default != null:
+return $default(_that.email,_that.password,_that.isSubmit,_that.error);case _:
   return null;
 
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _LoginState implements LoginState {
+  const _LoginState({required this.email, required this.password, required this.isSubmit, this.error});
+  
+
+@override final  String email;
+@override final  String password;
+@override final  bool isSubmit;
+@override final  GeneralErrorData? error;
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoginStateCopyWith<_LoginState> get copyWith => __$LoginStateCopyWithImpl<_LoginState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginState&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.isSubmit, isSubmit) || other.isSubmit == isSubmit)&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email,password,isSubmit,error);
+
+@override
+String toString() {
+  return 'LoginState(email: $email, password: $password, isSubmit: $isSubmit, error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoginStateCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
+  factory _$LoginStateCopyWith(_LoginState value, $Res Function(_LoginState) _then) = __$LoginStateCopyWithImpl;
+@override @useResult
+$Res call({
+ String email, String password, bool isSubmit, GeneralErrorData? error
+});
+
+
+@override $ErrorDataCopyWith<void, $Res>? get error;
+
+}
+/// @nodoc
+class __$LoginStateCopyWithImpl<$Res>
+    implements _$LoginStateCopyWith<$Res> {
+  __$LoginStateCopyWithImpl(this._self, this._then);
+
+  final _LoginState _self;
+  final $Res Function(_LoginState) _then;
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? isSubmit = null,Object? error = freezed,}) {
+  return _then(_LoginState(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,isSubmit: null == isSubmit ? _self.isSubmit : isSubmit // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as GeneralErrorData?,
+  ));
+}
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<void, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
+
+  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 // dart format on

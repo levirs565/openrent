@@ -10,19 +10,16 @@ enum MyProductDetailErrorSource { data, actionImageUpload }
 typedef MyProductDetailError = ErrorData<MyProductDetailErrorSource>;
 
 @freezed
-class MyProductDetailState with _$MyProductDetailState {
-  final int id;
-  final DataStatus dataStatus;
-  final bool isImageUpload;
-  final MyProductResponseItemDetail? data;
-  final MyProductDetailError? error;
+abstract class MyProductDetailState with _$MyProductDetailState {
+  const MyProductDetailState._();
 
-  MyProductDetailState({
-    required this.data,
-    required this.error,
-    required this.id,
-    required this.dataStatus, required this.isImageUpload,
-  });
+  const factory MyProductDetailState({
+    required MyProductResponseItemDetail? data,
+    required MyProductDetailError? error,
+    required int id,
+    required DataStatus dataStatus,
+    required bool isImageUpload,
+  }) = _MyProductDetailState;
 
   bool get isLoading => dataStatus == .loading || isImageUpload;
   bool get isCanUpload => dataStatus == .success && !isImageUpload;

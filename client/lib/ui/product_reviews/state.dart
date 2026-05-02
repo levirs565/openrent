@@ -5,16 +5,11 @@ import 'package:openrent_client/ui/core/error_data.dart';
 part 'state.freezed.dart';
 
 @freezed
-class ProductReviewsState with _$ProductReviewsState {
-  final int productId;
-  final List<ProductReviewDetail> list;
-  final bool isLoading;
-  final GeneralErrorData? error;
-
-  ProductReviewsState({
-    required this.productId,
-    required this.list,
-    required this.isLoading,
-    required this.error,
-  });
+abstract class ProductReviewsState with _$ProductReviewsState {
+  const factory ProductReviewsState({
+    required int productId,
+    required List<ProductReviewDetail> list,
+    required bool isLoading,
+    required GeneralErrorData? error,
+  }) = _ProductReviewsState;
 }
