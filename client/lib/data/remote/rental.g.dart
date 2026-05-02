@@ -20,6 +20,51 @@ Map<String, dynamic> _$RentalProductShortToJson(_RentalProductShort instance) =>
       'image_url': instance.imageUrl,
     };
 
+_RentalProductAddressDetails _$RentalProductAddressDetailsFromJson(
+  Map<String, dynamic> json,
+) => _RentalProductAddressDetails(
+  province: json['province'] as String,
+  regency: json['regency'] as String,
+  district: json['district'] as String,
+  detail: json['detail'] as String,
+  latitude: (json['latitude'] as num).toDouble(),
+  longitude: (json['longitude'] as num).toDouble(),
+);
+
+Map<String, dynamic> _$RentalProductAddressDetailsToJson(
+  _RentalProductAddressDetails instance,
+) => <String, dynamic>{
+  'province': instance.province,
+  'regency': instance.regency,
+  'district': instance.district,
+  'detail': instance.detail,
+  'latitude': instance.latitude,
+  'longitude': instance.longitude,
+};
+
+_RentalProductDetail _$RentalProductDetailFromJson(Map<String, dynamic> json) =>
+    _RentalProductDetail(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+      imageUrl: json['image_url'] as String?,
+      pricePerDay: (json['price_per_day'] as num).toInt(),
+      lateFeePerDay: (json['late_fee_per_day'] as num).toInt(),
+      address: RentalProductAddressDetails.fromJson(
+        json['address'] as Map<String, dynamic>,
+      ),
+    );
+
+Map<String, dynamic> _$RentalProductDetailToJson(
+  _RentalProductDetail instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'image_url': instance.imageUrl,
+  'price_per_day': instance.pricePerDay,
+  'late_fee_per_day': instance.lateFeePerDay,
+  'address': instance.address,
+};
+
 _RentalUserShort _$RentalUserShortFromJson(Map<String, dynamic> json) =>
     _RentalUserShort(
       id: (json['id'] as num).toInt(),
@@ -93,6 +138,21 @@ const _$RentCancelReasonEnumMap = {
   RentCancelReason.userCancelled: 'user_cancelled',
 };
 
+_RentPayment _$RentPaymentFromJson(Map<String, dynamic> json) => _RentPayment(
+  initial: (json['initial'] as num?)?.toInt(),
+  finalAmount: (json['final'] as num?)?.toInt(),
+  lateFine: (json['late_fine'] as num?)?.toInt(),
+  damageFine: (json['damage_fine'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$RentPaymentToJson(_RentPayment instance) =>
+    <String, dynamic>{
+      'initial': instance.initial,
+      'final': instance.finalAmount,
+      'late_fine': instance.lateFine,
+      'damage_fine': instance.damageFine,
+    };
+
 _RentalReviewDetails _$RentalReviewDetailsFromJson(Map<String, dynamic> json) =>
     _RentalReviewDetails(
       id: (json['id'] as num).toInt(),
@@ -112,7 +172,9 @@ _RentalResponseItemDetails _$RentalResponseItemDetailsFromJson(
   Map<String, dynamic> json,
 ) => _RentalResponseItemDetails(
   id: (json['id'] as num).toInt(),
-  product: RentalProductShort.fromJson(json['product'] as Map<String, dynamic>),
+  product: RentalProductDetail.fromJson(
+    json['product'] as Map<String, dynamic>,
+  ),
   user: RentalUserDetails.fromJson(json['user'] as Map<String, dynamic>),
   review: json['review'] == null
       ? null
@@ -124,6 +186,11 @@ _RentalResponseItemDetails _$RentalResponseItemDetailsFromJson(
   cancellation: json['cancellation'] == null
       ? null
       : RentCancellation.fromJson(json['cancellation'] as Map<String, dynamic>),
+  payment: RentPayment.fromJson(json['payment'] as Map<String, dynamic>),
+  returnedAt: _$JsonConverterFromJson<String, DateTime>(
+    json['returned_at'],
+    const Iso8601Converter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$RentalResponseItemDetailsToJson(
@@ -138,7 +205,22 @@ Map<String, dynamic> _$RentalResponseItemDetailsToJson(
   'end_date': const Iso8601Converter().toJson(instance.endDate),
   'quantity': instance.quantity,
   'cancellation': instance.cancellation,
+  'payment': instance.payment,
+  'returned_at': _$JsonConverterToJson<String, DateTime>(
+    instance.returnedAt,
+    const Iso8601Converter().toJson,
+  ),
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);
 
 _RentalRejectRequest _$RentalRejectRequestFromJson(Map<String, dynamic> json) =>
     _RentalRejectRequest(note: json['note'] as String);
@@ -146,6 +228,30 @@ _RentalRejectRequest _$RentalRejectRequestFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RentalRejectRequestToJson(
   _RentalRejectRequest instance,
 ) => <String, dynamic>{'note': instance.note};
+
+_RentalHandoverRequest _$RentalHandoverRequestFromJson(
+  Map<String, dynamic> json,
+) => _RentalHandoverRequest(payment: (json['payment'] as num).toInt());
+
+Map<String, dynamic> _$RentalHandoverRequestToJson(
+  _RentalHandoverRequest instance,
+) => <String, dynamic>{'payment': instance.payment};
+
+_RentalConfirmRequest _$RentalConfirmRequestFromJson(
+  Map<String, dynamic> json,
+) => _RentalConfirmRequest(
+  finalPayment: (json['final_payment'] as num).toInt(),
+  lateFinePayment: (json['late_fine_payment'] as num).toInt(),
+  damageFinePayment: (json['damage_fine_payment'] as num).toInt(),
+);
+
+Map<String, dynamic> _$RentalConfirmRequestToJson(
+  _RentalConfirmRequest instance,
+) => <String, dynamic>{
+  'final_payment': instance.finalPayment,
+  'late_fine_payment': instance.lateFinePayment,
+  'damage_fine_payment': instance.damageFinePayment,
+};
 
 // dart format off
 
@@ -279,11 +385,12 @@ class _RentalService implements RentalService {
   }
 
   @override
-  Future<ActionResponse> handover(int id) async {
+  Future<ActionResponse> handover(int id, RentalHandoverRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
     final _options = _setStreamType<ActionResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -306,11 +413,15 @@ class _RentalService implements RentalService {
   }
 
   @override
-  Future<ActionResponse> confirmReturn(int id) async {
+  Future<ActionResponse> confirmReturn(
+    int id,
+    RentalConfirmRequest request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
     final _options = _setStreamType<ActionResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

@@ -282,6 +282,580 @@ as String?,
 
 
 /// @nodoc
+mixin _$RentalProductAddressDetails {
+
+ String get province; String get regency; String get district; String get detail; double get latitude; double get longitude;
+/// Create a copy of RentalProductAddressDetails
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RentalProductAddressDetailsCopyWith<RentalProductAddressDetails> get copyWith => _$RentalProductAddressDetailsCopyWithImpl<RentalProductAddressDetails>(this as RentalProductAddressDetails, _$identity);
+
+  /// Serializes this RentalProductAddressDetails to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalProductAddressDetails&&(identical(other.province, province) || other.province == province)&&(identical(other.regency, regency) || other.regency == regency)&&(identical(other.district, district) || other.district == district)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,province,regency,district,detail,latitude,longitude);
+
+@override
+String toString() {
+  return 'RentalProductAddressDetails(province: $province, regency: $regency, district: $district, detail: $detail, latitude: $latitude, longitude: $longitude)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RentalProductAddressDetailsCopyWith<$Res>  {
+  factory $RentalProductAddressDetailsCopyWith(RentalProductAddressDetails value, $Res Function(RentalProductAddressDetails) _then) = _$RentalProductAddressDetailsCopyWithImpl;
+@useResult
+$Res call({
+ String province, String regency, String district, String detail, double latitude, double longitude
+});
+
+
+
+
+}
+/// @nodoc
+class _$RentalProductAddressDetailsCopyWithImpl<$Res>
+    implements $RentalProductAddressDetailsCopyWith<$Res> {
+  _$RentalProductAddressDetailsCopyWithImpl(this._self, this._then);
+
+  final RentalProductAddressDetails _self;
+  final $Res Function(RentalProductAddressDetails) _then;
+
+/// Create a copy of RentalProductAddressDetails
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? province = null,Object? regency = null,Object? district = null,Object? detail = null,Object? latitude = null,Object? longitude = null,}) {
+  return _then(_self.copyWith(
+province: null == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
+as String,regency: null == regency ? _self.regency : regency // ignore: cast_nullable_to_non_nullable
+as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RentalProductAddressDetails].
+extension RentalProductAddressDetailsPatterns on RentalProductAddressDetails {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RentalProductAddressDetails value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RentalProductAddressDetails value)  $default,){
+final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RentalProductAddressDetails value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String province,  String regency,  String district,  String detail,  double latitude,  double longitude)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails() when $default != null:
+return $default(_that.province,_that.regency,_that.district,_that.detail,_that.latitude,_that.longitude);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String province,  String regency,  String district,  String detail,  double latitude,  double longitude)  $default,) {final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails():
+return $default(_that.province,_that.regency,_that.district,_that.detail,_that.latitude,_that.longitude);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String province,  String regency,  String district,  String detail,  double latitude,  double longitude)?  $default,) {final _that = this;
+switch (_that) {
+case _RentalProductAddressDetails() when $default != null:
+return $default(_that.province,_that.regency,_that.district,_that.detail,_that.latitude,_that.longitude);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RentalProductAddressDetails implements RentalProductAddressDetails {
+  const _RentalProductAddressDetails({required this.province, required this.regency, required this.district, required this.detail, required this.latitude, required this.longitude});
+  factory _RentalProductAddressDetails.fromJson(Map<String, dynamic> json) => _$RentalProductAddressDetailsFromJson(json);
+
+@override final  String province;
+@override final  String regency;
+@override final  String district;
+@override final  String detail;
+@override final  double latitude;
+@override final  double longitude;
+
+/// Create a copy of RentalProductAddressDetails
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RentalProductAddressDetailsCopyWith<_RentalProductAddressDetails> get copyWith => __$RentalProductAddressDetailsCopyWithImpl<_RentalProductAddressDetails>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RentalProductAddressDetailsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalProductAddressDetails&&(identical(other.province, province) || other.province == province)&&(identical(other.regency, regency) || other.regency == regency)&&(identical(other.district, district) || other.district == district)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,province,regency,district,detail,latitude,longitude);
+
+@override
+String toString() {
+  return 'RentalProductAddressDetails(province: $province, regency: $regency, district: $district, detail: $detail, latitude: $latitude, longitude: $longitude)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RentalProductAddressDetailsCopyWith<$Res> implements $RentalProductAddressDetailsCopyWith<$Res> {
+  factory _$RentalProductAddressDetailsCopyWith(_RentalProductAddressDetails value, $Res Function(_RentalProductAddressDetails) _then) = __$RentalProductAddressDetailsCopyWithImpl;
+@override @useResult
+$Res call({
+ String province, String regency, String district, String detail, double latitude, double longitude
+});
+
+
+
+
+}
+/// @nodoc
+class __$RentalProductAddressDetailsCopyWithImpl<$Res>
+    implements _$RentalProductAddressDetailsCopyWith<$Res> {
+  __$RentalProductAddressDetailsCopyWithImpl(this._self, this._then);
+
+  final _RentalProductAddressDetails _self;
+  final $Res Function(_RentalProductAddressDetails) _then;
+
+/// Create a copy of RentalProductAddressDetails
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? province = null,Object? regency = null,Object? district = null,Object? detail = null,Object? latitude = null,Object? longitude = null,}) {
+  return _then(_RentalProductAddressDetails(
+province: null == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
+as String,regency: null == regency ? _self.regency : regency // ignore: cast_nullable_to_non_nullable
+as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RentalProductDetail {
+
+ int get id; String get name;@JsonKey(name: "image_url") String? get imageUrl;@JsonKey(name: "price_per_day") int get pricePerDay;@JsonKey(name: "late_fee_per_day") int get lateFeePerDay; RentalProductAddressDetails get address;
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RentalProductDetailCopyWith<RentalProductDetail> get copyWith => _$RentalProductDetailCopyWithImpl<RentalProductDetail>(this as RentalProductDetail, _$identity);
+
+  /// Serializes this RentalProductDetail to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalProductDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.address, address) || other.address == address));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,imageUrl,pricePerDay,lateFeePerDay,address);
+
+@override
+String toString() {
+  return 'RentalProductDetail(id: $id, name: $name, imageUrl: $imageUrl, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, address: $address)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RentalProductDetailCopyWith<$Res>  {
+  factory $RentalProductDetailCopyWith(RentalProductDetail value, $Res Function(RentalProductDetail) _then) = _$RentalProductDetailCopyWithImpl;
+@useResult
+$Res call({
+ int id, String name,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, RentalProductAddressDetails address
+});
+
+
+$RentalProductAddressDetailsCopyWith<$Res> get address;
+
+}
+/// @nodoc
+class _$RentalProductDetailCopyWithImpl<$Res>
+    implements $RentalProductDetailCopyWith<$Res> {
+  _$RentalProductDetailCopyWithImpl(this._self, this._then);
+
+  final RentalProductDetail _self;
+  final $Res Function(RentalProductDetail) _then;
+
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? imageUrl = freezed,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? address = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,pricePerDay: null == pricePerDay ? _self.pricePerDay : pricePerDay // ignore: cast_nullable_to_non_nullable
+as int,lateFeePerDay: null == lateFeePerDay ? _self.lateFeePerDay : lateFeePerDay // ignore: cast_nullable_to_non_nullable
+as int,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as RentalProductAddressDetails,
+  ));
+}
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentalProductAddressDetailsCopyWith<$Res> get address {
+  
+  return $RentalProductAddressDetailsCopyWith<$Res>(_self.address, (value) {
+    return _then(_self.copyWith(address: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [RentalProductDetail].
+extension RentalProductDetailPatterns on RentalProductDetail {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RentalProductDetail value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RentalProductDetail() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RentalProductDetail value)  $default,){
+final _that = this;
+switch (_that) {
+case _RentalProductDetail():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RentalProductDetail value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RentalProductDetail() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  RentalProductAddressDetails address)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RentalProductDetail() when $default != null:
+return $default(_that.id,_that.name,_that.imageUrl,_that.pricePerDay,_that.lateFeePerDay,_that.address);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  RentalProductAddressDetails address)  $default,) {final _that = this;
+switch (_that) {
+case _RentalProductDetail():
+return $default(_that.id,_that.name,_that.imageUrl,_that.pricePerDay,_that.lateFeePerDay,_that.address);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  RentalProductAddressDetails address)?  $default,) {final _that = this;
+switch (_that) {
+case _RentalProductDetail() when $default != null:
+return $default(_that.id,_that.name,_that.imageUrl,_that.pricePerDay,_that.lateFeePerDay,_that.address);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RentalProductDetail implements RentalProductDetail {
+  const _RentalProductDetail({required this.id, required this.name, @JsonKey(name: "image_url") required this.imageUrl, @JsonKey(name: "price_per_day") required this.pricePerDay, @JsonKey(name: "late_fee_per_day") required this.lateFeePerDay, required this.address});
+  factory _RentalProductDetail.fromJson(Map<String, dynamic> json) => _$RentalProductDetailFromJson(json);
+
+@override final  int id;
+@override final  String name;
+@override@JsonKey(name: "image_url") final  String? imageUrl;
+@override@JsonKey(name: "price_per_day") final  int pricePerDay;
+@override@JsonKey(name: "late_fee_per_day") final  int lateFeePerDay;
+@override final  RentalProductAddressDetails address;
+
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RentalProductDetailCopyWith<_RentalProductDetail> get copyWith => __$RentalProductDetailCopyWithImpl<_RentalProductDetail>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RentalProductDetailToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalProductDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.address, address) || other.address == address));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,imageUrl,pricePerDay,lateFeePerDay,address);
+
+@override
+String toString() {
+  return 'RentalProductDetail(id: $id, name: $name, imageUrl: $imageUrl, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, address: $address)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RentalProductDetailCopyWith<$Res> implements $RentalProductDetailCopyWith<$Res> {
+  factory _$RentalProductDetailCopyWith(_RentalProductDetail value, $Res Function(_RentalProductDetail) _then) = __$RentalProductDetailCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String name,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, RentalProductAddressDetails address
+});
+
+
+@override $RentalProductAddressDetailsCopyWith<$Res> get address;
+
+}
+/// @nodoc
+class __$RentalProductDetailCopyWithImpl<$Res>
+    implements _$RentalProductDetailCopyWith<$Res> {
+  __$RentalProductDetailCopyWithImpl(this._self, this._then);
+
+  final _RentalProductDetail _self;
+  final $Res Function(_RentalProductDetail) _then;
+
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? imageUrl = freezed,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? address = null,}) {
+  return _then(_RentalProductDetail(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,pricePerDay: null == pricePerDay ? _self.pricePerDay : pricePerDay // ignore: cast_nullable_to_non_nullable
+as int,lateFeePerDay: null == lateFeePerDay ? _self.lateFeePerDay : lateFeePerDay // ignore: cast_nullable_to_non_nullable
+as int,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as RentalProductAddressDetails,
+  ));
+}
+
+/// Create a copy of RentalProductDetail
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentalProductAddressDetailsCopyWith<$Res> get address {
+  
+  return $RentalProductAddressDetailsCopyWith<$Res>(_self.address, (value) {
+    return _then(_self.copyWith(address: value));
+  });
+}
+}
+
+
+/// @nodoc
 mixin _$RentalUserShort {
 
  int get id; String get name;
@@ -1397,6 +1971,278 @@ as String,
 
 
 /// @nodoc
+mixin _$RentPayment {
+
+ int? get initial;@JsonKey(name: 'final') int? get finalAmount;@JsonKey(name: 'late_fine') int? get lateFine;@JsonKey(name: 'damage_fine') int? get damageFine;
+/// Create a copy of RentPayment
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RentPaymentCopyWith<RentPayment> get copyWith => _$RentPaymentCopyWithImpl<RentPayment>(this as RentPayment, _$identity);
+
+  /// Serializes this RentPayment to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentPayment&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.finalAmount, finalAmount) || other.finalAmount == finalAmount)&&(identical(other.lateFine, lateFine) || other.lateFine == lateFine)&&(identical(other.damageFine, damageFine) || other.damageFine == damageFine));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,initial,finalAmount,lateFine,damageFine);
+
+@override
+String toString() {
+  return 'RentPayment(initial: $initial, finalAmount: $finalAmount, lateFine: $lateFine, damageFine: $damageFine)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RentPaymentCopyWith<$Res>  {
+  factory $RentPaymentCopyWith(RentPayment value, $Res Function(RentPayment) _then) = _$RentPaymentCopyWithImpl;
+@useResult
+$Res call({
+ int? initial,@JsonKey(name: 'final') int? finalAmount,@JsonKey(name: 'late_fine') int? lateFine,@JsonKey(name: 'damage_fine') int? damageFine
+});
+
+
+
+
+}
+/// @nodoc
+class _$RentPaymentCopyWithImpl<$Res>
+    implements $RentPaymentCopyWith<$Res> {
+  _$RentPaymentCopyWithImpl(this._self, this._then);
+
+  final RentPayment _self;
+  final $Res Function(RentPayment) _then;
+
+/// Create a copy of RentPayment
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? initial = freezed,Object? finalAmount = freezed,Object? lateFine = freezed,Object? damageFine = freezed,}) {
+  return _then(_self.copyWith(
+initial: freezed == initial ? _self.initial : initial // ignore: cast_nullable_to_non_nullable
+as int?,finalAmount: freezed == finalAmount ? _self.finalAmount : finalAmount // ignore: cast_nullable_to_non_nullable
+as int?,lateFine: freezed == lateFine ? _self.lateFine : lateFine // ignore: cast_nullable_to_non_nullable
+as int?,damageFine: freezed == damageFine ? _self.damageFine : damageFine // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RentPayment].
+extension RentPaymentPatterns on RentPayment {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RentPayment value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RentPayment() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RentPayment value)  $default,){
+final _that = this;
+switch (_that) {
+case _RentPayment():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RentPayment value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RentPayment() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? initial, @JsonKey(name: 'final')  int? finalAmount, @JsonKey(name: 'late_fine')  int? lateFine, @JsonKey(name: 'damage_fine')  int? damageFine)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RentPayment() when $default != null:
+return $default(_that.initial,_that.finalAmount,_that.lateFine,_that.damageFine);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? initial, @JsonKey(name: 'final')  int? finalAmount, @JsonKey(name: 'late_fine')  int? lateFine, @JsonKey(name: 'damage_fine')  int? damageFine)  $default,) {final _that = this;
+switch (_that) {
+case _RentPayment():
+return $default(_that.initial,_that.finalAmount,_that.lateFine,_that.damageFine);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? initial, @JsonKey(name: 'final')  int? finalAmount, @JsonKey(name: 'late_fine')  int? lateFine, @JsonKey(name: 'damage_fine')  int? damageFine)?  $default,) {final _that = this;
+switch (_that) {
+case _RentPayment() when $default != null:
+return $default(_that.initial,_that.finalAmount,_that.lateFine,_that.damageFine);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RentPayment implements RentPayment {
+  const _RentPayment({this.initial, @JsonKey(name: 'final') this.finalAmount, @JsonKey(name: 'late_fine') this.lateFine, @JsonKey(name: 'damage_fine') this.damageFine});
+  factory _RentPayment.fromJson(Map<String, dynamic> json) => _$RentPaymentFromJson(json);
+
+@override final  int? initial;
+@override@JsonKey(name: 'final') final  int? finalAmount;
+@override@JsonKey(name: 'late_fine') final  int? lateFine;
+@override@JsonKey(name: 'damage_fine') final  int? damageFine;
+
+/// Create a copy of RentPayment
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RentPaymentCopyWith<_RentPayment> get copyWith => __$RentPaymentCopyWithImpl<_RentPayment>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RentPaymentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentPayment&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.finalAmount, finalAmount) || other.finalAmount == finalAmount)&&(identical(other.lateFine, lateFine) || other.lateFine == lateFine)&&(identical(other.damageFine, damageFine) || other.damageFine == damageFine));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,initial,finalAmount,lateFine,damageFine);
+
+@override
+String toString() {
+  return 'RentPayment(initial: $initial, finalAmount: $finalAmount, lateFine: $lateFine, damageFine: $damageFine)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RentPaymentCopyWith<$Res> implements $RentPaymentCopyWith<$Res> {
+  factory _$RentPaymentCopyWith(_RentPayment value, $Res Function(_RentPayment) _then) = __$RentPaymentCopyWithImpl;
+@override @useResult
+$Res call({
+ int? initial,@JsonKey(name: 'final') int? finalAmount,@JsonKey(name: 'late_fine') int? lateFine,@JsonKey(name: 'damage_fine') int? damageFine
+});
+
+
+
+
+}
+/// @nodoc
+class __$RentPaymentCopyWithImpl<$Res>
+    implements _$RentPaymentCopyWith<$Res> {
+  __$RentPaymentCopyWithImpl(this._self, this._then);
+
+  final _RentPayment _self;
+  final $Res Function(_RentPayment) _then;
+
+/// Create a copy of RentPayment
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? initial = freezed,Object? finalAmount = freezed,Object? lateFine = freezed,Object? damageFine = freezed,}) {
+  return _then(_RentPayment(
+initial: freezed == initial ? _self.initial : initial // ignore: cast_nullable_to_non_nullable
+as int?,finalAmount: freezed == finalAmount ? _self.finalAmount : finalAmount // ignore: cast_nullable_to_non_nullable
+as int?,lateFine: freezed == lateFine ? _self.lateFine : lateFine // ignore: cast_nullable_to_non_nullable
+as int?,damageFine: freezed == damageFine ? _self.damageFine : damageFine // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$RentalReviewDetails {
 
  int get id; int get rating; String get content;
@@ -1668,7 +2514,7 @@ as String,
 /// @nodoc
 mixin _$RentalResponseItemDetails {
 
- int get id; RentalProductShort get product; RentalUserDetails get user; RentalReviewDetails? get review; RentState get state;@JsonKey(name: "start_date")@Iso8601Converter() DateTime get startDate;@JsonKey(name: "end_date")@Iso8601Converter() DateTime get endDate; int get quantity; RentCancellation? get cancellation;
+ int get id; RentalProductDetail get product; RentalUserDetails get user; RentalReviewDetails? get review; RentState get state;@JsonKey(name: "start_date")@Iso8601Converter() DateTime get startDate;@JsonKey(name: "end_date")@Iso8601Converter() DateTime get endDate; int get quantity; RentCancellation? get cancellation; RentPayment get payment;@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? get returnedAt;
 /// Create a copy of RentalResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1681,16 +2527,16 @@ $RentalResponseItemDetailsCopyWith<RentalResponseItemDetails> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.returnedAt, returnedAt) || other.returnedAt == returnedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation);
+int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation,payment,returnedAt);
 
 @override
 String toString() {
-  return 'RentalResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation)';
+  return 'RentalResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation, payment: $payment, returnedAt: $returnedAt)';
 }
 
 
@@ -1701,11 +2547,11 @@ abstract mixin class $RentalResponseItemDetailsCopyWith<$Res>  {
   factory $RentalResponseItemDetailsCopyWith(RentalResponseItemDetails value, $Res Function(RentalResponseItemDetails) _then) = _$RentalResponseItemDetailsCopyWithImpl;
 @useResult
 $Res call({
- int id, RentalProductShort product, RentalUserDetails user, RentalReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation
+ int id, RentalProductDetail product, RentalUserDetails user, RentalReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation, RentPayment payment,@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? returnedAt
 });
 
 
-$RentalProductShortCopyWith<$Res> get product;$RentalUserDetailsCopyWith<$Res> get user;$RentalReviewDetailsCopyWith<$Res>? get review;$RentCancellationCopyWith<$Res>? get cancellation;
+$RentalProductDetailCopyWith<$Res> get product;$RentalUserDetailsCopyWith<$Res> get user;$RentalReviewDetailsCopyWith<$Res>? get review;$RentCancellationCopyWith<$Res>? get cancellation;$RentPaymentCopyWith<$Res> get payment;
 
 }
 /// @nodoc
@@ -1718,27 +2564,29 @@ class _$RentalResponseItemDetailsCopyWithImpl<$Res>
 
 /// Create a copy of RentalResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,Object? payment = null,Object? returnedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as RentalProductShort,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as RentalProductDetail,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as RentalUserDetails,review: freezed == review ? _self.review : review // ignore: cast_nullable_to_non_nullable
 as RentalReviewDetails?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
 as RentState,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,cancellation: freezed == cancellation ? _self.cancellation : cancellation // ignore: cast_nullable_to_non_nullable
-as RentCancellation?,
+as RentCancellation?,payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as RentPayment,returnedAt: freezed == returnedAt ? _self.returnedAt : returnedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 /// Create a copy of RentalResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RentalProductShortCopyWith<$Res> get product {
+$RentalProductDetailCopyWith<$Res> get product {
   
-  return $RentalProductShortCopyWith<$Res>(_self.product, (value) {
+  return $RentalProductDetailCopyWith<$Res>(_self.product, (value) {
     return _then(_self.copyWith(product: value));
   });
 }/// Create a copy of RentalResponseItemDetails
@@ -1773,6 +2621,15 @@ $RentCancellationCopyWith<$Res>? get cancellation {
 
   return $RentCancellationCopyWith<$Res>(_self.cancellation!, (value) {
     return _then(_self.copyWith(cancellation: value));
+  });
+}/// Create a copy of RentalResponseItemDetails
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentPaymentCopyWith<$Res> get payment {
+  
+  return $RentPaymentCopyWith<$Res>(_self.payment, (value) {
+    return _then(_self.copyWith(payment: value));
   });
 }
 }
@@ -1856,10 +2713,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RentalProductShort product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RentalProductDetail product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RentalResponseItemDetails() when $default != null:
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   return orElse();
 
 }
@@ -1877,10 +2734,10 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RentalProductShort product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RentalProductDetail product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)  $default,) {final _that = this;
 switch (_that) {
 case _RentalResponseItemDetails():
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1897,10 +2754,10 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RentalProductShort product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RentalProductDetail product,  RentalUserDetails user,  RentalReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _RentalResponseItemDetails() when $default != null:
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   return null;
 
 }
@@ -1912,11 +2769,11 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 @JsonSerializable()
 
 class _RentalResponseItemDetails implements RentalResponseItemDetails {
-  const _RentalResponseItemDetails({required this.id, required this.product, required this.user, required this.review, required this.state, @JsonKey(name: "start_date")@Iso8601Converter() required this.startDate, @JsonKey(name: "end_date")@Iso8601Converter() required this.endDate, required this.quantity, required this.cancellation});
+  const _RentalResponseItemDetails({required this.id, required this.product, required this.user, required this.review, required this.state, @JsonKey(name: "start_date")@Iso8601Converter() required this.startDate, @JsonKey(name: "end_date")@Iso8601Converter() required this.endDate, required this.quantity, required this.cancellation, required this.payment, @JsonKey(name: "returned_at")@Iso8601Converter() required this.returnedAt});
   factory _RentalResponseItemDetails.fromJson(Map<String, dynamic> json) => _$RentalResponseItemDetailsFromJson(json);
 
 @override final  int id;
-@override final  RentalProductShort product;
+@override final  RentalProductDetail product;
 @override final  RentalUserDetails user;
 @override final  RentalReviewDetails? review;
 @override final  RentState state;
@@ -1924,6 +2781,8 @@ class _RentalResponseItemDetails implements RentalResponseItemDetails {
 @override@JsonKey(name: "end_date")@Iso8601Converter() final  DateTime endDate;
 @override final  int quantity;
 @override final  RentCancellation? cancellation;
+@override final  RentPayment payment;
+@override@JsonKey(name: "returned_at")@Iso8601Converter() final  DateTime? returnedAt;
 
 /// Create a copy of RentalResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -1938,16 +2797,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.returnedAt, returnedAt) || other.returnedAt == returnedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation);
+int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation,payment,returnedAt);
 
 @override
 String toString() {
-  return 'RentalResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation)';
+  return 'RentalResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation, payment: $payment, returnedAt: $returnedAt)';
 }
 
 
@@ -1958,11 +2817,11 @@ abstract mixin class _$RentalResponseItemDetailsCopyWith<$Res> implements $Renta
   factory _$RentalResponseItemDetailsCopyWith(_RentalResponseItemDetails value, $Res Function(_RentalResponseItemDetails) _then) = __$RentalResponseItemDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- int id, RentalProductShort product, RentalUserDetails user, RentalReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation
+ int id, RentalProductDetail product, RentalUserDetails user, RentalReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation, RentPayment payment,@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? returnedAt
 });
 
 
-@override $RentalProductShortCopyWith<$Res> get product;@override $RentalUserDetailsCopyWith<$Res> get user;@override $RentalReviewDetailsCopyWith<$Res>? get review;@override $RentCancellationCopyWith<$Res>? get cancellation;
+@override $RentalProductDetailCopyWith<$Res> get product;@override $RentalUserDetailsCopyWith<$Res> get user;@override $RentalReviewDetailsCopyWith<$Res>? get review;@override $RentCancellationCopyWith<$Res>? get cancellation;@override $RentPaymentCopyWith<$Res> get payment;
 
 }
 /// @nodoc
@@ -1975,18 +2834,20 @@ class __$RentalResponseItemDetailsCopyWithImpl<$Res>
 
 /// Create a copy of RentalResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,Object? payment = null,Object? returnedAt = freezed,}) {
   return _then(_RentalResponseItemDetails(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as RentalProductShort,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as RentalProductDetail,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as RentalUserDetails,review: freezed == review ? _self.review : review // ignore: cast_nullable_to_non_nullable
 as RentalReviewDetails?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
 as RentState,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,cancellation: freezed == cancellation ? _self.cancellation : cancellation // ignore: cast_nullable_to_non_nullable
-as RentCancellation?,
+as RentCancellation?,payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as RentPayment,returnedAt: freezed == returnedAt ? _self.returnedAt : returnedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -1994,9 +2855,9 @@ as RentCancellation?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RentalProductShortCopyWith<$Res> get product {
+$RentalProductDetailCopyWith<$Res> get product {
   
-  return $RentalProductShortCopyWith<$Res>(_self.product, (value) {
+  return $RentalProductDetailCopyWith<$Res>(_self.product, (value) {
     return _then(_self.copyWith(product: value));
   });
 }/// Create a copy of RentalResponseItemDetails
@@ -2031,6 +2892,15 @@ $RentCancellationCopyWith<$Res>? get cancellation {
 
   return $RentCancellationCopyWith<$Res>(_self.cancellation!, (value) {
     return _then(_self.copyWith(cancellation: value));
+  });
+}/// Create a copy of RentalResponseItemDetails
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentPaymentCopyWith<$Res> get payment {
+  
+  return $RentPaymentCopyWith<$Res>(_self.payment, (value) {
+    return _then(_self.copyWith(payment: value));
   });
 }
 }
@@ -2292,6 +3162,538 @@ class __$RentalRejectRequestCopyWithImpl<$Res>
   return _then(_RentalRejectRequest(
 note: null == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RentalHandoverRequest {
+
+ int get payment;
+/// Create a copy of RentalHandoverRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RentalHandoverRequestCopyWith<RentalHandoverRequest> get copyWith => _$RentalHandoverRequestCopyWithImpl<RentalHandoverRequest>(this as RentalHandoverRequest, _$identity);
+
+  /// Serializes this RentalHandoverRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalHandoverRequest&&(identical(other.payment, payment) || other.payment == payment));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,payment);
+
+@override
+String toString() {
+  return 'RentalHandoverRequest(payment: $payment)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RentalHandoverRequestCopyWith<$Res>  {
+  factory $RentalHandoverRequestCopyWith(RentalHandoverRequest value, $Res Function(RentalHandoverRequest) _then) = _$RentalHandoverRequestCopyWithImpl;
+@useResult
+$Res call({
+ int payment
+});
+
+
+
+
+}
+/// @nodoc
+class _$RentalHandoverRequestCopyWithImpl<$Res>
+    implements $RentalHandoverRequestCopyWith<$Res> {
+  _$RentalHandoverRequestCopyWithImpl(this._self, this._then);
+
+  final RentalHandoverRequest _self;
+  final $Res Function(RentalHandoverRequest) _then;
+
+/// Create a copy of RentalHandoverRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? payment = null,}) {
+  return _then(_self.copyWith(
+payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RentalHandoverRequest].
+extension RentalHandoverRequestPatterns on RentalHandoverRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RentalHandoverRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RentalHandoverRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RentalHandoverRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _RentalHandoverRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RentalHandoverRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RentalHandoverRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int payment)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RentalHandoverRequest() when $default != null:
+return $default(_that.payment);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int payment)  $default,) {final _that = this;
+switch (_that) {
+case _RentalHandoverRequest():
+return $default(_that.payment);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int payment)?  $default,) {final _that = this;
+switch (_that) {
+case _RentalHandoverRequest() when $default != null:
+return $default(_that.payment);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RentalHandoverRequest implements RentalHandoverRequest {
+  const _RentalHandoverRequest({required this.payment});
+  factory _RentalHandoverRequest.fromJson(Map<String, dynamic> json) => _$RentalHandoverRequestFromJson(json);
+
+@override final  int payment;
+
+/// Create a copy of RentalHandoverRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RentalHandoverRequestCopyWith<_RentalHandoverRequest> get copyWith => __$RentalHandoverRequestCopyWithImpl<_RentalHandoverRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RentalHandoverRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalHandoverRequest&&(identical(other.payment, payment) || other.payment == payment));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,payment);
+
+@override
+String toString() {
+  return 'RentalHandoverRequest(payment: $payment)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RentalHandoverRequestCopyWith<$Res> implements $RentalHandoverRequestCopyWith<$Res> {
+  factory _$RentalHandoverRequestCopyWith(_RentalHandoverRequest value, $Res Function(_RentalHandoverRequest) _then) = __$RentalHandoverRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ int payment
+});
+
+
+
+
+}
+/// @nodoc
+class __$RentalHandoverRequestCopyWithImpl<$Res>
+    implements _$RentalHandoverRequestCopyWith<$Res> {
+  __$RentalHandoverRequestCopyWithImpl(this._self, this._then);
+
+  final _RentalHandoverRequest _self;
+  final $Res Function(_RentalHandoverRequest) _then;
+
+/// Create a copy of RentalHandoverRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? payment = null,}) {
+  return _then(_RentalHandoverRequest(
+payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RentalConfirmRequest {
+
+@JsonKey(name: "final_payment") int get finalPayment;@JsonKey(name: "late_fine_payment") int get lateFinePayment;@JsonKey(name: "damage_fine_payment") int get damageFinePayment;
+/// Create a copy of RentalConfirmRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RentalConfirmRequestCopyWith<RentalConfirmRequest> get copyWith => _$RentalConfirmRequestCopyWithImpl<RentalConfirmRequest>(this as RentalConfirmRequest, _$identity);
+
+  /// Serializes this RentalConfirmRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentalConfirmRequest&&(identical(other.finalPayment, finalPayment) || other.finalPayment == finalPayment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,finalPayment,lateFinePayment,damageFinePayment);
+
+@override
+String toString() {
+  return 'RentalConfirmRequest(finalPayment: $finalPayment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RentalConfirmRequestCopyWith<$Res>  {
+  factory $RentalConfirmRequestCopyWith(RentalConfirmRequest value, $Res Function(RentalConfirmRequest) _then) = _$RentalConfirmRequestCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "final_payment") int finalPayment,@JsonKey(name: "late_fine_payment") int lateFinePayment,@JsonKey(name: "damage_fine_payment") int damageFinePayment
+});
+
+
+
+
+}
+/// @nodoc
+class _$RentalConfirmRequestCopyWithImpl<$Res>
+    implements $RentalConfirmRequestCopyWith<$Res> {
+  _$RentalConfirmRequestCopyWithImpl(this._self, this._then);
+
+  final RentalConfirmRequest _self;
+  final $Res Function(RentalConfirmRequest) _then;
+
+/// Create a copy of RentalConfirmRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? finalPayment = null,Object? lateFinePayment = null,Object? damageFinePayment = null,}) {
+  return _then(_self.copyWith(
+finalPayment: null == finalPayment ? _self.finalPayment : finalPayment // ignore: cast_nullable_to_non_nullable
+as int,lateFinePayment: null == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
+as int,damageFinePayment: null == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RentalConfirmRequest].
+extension RentalConfirmRequestPatterns on RentalConfirmRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RentalConfirmRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RentalConfirmRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RentalConfirmRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _RentalConfirmRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RentalConfirmRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RentalConfirmRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "final_payment")  int finalPayment, @JsonKey(name: "late_fine_payment")  int lateFinePayment, @JsonKey(name: "damage_fine_payment")  int damageFinePayment)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RentalConfirmRequest() when $default != null:
+return $default(_that.finalPayment,_that.lateFinePayment,_that.damageFinePayment);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "final_payment")  int finalPayment, @JsonKey(name: "late_fine_payment")  int lateFinePayment, @JsonKey(name: "damage_fine_payment")  int damageFinePayment)  $default,) {final _that = this;
+switch (_that) {
+case _RentalConfirmRequest():
+return $default(_that.finalPayment,_that.lateFinePayment,_that.damageFinePayment);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "final_payment")  int finalPayment, @JsonKey(name: "late_fine_payment")  int lateFinePayment, @JsonKey(name: "damage_fine_payment")  int damageFinePayment)?  $default,) {final _that = this;
+switch (_that) {
+case _RentalConfirmRequest() when $default != null:
+return $default(_that.finalPayment,_that.lateFinePayment,_that.damageFinePayment);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RentalConfirmRequest implements RentalConfirmRequest {
+  const _RentalConfirmRequest({@JsonKey(name: "final_payment") required this.finalPayment, @JsonKey(name: "late_fine_payment") required this.lateFinePayment, @JsonKey(name: "damage_fine_payment") required this.damageFinePayment});
+  factory _RentalConfirmRequest.fromJson(Map<String, dynamic> json) => _$RentalConfirmRequestFromJson(json);
+
+@override@JsonKey(name: "final_payment") final  int finalPayment;
+@override@JsonKey(name: "late_fine_payment") final  int lateFinePayment;
+@override@JsonKey(name: "damage_fine_payment") final  int damageFinePayment;
+
+/// Create a copy of RentalConfirmRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RentalConfirmRequestCopyWith<_RentalConfirmRequest> get copyWith => __$RentalConfirmRequestCopyWithImpl<_RentalConfirmRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RentalConfirmRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentalConfirmRequest&&(identical(other.finalPayment, finalPayment) || other.finalPayment == finalPayment)&&(identical(other.lateFinePayment, lateFinePayment) || other.lateFinePayment == lateFinePayment)&&(identical(other.damageFinePayment, damageFinePayment) || other.damageFinePayment == damageFinePayment));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,finalPayment,lateFinePayment,damageFinePayment);
+
+@override
+String toString() {
+  return 'RentalConfirmRequest(finalPayment: $finalPayment, lateFinePayment: $lateFinePayment, damageFinePayment: $damageFinePayment)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RentalConfirmRequestCopyWith<$Res> implements $RentalConfirmRequestCopyWith<$Res> {
+  factory _$RentalConfirmRequestCopyWith(_RentalConfirmRequest value, $Res Function(_RentalConfirmRequest) _then) = __$RentalConfirmRequestCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "final_payment") int finalPayment,@JsonKey(name: "late_fine_payment") int lateFinePayment,@JsonKey(name: "damage_fine_payment") int damageFinePayment
+});
+
+
+
+
+}
+/// @nodoc
+class __$RentalConfirmRequestCopyWithImpl<$Res>
+    implements _$RentalConfirmRequestCopyWith<$Res> {
+  __$RentalConfirmRequestCopyWithImpl(this._self, this._then);
+
+  final _RentalConfirmRequest _self;
+  final $Res Function(_RentalConfirmRequest) _then;
+
+/// Create a copy of RentalConfirmRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? finalPayment = null,Object? lateFinePayment = null,Object? damageFinePayment = null,}) {
+  return _then(_RentalConfirmRequest(
+finalPayment: null == finalPayment ? _self.finalPayment : finalPayment // ignore: cast_nullable_to_non_nullable
+as int,lateFinePayment: null == lateFinePayment ? _self.lateFinePayment : lateFinePayment // ignore: cast_nullable_to_non_nullable
+as int,damageFinePayment: null == damageFinePayment ? _self.damageFinePayment : damageFinePayment // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

@@ -6,8 +6,6 @@ part 'state.freezed.dart';
 @freezed
 abstract class ProfileState with _$ProfileState {
   const factory ProfileState({
-    required bool canUseBiometric,
-    required bool isBiometricOn,
     required bool isUploadingAvatar,
     required GeneralErrorData? error,
   }) = _ProfileState;

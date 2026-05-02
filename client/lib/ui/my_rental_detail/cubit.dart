@@ -2,19 +2,26 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/data/exchange_rates.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/ui/my_rental_detail/state.dart';
 
 class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
   final RentalRepository _rentalRepository;
+  final ExchangeRatesRepository _exchangeRatesRepository;
   StreamSubscription? _fcmSubscription;
 
   MyRentalDetailCubit({
     required int id,
     required RentalRepository rentalRepository,
-  }) : _rentalRepository = rentalRepository,
+    required ExchangeRatesRepository exchangeRatesRepository,
+    required SettingsRepository settingsRepository
+  }) : _exchangeRatesRepository = exchangeRatesRepository,
+       _rentalRepository = rentalRepository,
        super(
          MyRentalDetailState(
            id: id,
@@ -22,9 +29,12 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
            dataStatus: .initial,
            isActionLoading: false,
            error: null,
+           exchangeRate: null,
+           selectedCurrency: settingsRepository.getCurrency(),
+           exchangeRateStatus: .initial,
          ),
        ) {
-    onRefresh();
+    onRefreshExchangeRate();
     _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
       if (event.data["type"].toString().startsWith("rent_") &&
           int.tryParse(event.data["rent_id"]) == id) {
@@ -37,6 +47,30 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
   Future<void> close() {
     _fcmSubscription?.cancel();
     return super.close();
+  }
+
+  void onRefreshExchangeRate() async {
+    if (state.exchangeRateStatus == .loading) return;
+
+    final result = await _exchangeRatesRepository.get();
+
+    switch (result) {
+      case ResultSuccess<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .success,
+            exchangeRate: result.data,
+          ),
+        );
+        onRefresh();
+      case ResultError<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .fail,
+            error: .new(source: .exchangeRate, message: result.message),
+          ),
+        );
+    }
   }
 
   void onRefresh() async {
@@ -82,54 +116,6 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
             isActionLoading: false,
             error: MyRentalDetailError(
               source: .actionApprove,
-              message: result.message,
-            ),
-          ),
-        );
-    }
-  }
-
-  void onHandover() async {
-    if (state.isLoading) return;
-
-    emit(state.copyWith(isActionLoading: true));
-
-    final result = await _rentalRepository.handover(state.id);
-
-    switch (result) {
-      case ResultSuccess<void>():
-        emit(state.copyWith(isActionLoading: false));
-        onRefresh();
-      case ResultError<void>():
-        emit(
-          state.copyWith(
-            isActionLoading: false,
-            error: MyRentalDetailError(
-              source: .actionHandover,
-              message: result.message,
-            ),
-          ),
-        );
-    }
-  }
-
-  void onConfirmReturn() async {
-    if (state.isLoading) return;
-
-    emit(state.copyWith(isActionLoading: true));
-
-    final result = await _rentalRepository.confirmReturn(state.id);
-
-    switch (result) {
-      case ResultSuccess<void>():
-        emit(state.copyWith(isActionLoading: false));
-        onRefresh();
-      case ResultError<void>():
-        emit(
-          state.copyWith(
-            isActionLoading: false,
-            error: MyRentalDetailError(
-              source: .actionConfirmReturn,
               message: result.message,
             ),
           ),

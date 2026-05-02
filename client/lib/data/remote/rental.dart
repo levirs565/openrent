@@ -28,10 +28,13 @@ abstract class RentalService {
   );
 
   @POST("/owner/rents/{id}/handover")
-  Future<ActionResponse> handover(@Path("id") int id);
+  Future<ActionResponse> handover(@Path("id") int id, @Body() RentalHandoverRequest request);
 
   @POST("/owner/rents/{id}/confirm_return")
-  Future<ActionResponse> confirmReturn(@Path("id") int id);
+  Future<ActionResponse> confirmReturn(
+    @Path("id") int id,
+    @Body() RentalConfirmRequest request,
+  );
 }
 
 @freezed
@@ -44,6 +47,36 @@ abstract class RentalProductShort with _$RentalProductShort {
 
   factory RentalProductShort.fromJson(Map<String, Object?> json) =>
       _$RentalProductShortFromJson(json);
+}
+
+@freezed
+abstract class RentalProductAddressDetails with _$RentalProductAddressDetails {
+  const factory RentalProductAddressDetails({
+    required String province,
+    required String regency,
+    required String district,
+    required String detail,
+    required double latitude,
+    required double longitude,
+  }) = _RentalProductAddressDetails;
+
+  factory RentalProductAddressDetails.fromJson(Map<String, Object?> json) =>
+      _$RentalProductAddressDetailsFromJson(json);
+}
+
+@freezed
+abstract class RentalProductDetail with _$RentalProductDetail {
+  const factory RentalProductDetail({
+    required int id,
+    required String name,
+    @JsonKey(name: "image_url") required String? imageUrl,
+    @JsonKey(name: "price_per_day") required int pricePerDay,
+    @JsonKey(name: "late_fee_per_day") required int lateFeePerDay,
+    required RentalProductAddressDetails address,
+  }) = _RentalProductDetail;
+
+  factory RentalProductDetail.fromJson(Map<String, Object?> json) =>
+      _$RentalProductDetailFromJson(json);
 }
 
 @freezed
@@ -130,6 +163,19 @@ abstract class RentCancellation with _$RentCancellation {
 }
 
 @freezed
+abstract class RentPayment with _$RentPayment {
+  const factory RentPayment({
+    int? initial,
+    @JsonKey(name: 'final') int? finalAmount,
+    @JsonKey(name: 'late_fine') int? lateFine,
+    @JsonKey(name: 'damage_fine') int? damageFine,
+  }) = _RentPayment;
+
+  factory RentPayment.fromJson(Map<String, Object?> json) =>
+      _$RentPaymentFromJson(json);
+}
+
+@freezed
 abstract class RentalReviewDetails with _$RentalReviewDetails {
   factory RentalReviewDetails({
     required int id,
@@ -145,7 +191,7 @@ abstract class RentalReviewDetails with _$RentalReviewDetails {
 abstract class RentalResponseItemDetails with _$RentalResponseItemDetails {
   const factory RentalResponseItemDetails({
     required int id,
-    required RentalProductShort product,
+    required RentalProductDetail product,
     required RentalUserDetails user,
     required RentalReviewDetails? review,
     required RentState state,
@@ -155,6 +201,10 @@ abstract class RentalResponseItemDetails with _$RentalResponseItemDetails {
     @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
     required int quantity,
     required RentCancellation? cancellation,
+    required RentPayment payment,
+    @JsonKey(name: "returned_at")
+    @Iso8601Converter()
+    required DateTime? returnedAt,
   }) = _RentalResponseItemDetails;
 
   factory RentalResponseItemDetails.fromJson(Map<String, Object?> json) =>
@@ -168,4 +218,25 @@ abstract class RentalRejectRequest with _$RentalRejectRequest {
 
   factory RentalRejectRequest.fromJson(Map<String, Object?> json) =>
       _$RentalRejectRequestFromJson(json);
+}
+
+@freezed
+abstract class RentalHandoverRequest with _$RentalHandoverRequest {
+  const factory RentalHandoverRequest({required int payment}) =
+      _RentalHandoverRequest;
+
+  factory RentalHandoverRequest.fromJson(Map<String, Object?> json) =>
+      _$RentalHandoverRequestFromJson(json);
+}
+
+@freezed
+abstract class RentalConfirmRequest with _$RentalConfirmRequest {
+  const factory RentalConfirmRequest({
+    @JsonKey(name: "final_payment") required int finalPayment,
+    @JsonKey(name: "late_fine_payment") required int lateFinePayment,
+    @JsonKey(name: "damage_fine_payment") required int damageFinePayment,
+  }) = _RentalConfirmRequest;
+
+  factory RentalConfirmRequest.fromJson(Map<String, Object?> json) =>
+      _$RentalConfirmRequestFromJson(json);
 }

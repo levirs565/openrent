@@ -3,6 +3,7 @@ package owner_rent
 import (
 	"openrent-server/core"
 	"openrent-server/models"
+	"time"
 
 	"gorm.io/datatypes"
 )
@@ -64,7 +65,7 @@ type ReviewDetails struct {
 
 type ResponseItemDetails struct {
 	ID           uint                      `json:"id"`
-	Product      ProductShort              `json:"product"`
+	Product      core.RentProductDetail    `json:"product"`
 	User         UserDetails               `json:"user"`
 	Review       *ReviewDetails            `json:"review"`
 	State        models.RentState          `json:"state"`
@@ -72,6 +73,8 @@ type ResponseItemDetails struct {
 	EndDate      datatypes.Date            `json:"end_date"`
 	Quantity     int                       `json:"quantity"`
 	Cancellation *core.RentCancellationDto `json:"cancellation"`
+	Payment      core.RentPaymentDto       `json:"payment"`
+	ReturnedAt   *time.Time                `json:"returned_at"`
 }
 
 func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
@@ -84,16 +87,15 @@ func modelToResponseItemDetails(model models.Rent) ResponseItemDetails {
 		}
 	}
 	return ResponseItemDetails{
-		ID: model.ID,
-		Product: ProductShort{
-			ID:   model.ProductID,
-			Name: model.ProductSnapshot.Name,
-		},
+		ID:      model.ID,
+		Product: core.RentProductDetailFromModel(model),
 		User: UserDetails{
 			ID:   model.UserAccountID,
 			Name: model.RenterSnapshotName,
 		},
 		Cancellation: core.RentCancellationFromModel(model),
+		ReturnedAt:   model.ReturnedAt,
+		Payment:      core.RentPaymentFromModel(model),
 		Review:       review,
 		State:        model.State,
 		StartDate:    model.StartDate,
@@ -117,9 +119,13 @@ type CancelRequest struct {
 }
 
 type HandoverRequest struct {
-	ID uint `param:"id"`
+	ID      uint `param:"id"`
+	Payment *int `json:"payment" validate:"required"`
 }
 
 type ConfirmReturnRequest struct {
-	ID uint `param:"id"`
+	ID                uint `param:"id"`
+	FinalPayment      *int `json:"final_payment" validate:"required"`
+	LateFinePayment   *int `json:"late_fine_payment" validate:"required"`
+	DamageFinePayment *int `json:"damage_fine_payment" validate:"required"`
 }

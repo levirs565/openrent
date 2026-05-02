@@ -20,8 +20,12 @@ class MyOrderDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MyOrderDetailCubit(id: id, orderRepository: context.read()),
+      create: (context) => MyOrderDetailCubit(
+        id: id,
+        orderRepository: context.read(),
+        exchangeRatesRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: ScaffoldMessenger(
         child: Scaffold(
           appBar: AppBar(title: Text("Order")),
@@ -40,14 +44,21 @@ class _Content extends StatelessWidget {
     return BlocConsumer<MyOrderDetailCubit, MyOrderDetailState>(
       listener: (context, state) {
         if (state.error != null) {
+          final source = state.error!.source;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: state.error!.source == .data
+              action: source == .data || source == .exchangeRate
                   ? SnackBarAction(
                       label: "Refresh",
-                      onPressed: () =>
-                          context.read<MyOrderDetailCubit>().onRefresh(),
+                      onPressed: () {
+                        final cubit = context.read<MyOrderDetailCubit>();
+                        if (source == .data) {
+                          cubit.onRefresh();
+                        } else {
+                          cubit.onRefreshExchangeRate();
+                        }
+                      },
                     )
                   : null,
             ),
@@ -55,81 +66,131 @@ class _Content extends StatelessWidget {
           context.read<MyOrderDetailCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => Column(
-        children: [
-          if (state.isLoading) LinearProgressIndicator(),
-          Text("Product"),
-          if (state.data?.product.imageUrl != null)
-            Image.network(state.data!.product.imageUrl!, height: 96,),
-          Text(state.data?.product.name ?? "-"),
-          OutlinedButton(
-            onPressed: state.data == null
-                ? null
-                : () => Navigator.of(
-                    context,
-                  ).push(MyProductDetailPage.route(state.data!.product.id)),
-            child: Text("Product Detail"),
-          ),
-          Text("User"),
-          Text(state.data?.user.name ?? "-"),
-          OutlinedButton(
-            onPressed: state.data?.user == null
-                ? null
-                : () => Navigator.of(
-                    context,
-                  ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
-            child: Text("Chat"),
-          ),
-          // TODO: User Detail Page
-          Text("State"),
-          Text(state.data?.state.toString() ?? "-"),
-          Text("Date"),
-          Text(
-            "${state.data?.startDate ?? "-"} - ${state.data?.endDate ?? "-"}",
-          ),
-          Text("Quantity"),
-          Text(state.data?.quantity.toString() ?? "-"),
-          if (state.data?.cancellation != null) ...[
-            Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
-            Text("Cancel Note: ${state.data?.cancellation?.note}")
-          ],
-          if (state.data?.state == .readyForPickup)
-            OutlinedButton(
-              onPressed: () => context.read<MyOrderDetailCubit>().onReceive(),
-              child: Text("Receive"),
+      builder: (context, state) => SingleChildScrollView(
+        child: Column(
+          children: [
+            if (state.isLoading) LinearProgressIndicator(),
+            Text("Product"),
+            if (state.data?.product.imageUrl != null)
+              Image.network(state.data!.product.imageUrl!, height: 96),
+            Text(state.data?.product.name ?? "-"),
+            Text(
+              "Price Per Day: ${state.data?.product.pricePerDay} IDR or ${state.convertToCurrency(state.data?.product.pricePerDay)} ",
             ),
-          if (state.data?.state == .onRent)
-            OutlinedButton(
-              onPressed: () =>
-                  context.read<MyOrderDetailCubit>().onRequestReturn(),
-              child: Text("Return"),
+            Text(
+              "Later Per Day: ${state.data?.product.lateFeePerDay} IDR or ${state.convertToCurrency(state.data?.product.lateFeePerDay)} ",
             ),
-          if (state.data?.state == .completed && state.data?.review == null)
+            Text("Address: TODO"),
             OutlinedButton(
-              onPressed: () => Navigator.of(
-                context,
-              ).push(ReviewFormPage.routeAdd(rentId: state.id)),
-              child: Text("Add Review"),
+              onPressed: state.data == null
+                  ? null
+                  : () => Navigator.of(
+                      context,
+                    ).push(MyProductDetailPage.route(state.data!.product.id)),
+              child: Text("Product Detail"),
             ),
-          if (state.data?.review != null) ...[
-            Text("Review"),
-            Text("${state.data!.review!.rating} stars"),
-            Text(state.data!.review!.content),
-            Row(
-              children: [
-                OutlinedButton(onPressed: () => {}, child: Text("Edit Review")),
-                OutlinedButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) =>
-                        RemoveReviewDialog(id: state.data!.review!.id),
+            Text("User"),
+            Text(state.data?.user.name ?? "-"),
+            OutlinedButton(
+              onPressed: state.data?.user == null
+                  ? null
+                  : () => Navigator.of(context).push(
+                      MessagesPage.route(otherUserId: state.data!.user.id),
+                    ),
+              child: Text("Chat"),
+            ),
+            // TODO: User Detail Page
+            Text("State"),
+            Text(state.data?.state.toString() ?? "-"),
+            Text("Date"),
+            Text(
+              "${state.data?.startDate ?? "-"} - ${state.data?.endDate ?? "-"}",
+            ),
+            Text("Quantity"),
+            Text(state.data?.quantity.toString() ?? "-"),
+            if (state.data?.cancellation != null) ...[
+              Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
+              Text("Cancel Note: ${state.data?.cancellation?.note}"),
+            ],
+            Text(
+              "Estimated Price: ${state.estimatedPrice} IDR or ${state.convertToCurrency(state.estimatedPrice)}",
+            ),
+            Text(
+              "Estimated Late Fine: ${state.estimatedLateFine} IDR or ${state.convertToCurrency(state.estimatedLateFine)}",
+            ),
+            if (state.data?.payment.initial != null &&
+                state.data?.payment.finalAmount == null) ...[
+              Text(
+                "Estimated Total Payment: ${state.estimatedTotalPrice} IDR or ${state.convertToCurrency(state.estimatedTotalPrice)}",
+              ),
+            ],
+            if (state.data?.payment.initial != null)
+              Text(
+                "Initial Payment: ${state.data?.payment.initial} IDR or ${state.convertToCurrency(state.data?.payment.initial)}",
+              ),
+            if (state.data?.payment.initial != null &&
+                state.data?.payment.finalAmount == null) ...[
+              Text(
+                "Estimated Pending Payment: ${state.estimatedPendingPrice} IDR or ${state.convertToCurrency(state.estimatedPendingPrice)}",
+              ),
+            ],
+            if (state.data?.payment.finalAmount != null)
+              Text(
+                "Final Payment: ${state.data?.payment.finalAmount} IDR or ${state.convertToCurrency(state.data?.payment.finalAmount)}",
+              ),
+            if (state.data?.payment.lateFine != null)
+              Text(
+                "Late Fine Payment: ${state.data?.payment.lateFine} IDR or ${state.convertToCurrency(state.data?.payment.lateFine)}",
+              ),
+            if (state.data?.payment.damageFine != null)
+              Text(
+                "Damage Fine Payment: ${state.data?.payment.damageFine} IDR or ${state.convertToCurrency(state.data?.payment.damageFine)}",
+              ),
+            if (state.data?.payment.finalAmount != null)
+              Text(
+                "Total Payment: ${state.totalPayment} IDR or ${state.convertToCurrency(state.totalPayment)}",
+              ),
+            if (state.data?.state == .readyForPickup)
+              OutlinedButton(
+                onPressed: () => context.read<MyOrderDetailCubit>().onReceive(),
+                child: Text("Receive"),
+              ),
+            if (state.data?.state == .onRent)
+              OutlinedButton(
+                onPressed: () =>
+                    context.read<MyOrderDetailCubit>().onRequestReturn(),
+                child: Text("Return"),
+              ),
+            if (state.data?.state == .completed && state.data?.review == null)
+              OutlinedButton(
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(ReviewFormPage.routeAdd(rentId: state.id)),
+                child: Text("Add Review"),
+              ),
+            if (state.data?.review != null) ...[
+              Text("Review"),
+              Text("${state.data!.review!.rating} stars"),
+              Text(state.data!.review!.content),
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () => {},
+                    child: Text("Edit Review"),
                   ),
-                  child: Text("Delete Review"),
-                ),
-              ],
-            ),
+                  OutlinedButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) =>
+                          RemoveReviewDialog(id: state.data!.review!.id),
+                    ),
+                    child: Text("Delete Review"),
+                  ),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

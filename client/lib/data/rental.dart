@@ -10,9 +10,14 @@ abstract interface class RentalRepository {
 
   Future<Result<void>> reject({required int id, required String note});
 
-  Future<Result<void>> handover(int id);
+  Future<Result<void>> handover({required int id, required int payment});
 
-  Future<Result<void>> confirmReturn(int id);
+  Future<Result<void>> confirmReturn({
+    required int id,
+    required int finalPayment,
+    required int lateFinePayment,
+    required int damageFinePayment,
+  });
 }
 
 class RentalDataSource implements RentalRepository {
@@ -62,9 +67,12 @@ class RentalDataSource implements RentalRepository {
   }
 
   @override
-  Future<Result<void>> handover(int id) async {
+  Future<Result<void>> handover({required int id, required int payment}) async {
     try {
-      await _rentalService.handover(id);
+      await _rentalService.handover(
+        id,
+        RentalHandoverRequest(payment: payment),
+      );
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
@@ -72,9 +80,21 @@ class RentalDataSource implements RentalRepository {
   }
 
   @override
-  Future<Result<void>> confirmReturn(int id) async {
+  Future<Result<void>> confirmReturn({
+    required int id,
+    required int finalPayment,
+    required int lateFinePayment,
+    required int damageFinePayment,
+  }) async {
     try {
-      await _rentalService.confirmReturn(id);
+      await _rentalService.confirmReturn(
+        id,
+        RentalConfirmRequest(
+          finalPayment: finalPayment,
+          lateFinePayment: lateFinePayment,
+          damageFinePayment: damageFinePayment,
+        ),
+      );
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);

@@ -19,15 +19,30 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SearchCubit(repository: context.read()),
+      create: (context) => SearchCubit(
+        repository: context.read(),
+        exchangeRatesRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: Column(
         children: [
           BlocListener<SearchCubit, SearchState>(
             listener: (context, state) {
               if (state.error != null) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.error!.message)));
+                final source = state.error!.source;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error!.message),
+                    action: source == .data
+                        ? null
+                        : SnackBarAction(
+                            label: "Refresh",
+                            onPressed: () => context
+                                .read<SearchCubit>()
+                                .onRefreshExchangeRate(),
+                          ),
+                  ),
+                );
                 context.read<SearchCubit>().onErrorHandled(state.error!);
               }
             },
@@ -50,10 +65,13 @@ class SearchPage extends StatelessWidget {
 class _SearchInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(label: Text("Keyword")),
-      onChanged: (keyword) =>
-          context.read<SearchCubit>().onKeywordChanged(keyword),
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) => TextField(
+        decoration: InputDecoration(label: Text("Keyword")),
+        enabled: state.canEdit,
+        onChanged: (keyword) =>
+            context.read<SearchCubit>().onKeywordChanged(keyword),
+      ),
     );
   }
 }
@@ -64,8 +82,11 @@ class _SearchResult extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) => !state.isMapView
           ? ListView.builder(
-              itemBuilder: (context, index) =>
-                  ProductCard(item: state.result.elementAt(index)),
+              itemBuilder: (context, index) => ProductCard(
+                item: state.result.elementAt(index),
+                currency: state.selectedCurrency,
+                convertToCurrency: state.convertToCurrency,
+              ),
               itemCount: state.result.length,
             )
           : _SearchResultMap(
@@ -75,8 +96,11 @@ class _SearchResult extends StatelessWidget {
                 context: context,
                 // TODO: Make it draggable
                 builder: (context) => ListView.builder(
-                  itemBuilder: (context, index) =>
-                      ProductCard(item: state.result.elementAt(index)),
+                  itemBuilder: (context, index) => ProductCard(
+                    item: state.result.elementAt(index),
+                    currency: state.selectedCurrency,
+                    convertToCurrency: state.convertToCurrency,
+                  ),
                   itemCount: state.result.length,
                 ),
               ),

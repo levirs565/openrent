@@ -1,21 +1,28 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/data/exchange_rates.dart';
 import 'package:openrent_client/data/product.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/rent.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/ui/rent_form/state.dart';
 
 class RentFormCubit extends Cubit<RentFormState> {
   final ProductRepository _productRepository;
   final RentRepository _rentRepository;
+  final ExchangeRatesRepository _exchangeRatesRepository;
 
   RentFormCubit({
     required int id,
     required ProductRepository productRepository,
     required RentRepository rentRepository,
-  }) : _productRepository = productRepository,
+    required ExchangeRatesRepository exchangeRatesRepository,
+    required SettingsRepository settingsRepository,
+  }) : _exchangeRatesRepository = exchangeRatesRepository,
+       _productRepository = productRepository,
        _rentRepository = rentRepository,
        super(
          RentFormState(
@@ -27,9 +34,12 @@ class RentFormCubit extends Cubit<RentFormState> {
            dataStatus: .initial,
            actionStatus: .idle,
            error: null,
+           exchangeRate: null,
+           selectedCurrency: settingsRepository.getCurrency(),
+           exchangeRateStatus: .initial,
          ),
        ) {
-    onRefresh();
+    onRefreshExchangeRate();
   }
 
   void setStartDate(DateTime date) {
@@ -42,6 +52,30 @@ class RentFormCubit extends Cubit<RentFormState> {
 
   void setQuantity(int? quantity) {
     emit(state.copyWith(quantity: quantity));
+  }
+
+  void onRefreshExchangeRate() async {
+    if (state.exchangeRateStatus == .loading) return;
+
+    final result = await _exchangeRatesRepository.get();
+
+    switch (result) {
+      case ResultSuccess<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .success,
+            exchangeRate: result.data,
+          ),
+        );
+        onRefresh();
+      case ResultError<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .fail,
+            error: .new(source: .exchangeRate, message: result.message),
+          ),
+        );
+    }
   }
 
   void onRefresh() async {

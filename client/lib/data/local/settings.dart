@@ -12,3 +12,4 @@ Box getSettingsBox() {
 
 
 const needBiometricKey = "needBiometric";
+const currencyKey = "currency";

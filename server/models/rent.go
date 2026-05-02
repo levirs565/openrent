@@ -77,6 +77,11 @@ type Rent struct {
 	EndDate            datatypes.Date
 	Quantity           int
 	ApprovedAt         *time.Time
+	ReturnedAt         *time.Time
 	CancelReason       *RentCancelReason
 	CancelReasonNote   *string
+	InitialPayment     *int
+	FinalPayment       *int
+	LateFinePayment    *int
+	DamageFinePayment  *int
 }
