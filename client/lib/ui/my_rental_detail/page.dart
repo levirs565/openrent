@@ -21,8 +21,12 @@ class MyRentalDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MyRentalDetailCubit(id: id, rentalRepository: context.read()),
+      create: (context) => MyRentalDetailCubit(
+        id: id,
+        rentalRepository: context.read(),
+        exchangeRatesRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: ScaffoldMessenger(
         child: Scaffold(
           appBar: AppBar(title: Text("Rental")),
@@ -41,14 +45,21 @@ class _Content extends StatelessWidget {
     return BlocConsumer<MyRentalDetailCubit, MyRentalDetailState>(
       listener: (context, state) {
         if (state.error != null) {
+          final source = state.error!.source;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: state.error!.source == .data
+              action: source == .data || source == .exchangeRate
                   ? SnackBarAction(
                       label: "Refresh",
-                      onPressed: () =>
-                          context.read<MyRentalDetailCubit>().onRefresh(),
+                      onPressed: () {
+                        final cubit = context.read<MyRentalDetailCubit>();
+                        if (source == .data) {
+                          cubit.onRefresh();
+                        } else {
+                          cubit.onRefreshExchangeRate();
+                        }
+                      },
                     )
                   : null,
             ),
@@ -64,8 +75,12 @@ class _Content extends StatelessWidget {
             if (state.data?.product.imageUrl != null)
               Image.network(state.data!.product.imageUrl!, height: 96),
             Text(state.data?.product.name ?? "-"),
-            Text("Price Per Day: ${state.data?.product.pricePerDay}"),
-            Text("Later Per Day: ${state.data?.product.lateFeePerDay}"),
+            Text(
+              "Price Per Day: ${state.data?.product.pricePerDay} IDR or ${state.convertToCurrency(state.data?.product.pricePerDay)}",
+            ),
+            Text(
+              "Later Per Day: ${state.data?.product.lateFeePerDay} IDR or ${state.convertToCurrency(state.data?.product.lateFeePerDay)}",
+            ),
             Text("Address: TODO"),
             OutlinedButton(
               onPressed: state.data == null
@@ -80,9 +95,9 @@ class _Content extends StatelessWidget {
             OutlinedButton(
               onPressed: state.data?.user == null
                   ? null
-                  : () => Navigator.of(
-                      context,
-                    ).push(MessagesPage.route(otherUserId: state.data!.user.id)),
+                  : () => Navigator.of(context).push(
+                      MessagesPage.route(otherUserId: state.data!.user.id),
+                    ),
               child: Text("Chat"),
             ),
 
@@ -99,24 +114,44 @@ class _Content extends StatelessWidget {
               Text("Cancel Reason: ${state.data?.cancellation?.reason ?? "-"}"),
               Text("Cancel Note: ${state.data?.cancellation?.note}"),
             ],
-            Text("Estimated Price: ${state.estimatedPrice} IDR"),
-            Text("Estimated Late Fine: ${state.estimatedLateFine} IDR"),
-            if (state.data?.payment.initial != null && state.data?.payment.finalAmount == null) ...[
-              Text("Estimated Total Payment: ${state.estimatedTotalPrice} IDR"),
+            Text(
+              "Estimated Price: ${state.estimatedPrice} IDR or ${state.convertToCurrency(state.estimatedPrice)}",
+            ),
+            Text(
+              "Estimated Late Fine: ${state.estimatedLateFine} IDR or ${state.convertToCurrency(state.estimatedLateFine)}",
+            ),
+            if (state.data?.payment.initial != null &&
+                state.data?.payment.finalAmount == null) ...[
+              Text(
+                "Estimated Total Payment: ${state.estimatedTotalPrice} IDR or ${state.convertToCurrency(state.estimatedTotalPrice)}",
+              ),
             ],
             if (state.data?.payment.initial != null)
-              Text("Initial Payment: ${state.data?.payment.initial} IDR"),
-            if (state.data?.payment.initial != null && state.data?.payment.finalAmount == null) ...[
-              Text("Estimated Pending Payment: ${state.estimatedPendingPrice} IDR")
+              Text(
+                "Initial Payment: ${state.data?.payment.initial} IDR or ${state.convertToCurrency(state.data?.payment.initial)}",
+              ),
+            if (state.data?.payment.initial != null &&
+                state.data?.payment.finalAmount == null) ...[
+              Text(
+                "Estimated Pending Payment: ${state.estimatedPendingPrice} IDR or ${state.convertToCurrency(state.estimatedPendingPrice)}",
+              ),
             ],
             if (state.data?.payment.finalAmount != null)
-              Text("Final Payment: ${state.data?.payment.finalAmount} IDR"),
+              Text(
+                "Final Payment: ${state.data?.payment.finalAmount} IDR or ${state.convertToCurrency(state.data?.payment.finalAmount)}",
+              ),
             if (state.data?.payment.lateFine != null)
-              Text("Late Fine Payment: ${state.data?.payment.lateFine} IDR"),
+              Text(
+                "Late Fine Payment: ${state.data?.payment.lateFine} IDR or ${state.convertToCurrency(state.data?.payment.lateFine)}",
+              ),
             if (state.data?.payment.damageFine != null)
-              Text("Damage Fine Payment: ${state.data?.payment.damageFine} IDR"),
+              Text(
+                "Damage Fine Payment: ${state.data?.payment.damageFine} IDR or ${state.convertToCurrency(state.data?.payment.damageFine)}",
+              ),
             if (state.data?.payment.finalAmount != null)
-              Text("Total Payment: ${state.totalPayment} IDR"),
+              Text(
+                "Total Payment: ${state.totalPayment} IDR or ${state.convertToCurrency(state.totalPayment)}",
+              ),
             if (state.data?.review != null) ...[
               Text("Review"),
               Text("${state.data?.review?.rating} start"),

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyRentalDetailState {
 
- int get id; RentalResponseItemDetails? get data; DataStatus get dataStatus; bool get isActionLoading; MyRentalDetailError? get error;
+ int get id; ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; RentalResponseItemDetails? get data; DataStatus get dataStatus; bool get isActionLoading; MyRentalDetailError? get error;
 /// Create a copy of MyRentalDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyRentalDetailStateCopyWith<MyRentalDetailState> get copyWith => _$MyRentalDeta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyRentalDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyRentalDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,data,dataStatus,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error);
 
 @override
 String toString() {
-  return 'MyRentalDetailState(id: $id, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
+  return 'MyRentalDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $MyRentalDetailStateCopyWith<$Res>  {
   factory $MyRentalDetailStateCopyWith(MyRentalDetailState value, $Res Function(MyRentalDetailState) _then) = _$MyRentalDetailStateCopyWithImpl;
 @useResult
 $Res call({
- int id, RentalResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyRentalDetailError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, RentalResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyRentalDetailError? error
 });
 
 
-$RentalResponseItemDetailsCopyWith<$Res>? get data;$ErrorDataCopyWith<MyRentalDetailErrorSource, $Res>? get error;
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate;$RentalResponseItemDetailsCopyWith<$Res>? get data;$ErrorDataCopyWith<MyRentalDetailErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -62,10 +62,13 @@ class _$MyRentalDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyRentalDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
+as String,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as RentalResponseItemDetails?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -73,6 +76,18 @@ as MyRentalDetailError?,
   ));
 }
 /// Create a copy of MyRentalDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
+  });
+}/// Create a copy of MyRentalDetailState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -178,10 +193,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyRentalDetailState() when $default != null:
-return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
   return orElse();
 
 }
@@ -199,10 +214,10 @@ return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)  $default,) {final _that = this;
 switch (_that) {
 case _MyRentalDetailState():
-return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +234,10 @@ return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  RentalResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyRentalDetailError? error)?  $default,) {final _that = this;
 switch (_that) {
 case _MyRentalDetailState() when $default != null:
-return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
   return null;
 
 }
@@ -234,10 +249,13 @@ return $default(_that.id,_that.data,_that.dataStatus,_that.isActionLoading,_that
 
 
 class _MyRentalDetailState extends MyRentalDetailState {
-  const _MyRentalDetailState({required this.id, required this.data, required this.dataStatus, required this.isActionLoading, required this.error}): super._();
+  const _MyRentalDetailState({required this.id, required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required this.data, required this.dataStatus, required this.isActionLoading, required this.error}): super._();
   
 
 @override final  int id;
+@override final  ExchangeRateResponse? exchangeRate;
+@override final  String selectedCurrency;
+@override final  DataStatus exchangeRateStatus;
 @override final  RentalResponseItemDetails? data;
 @override final  DataStatus dataStatus;
 @override final  bool isActionLoading;
@@ -253,16 +271,16 @@ _$MyRentalDetailStateCopyWith<_MyRentalDetailState> get copyWith => __$MyRentalD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyRentalDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyRentalDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,data,dataStatus,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error);
 
 @override
 String toString() {
-  return 'MyRentalDetailState(id: $id, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
+  return 'MyRentalDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
 }
 
 
@@ -273,11 +291,11 @@ abstract mixin class _$MyRentalDetailStateCopyWith<$Res> implements $MyRentalDet
   factory _$MyRentalDetailStateCopyWith(_MyRentalDetailState value, $Res Function(_MyRentalDetailState) _then) = __$MyRentalDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- int id, RentalResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyRentalDetailError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, RentalResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyRentalDetailError? error
 });
 
 
-@override $RentalResponseItemDetailsCopyWith<$Res>? get data;@override $ErrorDataCopyWith<MyRentalDetailErrorSource, $Res>? get error;
+@override $ExchangeRateResponseCopyWith<$Res>? get exchangeRate;@override $RentalResponseItemDetailsCopyWith<$Res>? get data;@override $ErrorDataCopyWith<MyRentalDetailErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -290,10 +308,13 @@ class __$MyRentalDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyRentalDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
   return _then(_MyRentalDetailState(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
+as String,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as RentalResponseItemDetails?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -302,6 +323,18 @@ as MyRentalDetailError?,
 }
 
 /// Create a copy of MyRentalDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
+  });
+}/// Create a copy of MyRentalDetailState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

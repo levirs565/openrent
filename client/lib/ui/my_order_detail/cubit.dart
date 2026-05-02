@@ -2,20 +2,27 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/data/exchange_rates.dart';
 import 'package:openrent_client/data/order.dart';
+import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/order.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 
 import 'state.dart';
 
 class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
   final OrderRepository _orderRepository;
+  final ExchangeRatesRepository _exchangeRatesRepository;
   StreamSubscription? _fcmSubscription;
 
   MyOrderDetailCubit({
     required int id,
     required OrderRepository orderRepository,
-  }) : _orderRepository = orderRepository,
+    required ExchangeRatesRepository exchangeRatesRepository,
+    required SettingsRepository settingsRepository
+  }) : _exchangeRatesRepository = exchangeRatesRepository,
+       _orderRepository = orderRepository,
        super(
          MyOrderDetailState(
            id: id,
@@ -23,15 +30,42 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
            dataStatus: .initial,
            isActionLoading: false,
            error: null,
+           exchangeRate: null,
+           selectedCurrency: settingsRepository.getCurrency(),
+           exchangeRateStatus: .initial,
          ),
        ) {
-    onRefresh();
+    onRefreshExchangeRate();
     _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
       if (event.data["type"].toString().startsWith("rent_") &&
           int.tryParse(event.data["rent_id"]) == id) {
         onRefresh();
       }
     });
+  }
+
+  void onRefreshExchangeRate() async {
+    if (state.exchangeRateStatus == .loading) return;
+
+    final result = await _exchangeRatesRepository.get();
+
+    switch (result) {
+      case ResultSuccess<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .success,
+            exchangeRate: result.data,
+          ),
+        );
+        onRefresh();
+      case ResultError<ExchangeRateResponse>():
+        emit(
+          state.copyWith(
+            exchangeRateStatus: .fail,
+            error: .new(source: .exchangeRate, message: result.message),
+          ),
+        );
+    }
   }
 
   @override
