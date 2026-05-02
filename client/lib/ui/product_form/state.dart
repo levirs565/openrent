@@ -5,39 +5,29 @@ import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
-enum ProductFormErrorSource { dataProduct, dataAddress, submit }
+enum ProductFormErrorSource { dataProduct, dataAddress, nearbyAddress, submit }
 
 typedef ProductFormError = ErrorData<ProductFormErrorSource>;
 
 @freezed
-class ProductFormState with _$ProductFormState {
-  final int? id;
-  final List<AddressResponseItem> addressList;
-  final String name;
-  final int? addressId;
-  final int? pricePerDay;
-  final int? lateFeePerDay;
-  final int? stock;
-  final String description;
-  final DataStatus dataStatus;
-  final DataStatus addressStatus;
-  final ActionStatus submissionStatus;
-  final ProductFormError? error;
+abstract class ProductFormState with _$ProductFormState {
+  const ProductFormState._();
 
-  ProductFormState({
-    required this.id,
-    required this.addressList,
-    required this.name,
-    required this.addressId,
-    required this.pricePerDay,
-    required this.lateFeePerDay,
-    required this.stock,
-    required this.description,
-    required this.dataStatus,
-    required this.addressStatus,
-    required this.submissionStatus,
-    this.error,
-  });
+  const factory ProductFormState({
+    required int? id,
+    required List<AddressResponseItem> addressList,
+    required String name,
+    required int? addressId,
+    required int? pricePerDay,
+    required int? lateFeePerDay,
+    required int? stock,
+    required String description,
+    required DataStatus dataStatus,
+    required DataStatus addressStatus,
+    required bool isNearbyAddressLoading,
+    required ActionStatus submissionStatus,
+    ProductFormError? error,
+  }) = _ProductFormState;
 
   bool get isLoading =>
       dataStatus == .loading ||
@@ -57,6 +47,5 @@ class ProductFormState with _$ProductFormState {
       addressStatus == .success &&
       submissionStatus == .idle;
 
-  bool get canSubmit =>
-      isValid && canEdit;
+  bool get canSubmit => isValid && canEdit && !isNearbyAddressLoading;
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/resource.dart';
@@ -20,10 +21,41 @@ class MapPickerCubit extends Cubit<MapPickerState> {
            selectedPosition: null,
            reverseGeocodingResult: null,
            isLoading: false,
+           isUseCurrentPositionLoading: false,
+           initialPosition: null,
          ),
        ) {
     if (position != null) {
       onSelectPosition(position);
+    }
+
+    locationRepository.getCurrentLocation().then((result) {
+      if (isClosed) return;
+
+      if (result is ResultSuccess<LatLng>) {
+        emit(state.copyWith(initialPosition: result.data));
+      }
+    });
+  }
+
+  void onSelectCurrentPosition() async {
+    if (state.isUseCurrentPositionLoading) return;
+
+    emit(state.copyWith(isUseCurrentPositionLoading: true));
+
+    final result = await _locationRepository.getCurrentLocation();
+
+    switch (result) {
+      case ResultSuccess<LatLng>():
+        emit(state.copyWith(isUseCurrentPositionLoading: false));
+        onSelectPosition(result.data);
+      case ResultError<LatLng>():
+        emit(
+          state.copyWith(
+            isUseCurrentPositionLoading: false,
+            error: .general(message: result.message),
+          ),
+        );
     }
   }
 
