@@ -77,6 +77,14 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"rents.renter_snapshot_name", "rents.product_snapshot_name",
 			"rents.cancel_reason", "rents.cancel_reason_note",
 			"rents.product_snapshot_image_name",
+			"rents.product_snapshot_details",
+			"rents.product_snapshot_price_per_day",
+			"rents.product_snapshot_late_fee_per_day",
+			"rents.initial_payment",
+			"rents.final_payment",
+			"rents.late_fine_payment",
+			"rents.damage_fine_payment",
+			"rents.returned_at",
 		).
 		Joins(
 			clause.JoinTarget{Association: "Product"},
@@ -283,7 +291,7 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 	return nil
 }
 
-func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
+func (s *Service) handover(ctx context.Context, userId uint, request HandoverRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -293,7 +301,7 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 				return nil
 			},
 		).
-		Where("rents.id = ?", id).
+		Where("rents.id = ?", request.ID).
 		Where(`"Product".user_account_id = ?`, userId).
 		First(ctx)
 	if err != nil {
@@ -308,12 +316,13 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 
 	model := models.Rent{}
 	model.State = models.RentStateOnRent
+	model.InitialPayment = request.Payment
 
 	// TODO: Wait payment
 	rowsAffected, err := gorm.G[models.Rent](s.db).
-		Where("rents.id = ?", id).
+		Where("rents.id = ?", request.ID).
 		Where("rents.state = ?", models.RentStateAwaitingHandover).
-		Select("State").
+		Select("State", "InitialPayment").
 		Updates(ctx, model)
 	if rowsAffected == 0 {
 		return ErrNotFound
@@ -325,7 +334,7 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
 		Data: map[string]string{
 			"type":    "rent_handover",
-			"rent_id": strconv.FormatUint(uint64(id), 10),
+			"rent_id": strconv.FormatUint(uint64(request.ID), 10),
 		},
 		Notification: &messaging.Notification{
 			Title: "Hand over is success",
@@ -339,7 +348,7 @@ func (s *Service) handover(ctx context.Context, userId uint, id uint) error {
 	return nil
 }
 
-func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error {
+func (s *Service) confirmReturn(ctx context.Context, userId uint, request ConfirmReturnRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -349,7 +358,7 @@ func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error
 				return nil
 			},
 		).
-		Where("rents.id = ?", id).
+		Where("rents.id = ?", request.ID).
 		Where(`"Product".user_account_id = ?`, userId).
 		First(ctx)
 	if err != nil {
@@ -362,15 +371,19 @@ func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error
 		return ErrReturnNotRequested
 	}
 
-	// TODO: Payment
+	nowTime := time.Now()
+
 	model := models.Rent{}
 	model.State = models.RentStateCompleted
+	model.ReturnedAt = &nowTime
+	model.FinalPayment = request.FinalPayment
+	model.LateFinePayment = request.LateFinePayment
+	model.DamageFinePayment = request.DamageFinePayment
 
-	// TODO: Wait payment
 	rowsAffected, err := gorm.G[models.Rent](s.db).
-		Where("rents.id = ?", id).
+		Where("rents.id = ?", request.ID).
 		Where("rents.state = ?", models.RentStateAwaitingReturnConfirmation).
-		Select("State").
+		Select("State", "ReturnedAt", "FinalPayment", "LateFinePayment", "DamageFinePayment").
 		Updates(ctx, model)
 	if rowsAffected == 0 {
 		return ErrNotFound
@@ -382,7 +395,7 @@ func (s *Service) confirmReturn(ctx context.Context, userId uint, id uint) error
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
 		Data: map[string]string{
 			"type":    "rent_confirm_return",
-			"rent_id": strconv.FormatUint(uint64(id), 10),
+			"rent_id": strconv.FormatUint(uint64(request.ID), 10),
 		},
 		Notification: &messaging.Notification{
 			Title: "Return is confirmed",

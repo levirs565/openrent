@@ -88,7 +88,7 @@ func (ct *Controller) handover(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.handover(c.Request().Context(), userId, payload.ID)
+	err := ct.service.handover(c.Request().Context(), userId, payload)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (ct *Controller) confirmReturn(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.confirmReturn(c.Request().Context(), userId, payload.ID)
+	err := ct.service.confirmReturn(c.Request().Context(), userId, payload)
 	if err != nil {
 		return err
 	}

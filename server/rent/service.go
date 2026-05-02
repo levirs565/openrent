@@ -83,6 +83,14 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 			"rents.owner_snapshot_name", "rents.product_snapshot_name",
 			"rents.cancel_reason", "rents.cancel_reason_note",
 			"rents.product_snapshot_image_name",
+			"rents.product_snapshot_details",
+			"rents.product_snapshot_price_per_day",
+			"rents.product_snapshot_late_fee_per_day",
+			"rents.initial_payment",
+			"rents.final_payment",
+			"rents.late_fine_payment",
+			"rents.damage_fine_payment",
+			"rents.returned_at",
 		).
 		Joins(
 			clause.JoinTarget{Type: clause.LeftJoin, Association: "Review"},
