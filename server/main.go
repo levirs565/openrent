@@ -24,6 +24,7 @@ import (
 	"openrent-server/chat"
 	"openrent-server/core"
 	"openrent-server/embedding"
+	"openrent-server/exchange_rate"
 	"openrent-server/message"
 	"openrent-server/models"
 	"openrent-server/my_product"
@@ -177,6 +178,7 @@ func main() {
 	chatService := chat.NewService(db, notificationService, s3Client, s3Bucket)
 	messageService := message.NewService(db)
 	userService := user.NewService(db, s3Client, s3Bucket)
+	exchangeRateService := exchange_rate.NewService(os.Getenv("EXCHANGE_RATE_API_KEY"))
 
 	authController := auth.NewController(authService)
 	auth.RegisterRoutes(e, authController)
@@ -207,6 +209,9 @@ func main() {
 
 	userController := user.NewController(userService)
 	userController.RegisterRoutes(e.Group("/users"))
+
+	exchangeRateController := exchange_rate.NewController(exchangeRateService)
+	exchangeRateController.RegisterRoutes(e.Group("/exchange-rates"))
 
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
