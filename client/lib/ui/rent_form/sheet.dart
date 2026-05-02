@@ -23,6 +23,8 @@ class RentFormSheet extends StatelessWidget {
               id: id,
               productRepository: context.read(),
               rentRepository: context.read(),
+              exchangeRatesRepository: context.read(),
+              settingsRepository: context.read(),
             ),
             child: _RentFormSheetContent(),
           ),
@@ -57,6 +59,8 @@ class _RentFormSheetContent extends StatelessWidget {
                         final cubit = context.read<RentFormCubit>();
                         if (source == .data) {
                           cubit.onRefresh();
+                        } else {
+                          cubit.onRefreshExchangeRate();
                         }
                       },
                     ),
@@ -87,7 +91,7 @@ class _RentFormSheetContent extends StatelessWidget {
                 }
               },
             ),
-            Text("Price ${state.price}"),
+            Text("Price ${state.priceIdr} IDR or ${state.price}"),
             OutlinedButton(
               onPressed: !state.canSubmit
                   ? null

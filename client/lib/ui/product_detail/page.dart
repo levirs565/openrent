@@ -27,8 +27,12 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ProductDetailCubit(id: id, productRepository: context.read()),
+      create: (context) => ProductDetailCubit(
+        id: id,
+        productRepository: context.read(),
+        exchangeRatesRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: ScaffoldMessenger(child: _ProductDetailPageContent()),
     );
   }
@@ -44,12 +48,20 @@ class _ProductDetailPageContent extends StatelessWidget {
     return BlocConsumer<ProductDetailCubit, ProductDetailState>(
       listener: (context, state) {
         if (state.error != null) {
+          final source = state.error!.source;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
               action: SnackBarAction(
                 label: "Refresh",
-                onPressed: () => context.read<ProductDetailCubit>().onRefresh(),
+                onPressed: () {
+                  final cubit = context.read<ProductDetailCubit>();
+                  if (source == .data) {
+                    cubit.onRefresh();
+                  } else {
+                    cubit.onRefreshExchangeRate();
+                  }
+                },
               ),
             ),
           );
@@ -62,9 +74,14 @@ class _ProductDetailPageContent extends StatelessWidget {
           child: Column(
             children: [
               if (state.isLoading) LinearProgressIndicator(),
-              if (state.data?.imageUrl != null) Image.network(state.data!.imageUrl!),
-              Text("Price: ${state.data?.pricePerDay ?? "-"} per day"),
-              Text("Late: ${state.data?.lateFeePerDay ?? "-"} per day"),
+              if (state.data?.imageUrl != null)
+                Image.network(state.data!.imageUrl!),
+              Text(
+                "Price: ${state.data?.pricePerDay ?? "-"} IDR per day or ${state.convertToCurrency(state.data?.pricePerDay)} per day",
+              ),
+              Text(
+                "Late: ${state.data?.lateFeePerDay ?? "-"} per day or ${state.convertToCurrency(state.data?.lateFeePerDay)} per day",
+              ),
               Text(
                 "Address: ${state.data != null ? formatAddress(state.data!.address) : "-"}",
               ),
@@ -74,7 +91,13 @@ class _ProductDetailPageContent extends StatelessWidget {
               Text(state.data?.description ?? "-"),
               Text("Reccomendation"),
               ...(state.data?.recommendations
-                      .map((item) => ProductCard(item: item))
+                      .map(
+                        (item) => ProductCard(
+                          item: item,
+                          currency: state.selectedCurrency,
+                          convertToCurrency: state.convertToCurrency,
+                        ),
+                      )
                       .toList() ??
                   List.empty()),
               Text("Reviews"),

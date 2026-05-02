@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- List<ProductResponseItemShort> get result; bool get isLoading; GeneralErrorData? get error; bool get isMapView;
+ ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; List<ProductResponseItemShort> get result; bool get isSearchLoading; SearchError? get error; bool get isMapView;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SearchStateCopyWith<SearchState> get copyWith => _$SearchStateCopyWithImpl<Sear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&const DeepCollectionEquality().equals(other.result, result)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other.result, result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(result),isLoading,error,isMapView);
+int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(result),isSearchLoading,error,isMapView);
 
 @override
 String toString() {
-  return 'SearchState(result: $result, isLoading: $isLoading, error: $error, isMapView: $isMapView)';
+  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, isMapView: $isMapView)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- List<ProductResponseItemShort> result, bool isLoading, GeneralErrorData? error, bool isMapView
+ ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, bool isMapView
 });
 
 
-$ErrorDataCopyWith<void, $Res>? get error;
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate;$ErrorDataCopyWith<SearchErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -62,12 +62,15 @@ class _$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? result = null,Object? isLoading = null,Object? error = freezed,Object? isMapView = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? isMapView = null,}) {
   return _then(_self.copyWith(
-result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as List<ProductResponseItemShort>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
+as String,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
+as List<ProductResponseItemShort>,isSearchLoading: null == isSearchLoading ? _self.isSearchLoading : isSearchLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as GeneralErrorData?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
+as SearchError?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -75,12 +78,24 @@ as bool,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ErrorDataCopyWith<void, $Res>? get error {
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
+  });
+}/// Create a copy of SearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<SearchErrorSource, $Res>? get error {
     if (_self.error == null) {
     return null;
   }
 
-  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+  return $ErrorDataCopyWith<SearchErrorSource, $Res>(_self.error!, (value) {
     return _then(_self.copyWith(error: value));
   });
 }
@@ -165,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProductResponseItemShort> result,  bool isLoading,  GeneralErrorData? error,  bool isMapView)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  bool isMapView)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.isMapView);case _:
   return orElse();
 
 }
@@ -186,10 +201,10 @@ return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProductResponseItemShort> result,  bool isLoading,  GeneralErrorData? error,  bool isMapView)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  bool isMapView)  $default,) {final _that = this;
 switch (_that) {
 case _SearchState():
-return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.isMapView);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +221,10 @@ return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProductResponseItemShort> result,  bool isLoading,  GeneralErrorData? error,  bool isMapView)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  bool isMapView)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.isMapView);case _:
   return null;
 
 }
@@ -220,10 +235,13 @@ return $default(_that.result,_that.isLoading,_that.error,_that.isMapView);case _
 /// @nodoc
 
 
-class _SearchState implements SearchState {
-   _SearchState({required final  List<ProductResponseItemShort> result, required this.isLoading, required this.error, required this.isMapView}): _result = result;
+class _SearchState extends SearchState {
+   _SearchState({required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required final  List<ProductResponseItemShort> result, required this.isSearchLoading, required this.error, required this.isMapView}): _result = result,super._();
   
 
+@override final  ExchangeRateResponse? exchangeRate;
+@override final  String selectedCurrency;
+@override final  DataStatus exchangeRateStatus;
  final  List<ProductResponseItemShort> _result;
 @override List<ProductResponseItemShort> get result {
   if (_result is EqualUnmodifiableListView) return _result;
@@ -231,8 +249,8 @@ class _SearchState implements SearchState {
   return EqualUnmodifiableListView(_result);
 }
 
-@override final  bool isLoading;
-@override final  GeneralErrorData? error;
+@override final  bool isSearchLoading;
+@override final  SearchError? error;
 @override final  bool isMapView;
 
 /// Create a copy of SearchState
@@ -245,16 +263,16 @@ _$SearchStateCopyWith<_SearchState> get copyWith => __$SearchStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&const DeepCollectionEquality().equals(other._result, _result)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other._result, _result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_result),isLoading,error,isMapView);
+int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(_result),isSearchLoading,error,isMapView);
 
 @override
 String toString() {
-  return 'SearchState(result: $result, isLoading: $isLoading, error: $error, isMapView: $isMapView)';
+  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, isMapView: $isMapView)';
 }
 
 
@@ -265,11 +283,11 @@ abstract mixin class _$SearchStateCopyWith<$Res> implements $SearchStateCopyWith
   factory _$SearchStateCopyWith(_SearchState value, $Res Function(_SearchState) _then) = __$SearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ProductResponseItemShort> result, bool isLoading, GeneralErrorData? error, bool isMapView
+ ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, bool isMapView
 });
 
 
-@override $ErrorDataCopyWith<void, $Res>? get error;
+@override $ExchangeRateResponseCopyWith<$Res>? get exchangeRate;@override $ErrorDataCopyWith<SearchErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -282,12 +300,15 @@ class __$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? result = null,Object? isLoading = null,Object? error = freezed,Object? isMapView = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? isMapView = null,}) {
   return _then(_SearchState(
-result: null == result ? _self._result : result // ignore: cast_nullable_to_non_nullable
-as List<ProductResponseItemShort>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
+as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
+as String,exchangeRateStatus: null == exchangeRateStatus ? _self.exchangeRateStatus : exchangeRateStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,result: null == result ? _self._result : result // ignore: cast_nullable_to_non_nullable
+as List<ProductResponseItemShort>,isSearchLoading: null == isSearchLoading ? _self.isSearchLoading : isSearchLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as GeneralErrorData?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
+as SearchError?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -296,12 +317,24 @@ as bool,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ErrorDataCopyWith<void, $Res>? get error {
+$ExchangeRateResponseCopyWith<$Res>? get exchangeRate {
+    if (_self.exchangeRate == null) {
+    return null;
+  }
+
+  return $ExchangeRateResponseCopyWith<$Res>(_self.exchangeRate!, (value) {
+    return _then(_self.copyWith(exchangeRate: value));
+  });
+}/// Create a copy of SearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<SearchErrorSource, $Res>? get error {
     if (_self.error == null) {
     return null;
   }
 
-  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+  return $ErrorDataCopyWith<SearchErrorSource, $Res>(_self.error!, (value) {
     return _then(_self.copyWith(error: value));
   });
 }
