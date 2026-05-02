@@ -101,7 +101,9 @@ _OrderResponseItemDetails _$OrderResponseItemDetailsFromJson(
   Map<String, dynamic> json,
 ) => _OrderResponseItemDetails(
   id: (json['id'] as num).toInt(),
-  product: OrderProductShort.fromJson(json['product'] as Map<String, dynamic>),
+  product: RentalProductDetail.fromJson(
+    json['product'] as Map<String, dynamic>,
+  ),
   user: OrderUserDetails.fromJson(json['user'] as Map<String, dynamic>),
   review: json['review'] == null
       ? null
@@ -113,6 +115,11 @@ _OrderResponseItemDetails _$OrderResponseItemDetailsFromJson(
   cancellation: json['cancellation'] == null
       ? null
       : RentCancellation.fromJson(json['cancellation'] as Map<String, dynamic>),
+  payment: RentPayment.fromJson(json['payment'] as Map<String, dynamic>),
+  returnedAt: _$JsonConverterFromJson<String, DateTime>(
+    json['returned_at'],
+    const Iso8601Converter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$OrderResponseItemDetailsToJson(
@@ -127,7 +134,22 @@ Map<String, dynamic> _$OrderResponseItemDetailsToJson(
   'end_date': const Iso8601Converter().toJson(instance.endDate),
   'quantity': instance.quantity,
   'cancellation': instance.cancellation,
+  'payment': instance.payment,
+  'returned_at': _$JsonConverterToJson<String, DateTime>(
+    instance.returnedAt,
+    const Iso8601Converter().toJson,
+  ),
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);
 
 // dart format off
 

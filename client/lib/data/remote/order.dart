@@ -100,7 +100,7 @@ abstract class OrderReviewDetails with _$OrderReviewDetails {
 abstract class OrderResponseItemDetails with _$OrderResponseItemDetails {
   factory OrderResponseItemDetails({
     required int id,
-    required OrderProductShort product,
+    required RentalProductDetail product,
     required OrderUserDetails user,
     required OrderReviewDetails? review,
     required RentState state,
@@ -110,6 +110,10 @@ abstract class OrderResponseItemDetails with _$OrderResponseItemDetails {
     @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
     required int quantity,
     required RentCancellation? cancellation,
+    required RentPayment payment,
+    @JsonKey(name: "returned_at")
+    @Iso8601Converter()
+    required DateTime? returnedAt,
   }) = _OrderResponseItemDetails;
 
   factory OrderResponseItemDetails.fromJson(Map<String, Object?> json) =>

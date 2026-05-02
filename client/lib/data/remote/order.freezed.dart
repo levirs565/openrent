@@ -1692,7 +1692,7 @@ as String,
 /// @nodoc
 mixin _$OrderResponseItemDetails {
 
- int get id; OrderProductShort get product; OrderUserDetails get user; OrderReviewDetails? get review; RentState get state;@JsonKey(name: "start_date")@Iso8601Converter() DateTime get startDate;@JsonKey(name: "end_date")@Iso8601Converter() DateTime get endDate; int get quantity; RentCancellation? get cancellation;
+ int get id; RentalProductDetail get product; OrderUserDetails get user; OrderReviewDetails? get review; RentState get state;@JsonKey(name: "start_date")@Iso8601Converter() DateTime get startDate;@JsonKey(name: "end_date")@Iso8601Converter() DateTime get endDate; int get quantity; RentCancellation? get cancellation; RentPayment get payment;@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? get returnedAt;
 /// Create a copy of OrderResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1705,16 +1705,16 @@ $OrderResponseItemDetailsCopyWith<OrderResponseItemDetails> get copyWith => _$Or
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrderResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrderResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.returnedAt, returnedAt) || other.returnedAt == returnedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation);
+int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation,payment,returnedAt);
 
 @override
 String toString() {
-  return 'OrderResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation)';
+  return 'OrderResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation, payment: $payment, returnedAt: $returnedAt)';
 }
 
 
@@ -1725,11 +1725,11 @@ abstract mixin class $OrderResponseItemDetailsCopyWith<$Res>  {
   factory $OrderResponseItemDetailsCopyWith(OrderResponseItemDetails value, $Res Function(OrderResponseItemDetails) _then) = _$OrderResponseItemDetailsCopyWithImpl;
 @useResult
 $Res call({
- int id, OrderProductShort product, OrderUserDetails user, OrderReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation
+ int id, RentalProductDetail product, OrderUserDetails user, OrderReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation, RentPayment payment,@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? returnedAt
 });
 
 
-$OrderProductShortCopyWith<$Res> get product;$OrderUserDetailsCopyWith<$Res> get user;$OrderReviewDetailsCopyWith<$Res>? get review;$RentCancellationCopyWith<$Res>? get cancellation;
+$RentalProductDetailCopyWith<$Res> get product;$OrderUserDetailsCopyWith<$Res> get user;$OrderReviewDetailsCopyWith<$Res>? get review;$RentCancellationCopyWith<$Res>? get cancellation;$RentPaymentCopyWith<$Res> get payment;
 
 }
 /// @nodoc
@@ -1742,27 +1742,29 @@ class _$OrderResponseItemDetailsCopyWithImpl<$Res>
 
 /// Create a copy of OrderResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,Object? payment = null,Object? returnedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as OrderProductShort,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as RentalProductDetail,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as OrderUserDetails,review: freezed == review ? _self.review : review // ignore: cast_nullable_to_non_nullable
 as OrderReviewDetails?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
 as RentState,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,cancellation: freezed == cancellation ? _self.cancellation : cancellation // ignore: cast_nullable_to_non_nullable
-as RentCancellation?,
+as RentCancellation?,payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as RentPayment,returnedAt: freezed == returnedAt ? _self.returnedAt : returnedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 /// Create a copy of OrderResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$OrderProductShortCopyWith<$Res> get product {
+$RentalProductDetailCopyWith<$Res> get product {
   
-  return $OrderProductShortCopyWith<$Res>(_self.product, (value) {
+  return $RentalProductDetailCopyWith<$Res>(_self.product, (value) {
     return _then(_self.copyWith(product: value));
   });
 }/// Create a copy of OrderResponseItemDetails
@@ -1797,6 +1799,15 @@ $RentCancellationCopyWith<$Res>? get cancellation {
 
   return $RentCancellationCopyWith<$Res>(_self.cancellation!, (value) {
     return _then(_self.copyWith(cancellation: value));
+  });
+}/// Create a copy of OrderResponseItemDetails
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentPaymentCopyWith<$Res> get payment {
+  
+  return $RentPaymentCopyWith<$Res>(_self.payment, (value) {
+    return _then(_self.copyWith(payment: value));
   });
 }
 }
@@ -1880,10 +1891,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  OrderProductShort product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RentalProductDetail product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OrderResponseItemDetails() when $default != null:
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   return orElse();
 
 }
@@ -1901,10 +1912,10 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  OrderProductShort product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RentalProductDetail product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)  $default,) {final _that = this;
 switch (_that) {
 case _OrderResponseItemDetails():
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1921,10 +1932,10 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  OrderProductShort product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RentalProductDetail product,  OrderUserDetails user,  OrderReviewDetails? review,  RentState state, @JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity,  RentCancellation? cancellation,  RentPayment payment, @JsonKey(name: "returned_at")@Iso8601Converter()  DateTime? returnedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _OrderResponseItemDetails() when $default != null:
-return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation);case _:
+return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that.startDate,_that.endDate,_that.quantity,_that.cancellation,_that.payment,_that.returnedAt);case _:
   return null;
 
 }
@@ -1936,11 +1947,11 @@ return $default(_that.id,_that.product,_that.user,_that.review,_that.state,_that
 @JsonSerializable()
 
 class _OrderResponseItemDetails implements OrderResponseItemDetails {
-   _OrderResponseItemDetails({required this.id, required this.product, required this.user, required this.review, required this.state, @JsonKey(name: "start_date")@Iso8601Converter() required this.startDate, @JsonKey(name: "end_date")@Iso8601Converter() required this.endDate, required this.quantity, required this.cancellation});
+   _OrderResponseItemDetails({required this.id, required this.product, required this.user, required this.review, required this.state, @JsonKey(name: "start_date")@Iso8601Converter() required this.startDate, @JsonKey(name: "end_date")@Iso8601Converter() required this.endDate, required this.quantity, required this.cancellation, required this.payment, @JsonKey(name: "returned_at")@Iso8601Converter() required this.returnedAt});
   factory _OrderResponseItemDetails.fromJson(Map<String, dynamic> json) => _$OrderResponseItemDetailsFromJson(json);
 
 @override final  int id;
-@override final  OrderProductShort product;
+@override final  RentalProductDetail product;
 @override final  OrderUserDetails user;
 @override final  OrderReviewDetails? review;
 @override final  RentState state;
@@ -1948,6 +1959,8 @@ class _OrderResponseItemDetails implements OrderResponseItemDetails {
 @override@JsonKey(name: "end_date")@Iso8601Converter() final  DateTime endDate;
 @override final  int quantity;
 @override final  RentCancellation? cancellation;
+@override final  RentPayment payment;
+@override@JsonKey(name: "returned_at")@Iso8601Converter() final  DateTime? returnedAt;
 
 /// Create a copy of OrderResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -1962,16 +1975,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrderResponseItemDetails&&(identical(other.id, id) || other.id == id)&&(identical(other.product, product) || other.product == product)&&(identical(other.user, user) || other.user == user)&&(identical(other.review, review) || other.review == review)&&(identical(other.state, state) || other.state == state)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.cancellation, cancellation) || other.cancellation == cancellation)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.returnedAt, returnedAt) || other.returnedAt == returnedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation);
+int get hashCode => Object.hash(runtimeType,id,product,user,review,state,startDate,endDate,quantity,cancellation,payment,returnedAt);
 
 @override
 String toString() {
-  return 'OrderResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation)';
+  return 'OrderResponseItemDetails(id: $id, product: $product, user: $user, review: $review, state: $state, startDate: $startDate, endDate: $endDate, quantity: $quantity, cancellation: $cancellation, payment: $payment, returnedAt: $returnedAt)';
 }
 
 
@@ -1982,11 +1995,11 @@ abstract mixin class _$OrderResponseItemDetailsCopyWith<$Res> implements $OrderR
   factory _$OrderResponseItemDetailsCopyWith(_OrderResponseItemDetails value, $Res Function(_OrderResponseItemDetails) _then) = __$OrderResponseItemDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- int id, OrderProductShort product, OrderUserDetails user, OrderReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation
+ int id, RentalProductDetail product, OrderUserDetails user, OrderReviewDetails? review, RentState state,@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity, RentCancellation? cancellation, RentPayment payment,@JsonKey(name: "returned_at")@Iso8601Converter() DateTime? returnedAt
 });
 
 
-@override $OrderProductShortCopyWith<$Res> get product;@override $OrderUserDetailsCopyWith<$Res> get user;@override $OrderReviewDetailsCopyWith<$Res>? get review;@override $RentCancellationCopyWith<$Res>? get cancellation;
+@override $RentalProductDetailCopyWith<$Res> get product;@override $OrderUserDetailsCopyWith<$Res> get user;@override $OrderReviewDetailsCopyWith<$Res>? get review;@override $RentCancellationCopyWith<$Res>? get cancellation;@override $RentPaymentCopyWith<$Res> get payment;
 
 }
 /// @nodoc
@@ -1999,18 +2012,20 @@ class __$OrderResponseItemDetailsCopyWithImpl<$Res>
 
 /// Create a copy of OrderResponseItemDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? product = null,Object? user = null,Object? review = freezed,Object? state = null,Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? cancellation = freezed,Object? payment = null,Object? returnedAt = freezed,}) {
   return _then(_OrderResponseItemDetails(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as OrderProductShort,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as RentalProductDetail,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as OrderUserDetails,review: freezed == review ? _self.review : review // ignore: cast_nullable_to_non_nullable
 as OrderReviewDetails?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
 as RentState,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,cancellation: freezed == cancellation ? _self.cancellation : cancellation // ignore: cast_nullable_to_non_nullable
-as RentCancellation?,
+as RentCancellation?,payment: null == payment ? _self.payment : payment // ignore: cast_nullable_to_non_nullable
+as RentPayment,returnedAt: freezed == returnedAt ? _self.returnedAt : returnedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -2018,9 +2033,9 @@ as RentCancellation?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$OrderProductShortCopyWith<$Res> get product {
+$RentalProductDetailCopyWith<$Res> get product {
   
-  return $OrderProductShortCopyWith<$Res>(_self.product, (value) {
+  return $RentalProductDetailCopyWith<$Res>(_self.product, (value) {
     return _then(_self.copyWith(product: value));
   });
 }/// Create a copy of OrderResponseItemDetails
@@ -2055,6 +2070,15 @@ $RentCancellationCopyWith<$Res>? get cancellation {
 
   return $RentCancellationCopyWith<$Res>(_self.cancellation!, (value) {
     return _then(_self.copyWith(cancellation: value));
+  });
+}/// Create a copy of OrderResponseItemDetails
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RentPaymentCopyWith<$Res> get payment {
+  
+  return $RentPaymentCopyWith<$Res>(_self.payment, (value) {
+    return _then(_self.copyWith(payment: value));
   });
 }
 }
