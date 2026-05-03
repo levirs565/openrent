@@ -23,7 +23,7 @@ class ProductReviewsCubit extends Cubit<ProductReviewsState> {
     onRefresh();
   }
 
-  void onRefresh() async {
+  Future<void> onRefresh() async {
     if (state.isLoading) return;
 
     emit(state.copyWith(isLoading: true));

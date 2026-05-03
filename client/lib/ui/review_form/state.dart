@@ -19,15 +19,14 @@ abstract class ReviewFormState with _$ReviewFormState {
     required String content,
     required ReviewFormError? error,
     required DataStatus dataStatus,
-    required ActionStatus submissionStatus
+    required ActionStatus submissionStatus,
   }) = _ReviewFormState;
 
   bool get isValid => rating != null && content.isNotEmpty;
 
   bool get canEdit => dataStatus == .success && submissionStatus == .idle;
 
-  bool get isLoading =>
-      dataStatus == .loading || submissionStatus == .loading;
+  bool get isLoading => dataStatus == .loading || submissionStatus == .loading;
 
   bool get canSubmit =>
       isValid && submissionStatus == .idle && dataStatus == .success;

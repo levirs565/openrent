@@ -44,14 +44,14 @@ class ReviewFormCubit extends Cubit<ReviewFormState> {
 
     switch (result) {
       case ResultSuccess<void>():
-        emit(state.copyWith(
-          submissionStatus: .finished
-        ));
+        emit(state.copyWith(submissionStatus: .finished));
       case ResultError<void>():
-        emit(state.copyWith(
-          submissionStatus: .idle,
-          error: .new(source: .submit, message: result.message)
-        ));
+        emit(
+          state.copyWith(
+            submissionStatus: .idle,
+            error: .new(source: .submit, message: result.message),
+          ),
+        );
     }
   }
 
