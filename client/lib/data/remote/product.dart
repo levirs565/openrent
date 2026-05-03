@@ -160,6 +160,7 @@ abstract class ProductResponseItemDetail with _$ProductResponseItemDetail {
     required List<ProductResponseItemShort> recommendations,
     @JsonKey(name: "image_url") required String? imageUrl,
     @JsonKey(name: "top_reviews") required List<ProductReviewDetail> topReviews,
+    @JsonKey(name: "availability") required List<ProductRentsAvailability> availability,
   }) = _ProductResponseItemDetail;
 
   factory ProductResponseItemDetail.fromJson(Map<String, dynamic> json) =>
@@ -308,6 +309,19 @@ abstract class MyProductRentItem with _$MyProductRentItem {
 }
 
 @freezed
+abstract class ProductRentsAvailability with _$ProductRentsAvailability {
+  const factory ProductRentsAvailability({
+    @JsonKey(name: "start_date") @Iso8601Converter() required DateTime startDate,
+    @JsonKey(name: "end_date") @Iso8601Converter() required DateTime endDate,
+    required int quantity,
+    @JsonKey(name: "is_overdue") required bool isOverdue,
+  }) = _ProductRentsAvailability;
+
+  factory ProductRentsAvailability.fromJson(Map<String, dynamic> json) =>
+      _$ProductRentsAvailabilityFromJson(json);
+}
+
+@freezed
 abstract class ProductImagePresignedRequest with _$ProductImagePresignedRequest {
   const factory ProductImagePresignedRequest({
     required int size,
@@ -339,3 +353,4 @@ abstract class ProductImageConfirmRequest with _$ProductImageConfirmRequest {
   factory ProductImageConfirmRequest.fromJson(Map<String, dynamic> json) =>
       _$ProductImageConfirmRequestFromJson(json);
 }
+

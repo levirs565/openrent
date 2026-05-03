@@ -302,7 +302,7 @@ as String?,
 /// @nodoc
 mixin _$ProductResponseItemDetail {
 
- int get id; ProductUserData get user;@JsonKey(name: "created_at") DateTime get createdAt;@JsonKey(name: "updated_at") DateTime get updatedAt; String get name;@JsonKey(name: "price_per_day") int get pricePerDay;@JsonKey(name: "late_fee_per_day") int get lateFeePerDay; int get stock; String get description; ProductAddress get address; List<ProductResponseItemShort> get recommendations;@JsonKey(name: "image_url") String? get imageUrl;@JsonKey(name: "top_reviews") List<ProductReviewDetail> get topReviews;
+ int get id; ProductUserData get user;@JsonKey(name: "created_at") DateTime get createdAt;@JsonKey(name: "updated_at") DateTime get updatedAt; String get name;@JsonKey(name: "price_per_day") int get pricePerDay;@JsonKey(name: "late_fee_per_day") int get lateFeePerDay; int get stock; String get description; ProductAddress get address; List<ProductResponseItemShort> get recommendations;@JsonKey(name: "image_url") String? get imageUrl;@JsonKey(name: "top_reviews") List<ProductReviewDetail> get topReviews;@JsonKey(name: "availability") List<ProductRentsAvailability> get availability;
 /// Create a copy of ProductResponseItemDetail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,16 +315,16 @@ $ProductResponseItemDetailCopyWith<ProductResponseItemDetail> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductResponseItemDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other.recommendations, recommendations)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.topReviews, topReviews));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductResponseItemDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other.recommendations, recommendations)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.topReviews, topReviews)&&const DeepCollectionEquality().equals(other.availability, availability));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,user,createdAt,updatedAt,name,pricePerDay,lateFeePerDay,stock,description,address,const DeepCollectionEquality().hash(recommendations),imageUrl,const DeepCollectionEquality().hash(topReviews));
+int get hashCode => Object.hash(runtimeType,id,user,createdAt,updatedAt,name,pricePerDay,lateFeePerDay,stock,description,address,const DeepCollectionEquality().hash(recommendations),imageUrl,const DeepCollectionEquality().hash(topReviews),const DeepCollectionEquality().hash(availability));
 
 @override
 String toString() {
-  return 'ProductResponseItemDetail(id: $id, user: $user, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, address: $address, recommendations: $recommendations, imageUrl: $imageUrl, topReviews: $topReviews)';
+  return 'ProductResponseItemDetail(id: $id, user: $user, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, address: $address, recommendations: $recommendations, imageUrl: $imageUrl, topReviews: $topReviews, availability: $availability)';
 }
 
 
@@ -335,7 +335,7 @@ abstract mixin class $ProductResponseItemDetailCopyWith<$Res>  {
   factory $ProductResponseItemDetailCopyWith(ProductResponseItemDetail value, $Res Function(ProductResponseItemDetail) _then) = _$ProductResponseItemDetailCopyWithImpl;
 @useResult
 $Res call({
- int id, ProductUserData user,@JsonKey(name: "created_at") DateTime createdAt,@JsonKey(name: "updated_at") DateTime updatedAt, String name,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, int stock, String description, ProductAddress address, List<ProductResponseItemShort> recommendations,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "top_reviews") List<ProductReviewDetail> topReviews
+ int id, ProductUserData user,@JsonKey(name: "created_at") DateTime createdAt,@JsonKey(name: "updated_at") DateTime updatedAt, String name,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, int stock, String description, ProductAddress address, List<ProductResponseItemShort> recommendations,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "top_reviews") List<ProductReviewDetail> topReviews,@JsonKey(name: "availability") List<ProductRentsAvailability> availability
 });
 
 
@@ -352,7 +352,7 @@ class _$ProductResponseItemDetailCopyWithImpl<$Res>
 
 /// Create a copy of ProductResponseItemDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? stock = null,Object? description = null,Object? address = null,Object? recommendations = null,Object? imageUrl = freezed,Object? topReviews = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? stock = null,Object? description = null,Object? address = null,Object? recommendations = null,Object? imageUrl = freezed,Object? topReviews = null,Object? availability = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
@@ -367,7 +367,8 @@ as String,address: null == address ? _self.address : address // ignore: cast_nul
 as ProductAddress,recommendations: null == recommendations ? _self.recommendations : recommendations // ignore: cast_nullable_to_non_nullable
 as List<ProductResponseItemShort>,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,topReviews: null == topReviews ? _self.topReviews : topReviews // ignore: cast_nullable_to_non_nullable
-as List<ProductReviewDetail>,
+as List<ProductReviewDetail>,availability: null == availability ? _self.availability : availability // ignore: cast_nullable_to_non_nullable
+as List<ProductRentsAvailability>,
   ));
 }
 
@@ -452,10 +453,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews, @JsonKey(name: "availability")  List<ProductRentsAvailability> availability)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductResponseItemDetail() when $default != null:
-return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews);case _:
+return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews,_that.availability);case _:
   return orElse();
 
 }
@@ -473,10 +474,10 @@ return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews, @JsonKey(name: "availability")  List<ProductRentsAvailability> availability)  $default,) {final _that = this;
 switch (_that) {
 case _ProductResponseItemDetail():
-return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews);case _:
+return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews,_that.availability);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -493,10 +494,10 @@ return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ProductUserData user, @JsonKey(name: "created_at")  DateTime createdAt, @JsonKey(name: "updated_at")  DateTime updatedAt,  String name, @JsonKey(name: "price_per_day")  int pricePerDay, @JsonKey(name: "late_fee_per_day")  int lateFeePerDay,  int stock,  String description,  ProductAddress address,  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url")  String? imageUrl, @JsonKey(name: "top_reviews")  List<ProductReviewDetail> topReviews, @JsonKey(name: "availability")  List<ProductRentsAvailability> availability)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductResponseItemDetail() when $default != null:
-return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews);case _:
+return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_that.pricePerDay,_that.lateFeePerDay,_that.stock,_that.description,_that.address,_that.recommendations,_that.imageUrl,_that.topReviews,_that.availability);case _:
   return null;
 
 }
@@ -508,7 +509,7 @@ return $default(_that.id,_that.user,_that.createdAt,_that.updatedAt,_that.name,_
 @JsonSerializable()
 
 class _ProductResponseItemDetail implements ProductResponseItemDetail {
-  const _ProductResponseItemDetail({required this.id, required this.user, @JsonKey(name: "created_at") required this.createdAt, @JsonKey(name: "updated_at") required this.updatedAt, required this.name, @JsonKey(name: "price_per_day") required this.pricePerDay, @JsonKey(name: "late_fee_per_day") required this.lateFeePerDay, required this.stock, required this.description, required this.address, required final  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url") required this.imageUrl, @JsonKey(name: "top_reviews") required final  List<ProductReviewDetail> topReviews}): _recommendations = recommendations,_topReviews = topReviews;
+  const _ProductResponseItemDetail({required this.id, required this.user, @JsonKey(name: "created_at") required this.createdAt, @JsonKey(name: "updated_at") required this.updatedAt, required this.name, @JsonKey(name: "price_per_day") required this.pricePerDay, @JsonKey(name: "late_fee_per_day") required this.lateFeePerDay, required this.stock, required this.description, required this.address, required final  List<ProductResponseItemShort> recommendations, @JsonKey(name: "image_url") required this.imageUrl, @JsonKey(name: "top_reviews") required final  List<ProductReviewDetail> topReviews, @JsonKey(name: "availability") required final  List<ProductRentsAvailability> availability}): _recommendations = recommendations,_topReviews = topReviews,_availability = availability;
   factory _ProductResponseItemDetail.fromJson(Map<String, dynamic> json) => _$ProductResponseItemDetailFromJson(json);
 
 @override final  int id;
@@ -536,6 +537,13 @@ class _ProductResponseItemDetail implements ProductResponseItemDetail {
   return EqualUnmodifiableListView(_topReviews);
 }
 
+ final  List<ProductRentsAvailability> _availability;
+@override@JsonKey(name: "availability") List<ProductRentsAvailability> get availability {
+  if (_availability is EqualUnmodifiableListView) return _availability;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_availability);
+}
+
 
 /// Create a copy of ProductResponseItemDetail
 /// with the given fields replaced by the non-null parameter values.
@@ -550,16 +558,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductResponseItemDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other._recommendations, _recommendations)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._topReviews, _topReviews));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductResponseItemDetail&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.pricePerDay, pricePerDay) || other.pricePerDay == pricePerDay)&&(identical(other.lateFeePerDay, lateFeePerDay) || other.lateFeePerDay == lateFeePerDay)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other._recommendations, _recommendations)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._topReviews, _topReviews)&&const DeepCollectionEquality().equals(other._availability, _availability));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,user,createdAt,updatedAt,name,pricePerDay,lateFeePerDay,stock,description,address,const DeepCollectionEquality().hash(_recommendations),imageUrl,const DeepCollectionEquality().hash(_topReviews));
+int get hashCode => Object.hash(runtimeType,id,user,createdAt,updatedAt,name,pricePerDay,lateFeePerDay,stock,description,address,const DeepCollectionEquality().hash(_recommendations),imageUrl,const DeepCollectionEquality().hash(_topReviews),const DeepCollectionEquality().hash(_availability));
 
 @override
 String toString() {
-  return 'ProductResponseItemDetail(id: $id, user: $user, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, address: $address, recommendations: $recommendations, imageUrl: $imageUrl, topReviews: $topReviews)';
+  return 'ProductResponseItemDetail(id: $id, user: $user, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, pricePerDay: $pricePerDay, lateFeePerDay: $lateFeePerDay, stock: $stock, description: $description, address: $address, recommendations: $recommendations, imageUrl: $imageUrl, topReviews: $topReviews, availability: $availability)';
 }
 
 
@@ -570,7 +578,7 @@ abstract mixin class _$ProductResponseItemDetailCopyWith<$Res> implements $Produ
   factory _$ProductResponseItemDetailCopyWith(_ProductResponseItemDetail value, $Res Function(_ProductResponseItemDetail) _then) = __$ProductResponseItemDetailCopyWithImpl;
 @override @useResult
 $Res call({
- int id, ProductUserData user,@JsonKey(name: "created_at") DateTime createdAt,@JsonKey(name: "updated_at") DateTime updatedAt, String name,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, int stock, String description, ProductAddress address, List<ProductResponseItemShort> recommendations,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "top_reviews") List<ProductReviewDetail> topReviews
+ int id, ProductUserData user,@JsonKey(name: "created_at") DateTime createdAt,@JsonKey(name: "updated_at") DateTime updatedAt, String name,@JsonKey(name: "price_per_day") int pricePerDay,@JsonKey(name: "late_fee_per_day") int lateFeePerDay, int stock, String description, ProductAddress address, List<ProductResponseItemShort> recommendations,@JsonKey(name: "image_url") String? imageUrl,@JsonKey(name: "top_reviews") List<ProductReviewDetail> topReviews,@JsonKey(name: "availability") List<ProductRentsAvailability> availability
 });
 
 
@@ -587,7 +595,7 @@ class __$ProductResponseItemDetailCopyWithImpl<$Res>
 
 /// Create a copy of ProductResponseItemDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? stock = null,Object? description = null,Object? address = null,Object? recommendations = null,Object? imageUrl = freezed,Object? topReviews = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,Object? pricePerDay = null,Object? lateFeePerDay = null,Object? stock = null,Object? description = null,Object? address = null,Object? recommendations = null,Object? imageUrl = freezed,Object? topReviews = null,Object? availability = null,}) {
   return _then(_ProductResponseItemDetail(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
@@ -602,7 +610,8 @@ as String,address: null == address ? _self.address : address // ignore: cast_nul
 as ProductAddress,recommendations: null == recommendations ? _self._recommendations : recommendations // ignore: cast_nullable_to_non_nullable
 as List<ProductResponseItemShort>,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,topReviews: null == topReviews ? _self._topReviews : topReviews // ignore: cast_nullable_to_non_nullable
-as List<ProductReviewDetail>,
+as List<ProductReviewDetail>,availability: null == availability ? _self._availability : availability // ignore: cast_nullable_to_non_nullable
+as List<ProductRentsAvailability>,
   ));
 }
 
@@ -2660,6 +2669,278 @@ as RentState,startDate: null == startDate ? _self.startDate : startDate // ignor
 as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$ProductRentsAvailability {
+
+@JsonKey(name: "start_date")@Iso8601Converter() DateTime get startDate;@JsonKey(name: "end_date")@Iso8601Converter() DateTime get endDate; int get quantity;@JsonKey(name: "is_overdue") bool get isOverdue;
+/// Create a copy of ProductRentsAvailability
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProductRentsAvailabilityCopyWith<ProductRentsAvailability> get copyWith => _$ProductRentsAvailabilityCopyWithImpl<ProductRentsAvailability>(this as ProductRentsAvailability, _$identity);
+
+  /// Serializes this ProductRentsAvailability to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductRentsAvailability&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.isOverdue, isOverdue) || other.isOverdue == isOverdue));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,startDate,endDate,quantity,isOverdue);
+
+@override
+String toString() {
+  return 'ProductRentsAvailability(startDate: $startDate, endDate: $endDate, quantity: $quantity, isOverdue: $isOverdue)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProductRentsAvailabilityCopyWith<$Res>  {
+  factory $ProductRentsAvailabilityCopyWith(ProductRentsAvailability value, $Res Function(ProductRentsAvailability) _then) = _$ProductRentsAvailabilityCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity,@JsonKey(name: "is_overdue") bool isOverdue
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProductRentsAvailabilityCopyWithImpl<$Res>
+    implements $ProductRentsAvailabilityCopyWith<$Res> {
+  _$ProductRentsAvailabilityCopyWithImpl(this._self, this._then);
+
+  final ProductRentsAvailability _self;
+  final $Res Function(ProductRentsAvailability) _then;
+
+/// Create a copy of ProductRentsAvailability
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? isOverdue = null,}) {
+  return _then(_self.copyWith(
+startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as int,isOverdue: null == isOverdue ? _self.isOverdue : isOverdue // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProductRentsAvailability].
+extension ProductRentsAvailabilityPatterns on ProductRentsAvailability {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProductRentsAvailability value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProductRentsAvailability() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProductRentsAvailability value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProductRentsAvailability():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProductRentsAvailability value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProductRentsAvailability() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity, @JsonKey(name: "is_overdue")  bool isOverdue)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProductRentsAvailability() when $default != null:
+return $default(_that.startDate,_that.endDate,_that.quantity,_that.isOverdue);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity, @JsonKey(name: "is_overdue")  bool isOverdue)  $default,) {final _that = this;
+switch (_that) {
+case _ProductRentsAvailability():
+return $default(_that.startDate,_that.endDate,_that.quantity,_that.isOverdue);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "start_date")@Iso8601Converter()  DateTime startDate, @JsonKey(name: "end_date")@Iso8601Converter()  DateTime endDate,  int quantity, @JsonKey(name: "is_overdue")  bool isOverdue)?  $default,) {final _that = this;
+switch (_that) {
+case _ProductRentsAvailability() when $default != null:
+return $default(_that.startDate,_that.endDate,_that.quantity,_that.isOverdue);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ProductRentsAvailability implements ProductRentsAvailability {
+  const _ProductRentsAvailability({@JsonKey(name: "start_date")@Iso8601Converter() required this.startDate, @JsonKey(name: "end_date")@Iso8601Converter() required this.endDate, required this.quantity, @JsonKey(name: "is_overdue") required this.isOverdue});
+  factory _ProductRentsAvailability.fromJson(Map<String, dynamic> json) => _$ProductRentsAvailabilityFromJson(json);
+
+@override@JsonKey(name: "start_date")@Iso8601Converter() final  DateTime startDate;
+@override@JsonKey(name: "end_date")@Iso8601Converter() final  DateTime endDate;
+@override final  int quantity;
+@override@JsonKey(name: "is_overdue") final  bool isOverdue;
+
+/// Create a copy of ProductRentsAvailability
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProductRentsAvailabilityCopyWith<_ProductRentsAvailability> get copyWith => __$ProductRentsAvailabilityCopyWithImpl<_ProductRentsAvailability>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProductRentsAvailabilityToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductRentsAvailability&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.isOverdue, isOverdue) || other.isOverdue == isOverdue));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,startDate,endDate,quantity,isOverdue);
+
+@override
+String toString() {
+  return 'ProductRentsAvailability(startDate: $startDate, endDate: $endDate, quantity: $quantity, isOverdue: $isOverdue)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProductRentsAvailabilityCopyWith<$Res> implements $ProductRentsAvailabilityCopyWith<$Res> {
+  factory _$ProductRentsAvailabilityCopyWith(_ProductRentsAvailability value, $Res Function(_ProductRentsAvailability) _then) = __$ProductRentsAvailabilityCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "start_date")@Iso8601Converter() DateTime startDate,@JsonKey(name: "end_date")@Iso8601Converter() DateTime endDate, int quantity,@JsonKey(name: "is_overdue") bool isOverdue
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProductRentsAvailabilityCopyWithImpl<$Res>
+    implements _$ProductRentsAvailabilityCopyWith<$Res> {
+  __$ProductRentsAvailabilityCopyWithImpl(this._self, this._then);
+
+  final _ProductRentsAvailability _self;
+  final $Res Function(_ProductRentsAvailability) _then;
+
+/// Create a copy of ProductRentsAvailability
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? startDate = null,Object? endDate = null,Object? quantity = null,Object? isOverdue = null,}) {
+  return _then(_ProductRentsAvailability(
+startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as int,isOverdue: null == isOverdue ? _self.isOverdue : isOverdue // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

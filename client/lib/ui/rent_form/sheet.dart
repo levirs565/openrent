@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/ui/components/calendar.dart';
 import 'package:openrent_client/ui/rent_form/cubit.dart';
 import 'package:openrent_client/ui/rent_form/state.dart';
+import 'package:path/path.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class RentFormSheet extends StatelessWidget {
@@ -51,7 +53,7 @@ class _RentFormSheetContent extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!.message),
-              action: source == .submit
+              action: source == .submit || source == .dateRanges
                   ? null
                   : SnackBarAction(
                       label: "Refresh",
@@ -83,13 +85,17 @@ class _RentFormSheetContent extends StatelessWidget {
               rangeStartDay: state.startDate,
               rangeEndDay: state.endDate,
               rangeSelectionMode: .enforced,
+              enabledDayPredicate: (day) =>
+                  context.read<RentFormCubit>().getAvailableStock(day) > 0,
               onRangeSelected: (start, end, focusedDay) {
                 final cubit = context.read<RentFormCubit>();
                 if (start != null || end != null) {
-                  cubit.setStartDate((start ?? end)!);
-                  cubit.setEndDate((end ?? start)!);
+                  cubit.setSelectedRange((start ?? end)!, (end ?? start)!);
                 }
               },
+              calendarBuilders: createCalenderBuilderWithStock(
+                (day) => context.read<RentFormCubit>().getAvailableStock(day),
+              ),
             ),
             Text("Price ${state.priceIdr} IDR or ${state.price}"),
             OutlinedButton(
