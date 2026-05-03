@@ -74,52 +74,7 @@ class _AddAddressPageContent extends StatelessWidget {
       builder: (context, state) => SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter:
-                      state.selectedPosition ?? LatLng(-7.771720, 110.412984),
-                  initialZoom: 9.2,
-                  onTap: (tapPosition, point) {
-                    context.read<MapPickerCubit>().onSelectPosition(point);
-                  },
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName:
-                        'OpenRent/0.1 (contact: levirs565@gmail.com)',
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      if (state.selectedPosition != null)
-                        Marker(
-                          alignment: Alignment.topCenter,
-                          point: state.selectedPosition!,
-                          width: 48,
-                          height: 48,
-                          child: Icon(
-                            Icons.location_on,
-                            size: 48,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                    ],
-                  ),
-                  RichAttributionWidget(
-                    attributions: [
-                      TextSourceAttribution(
-                        'OpenStreetMap contributors',
-                        onTap: () => launchUrl(
-                          Uri.parse('https://openstreetmap.org/copyright'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            Expanded(child: _Map()),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -148,6 +103,16 @@ class _AddAddressPageContent extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                       ],
+                      FilledButton.tonal(
+                        onPressed: state.isUseCurrentPositionLoading ? null : () => context
+                            .read<MapPickerCubit>()
+                            .onSelectCurrentPosition(),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Text('Gunakan Lokasi Saat Ini'),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       FilledButton(
                         onPressed: !state.isValid
                             ? null
@@ -183,6 +148,85 @@ class _AddAddressPageContent extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Map extends StatefulWidget {
+  const _Map({super.key});
+
+  @override
+  State<_Map> createState() => _MapState();
+}
+
+class _MapState extends State<_Map> {
+  final MapController _controller = MapController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<MapPickerCubit, MapPickerState>(
+      listenWhen: (prev, current) =>
+          prev.selectedPosition != current.selectedPosition ||
+          prev.initialPosition != current.initialPosition,
+      listener: (context, state) {
+        if (state.selectedPosition != null) {
+          _controller.move(state.selectedPosition!, 9.2);
+          return;
+        }
+        if (state.initialPosition != null) {
+          _controller.move(state.initialPosition!, 9.2);
+        }
+      },
+      builder: (context, state) {
+        return FlutterMap(
+          mapController: _controller,
+          options: MapOptions(
+            initialZoom: 9.2,
+            onTap: (tapPosition, point) {
+              context.read<MapPickerCubit>().onSelectPosition(point);
+            },
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName:
+                  'OpenRent/0.1 (contact: levirs565@gmail.com)',
+            ),
+            MarkerLayer(
+              markers: [
+                if (state.selectedPosition != null)
+                  Marker(
+                    alignment: Alignment.topCenter,
+                    point: state.selectedPosition!,
+                    width: 48,
+                    height: 48,
+                    child: Icon(
+                      Icons.location_on,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+              ],
+            ),
+            RichAttributionWidget(
+              attributions: [
+                TextSourceAttribution(
+                  'OpenStreetMap contributors',
+                  onTap: () => launchUrl(
+                    Uri.parse('https://openstreetmap.org/copyright'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -24,6 +24,13 @@ class SettingsCubit extends Cubit<SettingsState> {
            currency: settingsRepository.getCurrency(),
            currencyStatus: .initial,
            currencyList: List.empty(),
+           timeZone: settingsRepository.getTimeZone(),
+           timeZoneList: {
+             "Asia/Jakarta": "WIB",
+             "Asia/Makassar": "WITA",
+             "Asia/Jayapura": "WIT",
+             "Australia/Brisbane": "AEST"
+           },
            error: null,
          ),
        ) {
@@ -33,9 +40,14 @@ class SettingsCubit extends Cubit<SettingsState> {
     onRefreshExchangeRate();
   }
 
-  void onCurrencyChanged(String currency) {
-    _settingsRepository.setCurrency(currency);
+  void onCurrencyChanged(String currency) async {
+    await _settingsRepository.setCurrency(currency);
     emit(state.copyWith(currency: currency));
+  }
+
+  void onTimeZoneChanged(String timeZone) async {
+    await _settingsRepository.setTimeZone(timeZone);
+    emit(state.copyWith(timeZone: timeZone));
   }
 
   void onRefreshExchangeRate() async {

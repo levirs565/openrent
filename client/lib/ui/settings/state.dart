@@ -12,6 +12,8 @@ abstract class SettingsState with _$SettingsState {
     required String currency,
     required DataStatus currencyStatus,
     required List<String> currencyList,
+    required String timeZone,
+    required Map<String, String> timeZoneList,
     required GeneralErrorData? error,
   }) = _SettingsState;
 }

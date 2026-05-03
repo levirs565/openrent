@@ -23,6 +23,7 @@ class SearchPage extends StatelessWidget {
         repository: context.read(),
         exchangeRatesRepository: context.read(),
         settingsRepository: context.read(),
+        locationRepository: context.read(),
       ),
       child: Column(
         children: [
@@ -90,6 +91,7 @@ class _SearchResult extends StatelessWidget {
               itemCount: state.result.length,
             )
           : _SearchResultMap(
+              currentPosition: state.currentPosition,
               list: state.result,
               onClusterClicked: (list) => showModalBottomSheet(
                 isScrollControlled: true,
@@ -109,21 +111,45 @@ class _SearchResult extends StatelessWidget {
   }
 }
 
-class _SearchResultMap extends StatelessWidget {
+class _SearchResultMap extends StatefulWidget {
   final List<ProductResponseItemShort> list;
+  final LatLng? currentPosition;
   final void Function(List<ProductResponseItemShort> items) onClusterClicked;
 
   const _SearchResultMap({
     super.key,
     required this.list,
     required this.onClusterClicked,
+    required this.currentPosition,
   });
+
+  @override
+  State<_SearchResultMap> createState() => _SearchResultMapState();
+}
+
+class _SearchResultMapState extends State<_SearchResultMap> {
+  final MapController _controller = MapController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SearchResultMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentPosition == null && widget.currentPosition != null) {
+      _controller.move(widget.currentPosition!, 9.2);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+      mapController: _controller,
       options: MapOptions(
-        initialCenter: LatLng(-7.771720, 110.412984),
+        initialCenter: widget.currentPosition ?? const LatLng(50.5, 30.51),
         initialZoom: 9.2,
         maxZoom: 20,
       ),
@@ -131,6 +157,22 @@ class _SearchResultMap extends StatelessWidget {
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'OpenRent/0.1 (contact: levirs565@gmail.com)',
+        ),
+        MarkerLayer(
+          markers: [
+            if (widget.currentPosition != null)
+              Marker(
+                alignment: Alignment.topCenter,
+                point: widget.currentPosition!,
+                width: 48,
+                height: 48,
+                child: Icon(
+                  Icons.location_on,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+          ],
         ),
         MarkerClusterLayerWidget(
           options: MarkerClusterLayerOptions(
@@ -142,10 +184,10 @@ class _SearchResultMap extends StatelessWidget {
             disableClusteringAtZoom: 100,
             spiderfyCluster: false,
             onClusterTap: (cluster) {
-              onClusterClicked(
+              widget.onClusterClicked(
                 cluster.markers
                     .map(
-                      (marker) => list.firstWhere(
+                      (marker) => widget.list.firstWhere(
                         (item) =>
                             item.id == (marker.key as ValueKey<int>).value,
                       ),
@@ -153,7 +195,7 @@ class _SearchResultMap extends StatelessWidget {
                     .toList(),
               );
             },
-            markers: list
+            markers: widget.list
                 .map(
                   (item) => Marker(
                     key: ValueKey(item.id),

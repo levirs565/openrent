@@ -6,18 +6,17 @@ import 'package:openrent_client/ui/core/error_data.dart';
 part 'state.freezed.dart';
 
 @freezed
-class MapPickerState with _$MapPickerState {
-  final LatLng? selectedPosition;
-  final ReverseGeocodingResult? reverseGeocodingResult;
-  final bool isLoading;
-  final GeneralErrorData? error;
+abstract class MapPickerState with _$MapPickerState {
+  const MapPickerState._();
 
-  MapPickerState({
-    required this.selectedPosition,
-    required this.reverseGeocodingResult,
-    this.error,
-    required this.isLoading,
-  });
+  const factory MapPickerState({
+    required LatLng? initialPosition,
+    required LatLng? selectedPosition,
+    required bool isUseCurrentPositionLoading,
+    required ReverseGeocodingResult? reverseGeocodingResult,
+    required bool isLoading,
+    GeneralErrorData? error,
+  }) = _MapPickerState;
 
   bool get isValid => reverseGeocodingResult?.countryCode == "id";
 }

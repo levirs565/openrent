@@ -6,6 +6,8 @@ abstract interface class SettingsRepository {
   Future<void> setNeedBiometric(bool value);
   String getCurrency();
   Future<void> setCurrency(String currency);
+  String getTimeZone();
+  Future<void> setTimeZone(String timeZone);
 }
 
 class SettingsDataSource extends SettingsRepository {
@@ -31,5 +33,15 @@ class SettingsDataSource extends SettingsRepository {
   @override
   Future<void> setCurrency(String currency) {
     return _box.put(currencyKey, currency);
+  }
+  
+  @override
+  String getTimeZone() {
+    return _box.get(timeZoneKey, defaultValue: "Asia/Jakarta");
+  }
+
+  @override
+  Future<void> setTimeZone(String timeZone) {
+    return _box.put(timeZoneKey, timeZone);
   }
 }

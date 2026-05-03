@@ -12,7 +12,10 @@ class ChatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatsCubit(repository: context.read()),
+      create: (context) => ChatsCubit(
+        repository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: Scaffold(
         appBar: AppBar(title: Text("Chats")),
         body: _Content(),
@@ -78,7 +81,7 @@ class _Item extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateLabel = DateFormat(
       'dd/MM/yyyy HH:mm',
-    ).format(item.lastMessage.createdAt.toLocal());
+    ).format(item.lastMessage.createdAt);
 
     final initials = item.name
         .split(' ')

@@ -42,6 +42,7 @@ class MessagesPage extends StatelessWidget {
           userRepository: context.read(),
           otherUserName: otherUserName,
           otherUserAvatarUrl: otherUserAvatarUrl,
+          settingsRepository: context.read(),
         ),
         child: _Content(),
       ),
@@ -72,7 +73,7 @@ class _Content extends StatelessWidget {
                         } else {
                           cubit.onRefreshUser();
                         }
-                      }
+                      },
                     ),
             ),
           );
@@ -215,7 +216,7 @@ class _Item extends StatelessWidget {
   const _Item({super.key, required this.item});
 
   String _formatTimestamp(DateTime timestamp) {
-    return DateFormat('dd/MM/yyyy HH:mm').format(timestamp.toLocal());
+    return DateFormat('dd/MM/yyyy HH:mm').format(timestamp);
   }
 
   @override

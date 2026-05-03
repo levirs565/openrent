@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MapPickerState {
 
- LatLng? get selectedPosition; ReverseGeocodingResult? get reverseGeocodingResult; bool get isLoading; GeneralErrorData? get error;
+ LatLng? get initialPosition; LatLng? get selectedPosition; bool get isUseCurrentPositionLoading; ReverseGeocodingResult? get reverseGeocodingResult; bool get isLoading; GeneralErrorData? get error;
 /// Create a copy of MapPickerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MapPickerStateCopyWith<MapPickerState> get copyWith => _$MapPickerStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapPickerState&&(identical(other.selectedPosition, selectedPosition) || other.selectedPosition == selectedPosition)&&(identical(other.reverseGeocodingResult, reverseGeocodingResult) || other.reverseGeocodingResult == reverseGeocodingResult)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapPickerState&&(identical(other.initialPosition, initialPosition) || other.initialPosition == initialPosition)&&(identical(other.selectedPosition, selectedPosition) || other.selectedPosition == selectedPosition)&&(identical(other.isUseCurrentPositionLoading, isUseCurrentPositionLoading) || other.isUseCurrentPositionLoading == isUseCurrentPositionLoading)&&(identical(other.reverseGeocodingResult, reverseGeocodingResult) || other.reverseGeocodingResult == reverseGeocodingResult)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedPosition,reverseGeocodingResult,isLoading,error);
+int get hashCode => Object.hash(runtimeType,initialPosition,selectedPosition,isUseCurrentPositionLoading,reverseGeocodingResult,isLoading,error);
 
 @override
 String toString() {
-  return 'MapPickerState(selectedPosition: $selectedPosition, reverseGeocodingResult: $reverseGeocodingResult, isLoading: $isLoading, error: $error)';
+  return 'MapPickerState(initialPosition: $initialPosition, selectedPosition: $selectedPosition, isUseCurrentPositionLoading: $isUseCurrentPositionLoading, reverseGeocodingResult: $reverseGeocodingResult, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $MapPickerStateCopyWith<$Res>  {
   factory $MapPickerStateCopyWith(MapPickerState value, $Res Function(MapPickerState) _then) = _$MapPickerStateCopyWithImpl;
 @useResult
 $Res call({
- LatLng? selectedPosition, ReverseGeocodingResult? reverseGeocodingResult, ErrorData<void>? error, bool isLoading
+ LatLng? initialPosition, LatLng? selectedPosition, bool isUseCurrentPositionLoading, ReverseGeocodingResult? reverseGeocodingResult, bool isLoading, GeneralErrorData? error
 });
 
 
-
+$ErrorDataCopyWith<void, $Res>? get error;
 
 }
 /// @nodoc
@@ -62,16 +62,30 @@ class _$MapPickerStateCopyWithImpl<$Res>
 
 /// Create a copy of MapPickerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedPosition = freezed,Object? reverseGeocodingResult = freezed,Object? error = freezed,Object? isLoading = null,}) {
-  return _then(MapPickerState(
-selectedPosition: freezed == selectedPosition ? _self.selectedPosition : selectedPosition // ignore: cast_nullable_to_non_nullable
-as LatLng?,reverseGeocodingResult: freezed == reverseGeocodingResult ? _self.reverseGeocodingResult : reverseGeocodingResult // ignore: cast_nullable_to_non_nullable
-as ReverseGeocodingResult?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorData<void>?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,
+@pragma('vm:prefer-inline') @override $Res call({Object? initialPosition = freezed,Object? selectedPosition = freezed,Object? isUseCurrentPositionLoading = null,Object? reverseGeocodingResult = freezed,Object? isLoading = null,Object? error = freezed,}) {
+  return _then(_self.copyWith(
+initialPosition: freezed == initialPosition ? _self.initialPosition : initialPosition // ignore: cast_nullable_to_non_nullable
+as LatLng?,selectedPosition: freezed == selectedPosition ? _self.selectedPosition : selectedPosition // ignore: cast_nullable_to_non_nullable
+as LatLng?,isUseCurrentPositionLoading: null == isUseCurrentPositionLoading ? _self.isUseCurrentPositionLoading : isUseCurrentPositionLoading // ignore: cast_nullable_to_non_nullable
+as bool,reverseGeocodingResult: freezed == reverseGeocodingResult ? _self.reverseGeocodingResult : reverseGeocodingResult // ignore: cast_nullable_to_non_nullable
+as ReverseGeocodingResult?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as GeneralErrorData?,
   ));
 }
+/// Create a copy of MapPickerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<void, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
 
+  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 
@@ -89,10 +103,11 @@ extension MapPickerStatePatterns on MapPickerState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MapPickerState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -110,10 +125,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MapPickerState value)  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -130,10 +146,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MapPickerState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -150,9 +167,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LatLng? initialPosition,  LatLng? selectedPosition,  bool isUseCurrentPositionLoading,  ReverseGeocodingResult? reverseGeocodingResult,  bool isLoading,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState() when $default != null:
+return $default(_that.initialPosition,_that.selectedPosition,_that.isUseCurrentPositionLoading,_that.reverseGeocodingResult,_that.isLoading,_that.error);case _:
   return orElse();
 
 }
@@ -170,9 +188,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LatLng? initialPosition,  LatLng? selectedPosition,  bool isUseCurrentPositionLoading,  ReverseGeocodingResult? reverseGeocodingResult,  bool isLoading,  GeneralErrorData? error)  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState():
+return $default(_that.initialPosition,_that.selectedPosition,_that.isUseCurrentPositionLoading,_that.reverseGeocodingResult,_that.isLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -189,14 +208,103 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LatLng? initialPosition,  LatLng? selectedPosition,  bool isUseCurrentPositionLoading,  ReverseGeocodingResult? reverseGeocodingResult,  bool isLoading,  GeneralErrorData? error)?  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MapPickerState() when $default != null:
+return $default(_that.initialPosition,_that.selectedPosition,_that.isUseCurrentPositionLoading,_that.reverseGeocodingResult,_that.isLoading,_that.error);case _:
   return null;
 
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _MapPickerState extends MapPickerState {
+  const _MapPickerState({required this.initialPosition, required this.selectedPosition, required this.isUseCurrentPositionLoading, required this.reverseGeocodingResult, required this.isLoading, this.error}): super._();
+  
+
+@override final  LatLng? initialPosition;
+@override final  LatLng? selectedPosition;
+@override final  bool isUseCurrentPositionLoading;
+@override final  ReverseGeocodingResult? reverseGeocodingResult;
+@override final  bool isLoading;
+@override final  GeneralErrorData? error;
+
+/// Create a copy of MapPickerState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MapPickerStateCopyWith<_MapPickerState> get copyWith => __$MapPickerStateCopyWithImpl<_MapPickerState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapPickerState&&(identical(other.initialPosition, initialPosition) || other.initialPosition == initialPosition)&&(identical(other.selectedPosition, selectedPosition) || other.selectedPosition == selectedPosition)&&(identical(other.isUseCurrentPositionLoading, isUseCurrentPositionLoading) || other.isUseCurrentPositionLoading == isUseCurrentPositionLoading)&&(identical(other.reverseGeocodingResult, reverseGeocodingResult) || other.reverseGeocodingResult == reverseGeocodingResult)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,initialPosition,selectedPosition,isUseCurrentPositionLoading,reverseGeocodingResult,isLoading,error);
+
+@override
+String toString() {
+  return 'MapPickerState(initialPosition: $initialPosition, selectedPosition: $selectedPosition, isUseCurrentPositionLoading: $isUseCurrentPositionLoading, reverseGeocodingResult: $reverseGeocodingResult, isLoading: $isLoading, error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MapPickerStateCopyWith<$Res> implements $MapPickerStateCopyWith<$Res> {
+  factory _$MapPickerStateCopyWith(_MapPickerState value, $Res Function(_MapPickerState) _then) = __$MapPickerStateCopyWithImpl;
+@override @useResult
+$Res call({
+ LatLng? initialPosition, LatLng? selectedPosition, bool isUseCurrentPositionLoading, ReverseGeocodingResult? reverseGeocodingResult, bool isLoading, GeneralErrorData? error
+});
+
+
+@override $ErrorDataCopyWith<void, $Res>? get error;
+
+}
+/// @nodoc
+class __$MapPickerStateCopyWithImpl<$Res>
+    implements _$MapPickerStateCopyWith<$Res> {
+  __$MapPickerStateCopyWithImpl(this._self, this._then);
+
+  final _MapPickerState _self;
+  final $Res Function(_MapPickerState) _then;
+
+/// Create a copy of MapPickerState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? initialPosition = freezed,Object? selectedPosition = freezed,Object? isUseCurrentPositionLoading = null,Object? reverseGeocodingResult = freezed,Object? isLoading = null,Object? error = freezed,}) {
+  return _then(_MapPickerState(
+initialPosition: freezed == initialPosition ? _self.initialPosition : initialPosition // ignore: cast_nullable_to_non_nullable
+as LatLng?,selectedPosition: freezed == selectedPosition ? _self.selectedPosition : selectedPosition // ignore: cast_nullable_to_non_nullable
+as LatLng?,isUseCurrentPositionLoading: null == isUseCurrentPositionLoading ? _self.isUseCurrentPositionLoading : isUseCurrentPositionLoading // ignore: cast_nullable_to_non_nullable
+as bool,reverseGeocodingResult: freezed == reverseGeocodingResult ? _self.reverseGeocodingResult : reverseGeocodingResult // ignore: cast_nullable_to_non_nullable
+as ReverseGeocodingResult?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as GeneralErrorData?,
+  ));
+}
+
+/// Create a copy of MapPickerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<void, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
+
+  return $ErrorDataCopyWith<void, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 // dart format on

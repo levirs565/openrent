@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/core/enum.dart';
@@ -21,6 +22,7 @@ abstract class SearchState with _$SearchState {
     required List<ProductResponseItemShort> result,
     required bool isSearchLoading,
     required SearchError? error,
+    required LatLng? currentPosition,
     required bool isMapView,
   }) = _SearchState;
 

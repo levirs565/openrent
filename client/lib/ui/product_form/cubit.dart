@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/address.dart';
+import 'package:openrent_client/data/location.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/address.dart';
 import 'package:openrent_client/data/remote/product.dart';
@@ -9,12 +11,15 @@ import 'package:openrent_client/ui/product_form/state.dart';
 class ProductFormCubit extends Cubit<ProductFormState> {
   final AddressRepository _addressRepository;
   final ProductRepository _productRepository;
+  final LocationRepository _locationRepository;
 
   ProductFormCubit({
     required int? id,
     required AddressRepository addressRepository,
     required ProductRepository productRepository,
-  }) : _productRepository = productRepository,
+    required LocationRepository locationRepository,
+  }) : _locationRepository = locationRepository,
+       _productRepository = productRepository,
        _addressRepository = addressRepository,
        super(
          ProductFormState(
@@ -29,6 +34,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
            dataStatus: id == null ? .success : .initial,
            addressStatus: .initial,
            submissionStatus: .idle,
+           isNearbyAddressLoading: false
          ),
        ) {
     onRefreshAddress();
@@ -98,6 +104,42 @@ class ProductFormCubit extends Cubit<ProductFormState> {
     emit(state.copyWith(addressId: id));
   }
 
+  void onSelectNearbyAddress() async {
+    final addressList = state.addressList;
+
+    if (addressList.isEmpty || state.isNearbyAddressLoading) return;
+
+    emit(state.copyWith(isNearbyAddressLoading: true));
+
+    final result = await _locationRepository.getCurrentLocation();
+
+    switch (result) {
+      case ResultSuccess<LatLng>():
+        final Distance distance = const Distance();
+
+        final distances = addressList
+            .map(((item) => LatLng(item.lat, item.lng)))
+            .map((item) => distance.as(LengthUnit.Meter, result.data, item))
+            .toList();
+        int minIndex = 0;
+        for (int i = 1; i < distances.length; i++) {
+          if (distances[i] < distances[minIndex]) {
+            minIndex = i;
+          }
+        }
+
+        emit(state.copyWith(isNearbyAddressLoading: false));
+        onAddressChanged(addressList.elementAt(minIndex).id);
+      case ResultError<LatLng>():
+        emit(
+          state.copyWith(
+            isNearbyAddressLoading: false,
+            error: .new(source: .nearbyAddress, message: result.message),
+          ),
+        );
+    }
+  }
+
   void onPricePerDayChanged(int? pricePerDay) {
     emit(state.copyWith(pricePerDay: pricePerDay));
   }
@@ -143,10 +185,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
         emit(
           state.copyWith(
             submissionStatus: .idle,
-            error: ProductFormError(
-              source: .submit,
-              message: result.message,
-            ),
+            error: ProductFormError(source: .submit, message: result.message),
           ),
         );
     }
