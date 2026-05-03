@@ -39,7 +39,8 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
       exchangeRateStatus == .success;
 
   double? convertToCurrency(int? amount) {
-    if (amount == null || exchangeRate == null ||
+    if (amount == null ||
+        exchangeRate == null ||
         !exchangeRate!.conversionRates.containsKey(selectedCurrency)) {
       return null;
     }
@@ -56,9 +57,12 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
   int get estimatedLateFine => data == null
       ? 0
       : data!.product.lateFeePerDay *
-            (DateUtils.dateOnly(
-              data!.returnedAt ?? DateTime.now(),
-            ).difference(data!.endDate).inDays);
+            max(
+              (DateUtils.dateOnly(
+                data!.returnedAt ?? DateTime.now(),
+              ).difference(data!.endDate).inDays),
+              0,
+            );
 
   int get estimatedTotalPrice => estimatedPrice + estimatedLateFine;
 

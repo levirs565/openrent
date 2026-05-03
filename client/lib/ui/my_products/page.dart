@@ -11,15 +11,17 @@ class MyProductsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("My Products"),
-          bottom: TabBar(
+          title: const Text('My Products'),
+          centerTitle: true,
+          elevation: 0,
+          bottom: const TabBar(
             tabs: [
-              Tab(text: "Product List"),
-              Tab(text: "Rentals"),
+              Tab(text: 'Product List'),
+              Tab(text: 'Rentals'),
             ],
           ),
         ),
-        body: TabBarView(children: [MyProductListTab(), MyRentalsTab()]),
+        body: const TabBarView(children: [MyProductListTab(), MyRentalsTab()]),
       ),
     );
   }
