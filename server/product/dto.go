@@ -7,13 +7,16 @@ import (
 )
 
 type ListRequest struct {
-	Owner           bool     `query:"owner"`
-	Query           string   `query:"q"`
-	DisableAISearch bool     `query:"no_ai_search"`
-	Regions         []string `query:"regions"`
-	Lat             float64  `query:"lat"`
-	Lng             float64  `query:"lng" validate:"required_with=Lat"`
-	RadiusKM        int      `query:"radius_km" validate:"required_with=Lng"`
+	Owner           bool      `query:"owner"`
+	Query           string    `query:"q"`
+	DisableAISearch bool      `query:"no_ai_search"`
+	Regions         []string  `query:"regions"`
+	Lat             float64   `query:"lat"`
+	Lng             float64   `query:"lng" validate:"required_with=Lat"`
+	RadiusKM        int       `query:"radius_km" validate:"required_with=Lng"`
+	StartDate       time.Time `query:"start_date"`
+	EndDate         time.Time `query:"end_date" validate:"required_with=StartDate"`
+	Quantity        int       `query:"quantity"`
 }
 
 type ResponseItemShortAddress struct {
