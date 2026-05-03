@@ -110,9 +110,10 @@ func modelToResponse(model models.Product) ResponseItem {
 
 type ResponseItemDetail struct {
 	ResponseItem
-	Recommendations []ResponseItemShort `json:"recommendations"`
-	TopReviews      []core.ReviewDetail `json:"top_reviews"`
-	ImageURL        *string             `json:"image_url"`
+	Recommendations []ResponseItemShort     `json:"recommendations"`
+	TopReviews      []core.ReviewDetail     `json:"top_reviews"`
+	ImageURL        *string                 `json:"image_url"`
+	Availability    []core.RentAvailability `json:"availability"`
 }
 
 type GetByIdRequest struct {

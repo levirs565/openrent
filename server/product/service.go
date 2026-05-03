@@ -199,6 +199,11 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
+	availability, err := core.GetRentAvailability(ctx, s.db, id)
+	if err != nil {
+		return ResponseItemDetail{}, err
+	}
+
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
 		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
@@ -207,7 +212,8 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
 			return core.ReviewDetailFromModel(item)
 		}),
-		ImageURL: core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
+		ImageURL:     core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
+		Availability: availability,
 	}, nil
 }
 
