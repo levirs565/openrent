@@ -9,8 +9,8 @@ import (
 )
 
 type RentAvailability struct {
-	StartDate datatypes.Date `json:"startDate"`
-	EndDate   datatypes.Date `json:"endDate"`
+	StartDate datatypes.Date `json:"start_date"`
+	EndDate   datatypes.Date `json:"end_date"`
 	Quantity  int            `json:"quantity"`
 	IsOverdue bool           `json:"is_overdue"`
 }
