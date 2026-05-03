@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/components/currency_format.dart';
 import 'package:openrent_client/ui/components/info_chip.dart';
 import 'package:openrent_client/ui/components/rental_status_label.dart';
 import 'package:openrent_client/ui/messages/page.dart';
@@ -55,40 +56,6 @@ class _Content extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(title, style: Theme.of(context).textTheme.titleMedium),
     );
-  }
-
-  String _formatCurrencyAmount(num amount, String currency) {
-    if (currency == 'IDR') {
-      return NumberFormat.currency(
-        locale: 'id_ID',
-        name: 'IDR',
-        symbol: 'Rp ',
-        decimalDigits: 0,
-      ).format(amount);
-    }
-
-    return NumberFormat.currency(
-      name: currency,
-      symbol: '$currency ',
-      decimalDigits: 2,
-    ).format(amount);
-  }
-
-  String _paymentLabel(int amount, MyRentalDetailState state) {
-    final localAmount = _formatCurrencyAmount(amount, 'IDR');
-    final currency = state.selectedCurrency.toUpperCase().trim();
-
-    if (currency == 'IDR' || currency.isEmpty) {
-      return localAmount;
-    }
-
-    final converted = state.convertToCurrency(amount);
-    if (converted == null) {
-      return localAmount;
-    }
-
-    final convertedLabel = _formatCurrencyAmount(converted, currency);
-    return '$localAmount • $convertedLabel';
   }
 
   @override
@@ -195,12 +162,12 @@ class _Content extends StatelessWidget {
                               children: [
                                 InfoChip(
                                   label: product != null
-                                      ? 'Rp ${product.pricePerDay}/hari'
+                                      ? '${formatCurrencyAmount(product.pricePerDay, 'IDR')}/hari'
                                       : 'Harga tidak tersedia',
                                 ),
                                 InfoChip(
                                   label: product != null
-                                      ? 'Denda Rp ${product.lateFeePerDay}/hr'
+                                      ? 'Denda ${formatCurrencyAmount(product.lateFeePerDay, 'IDR')}/hr'
                                       : 'Denda tidak tersedia',
                                 ),
                                 if (product != null)
@@ -306,62 +273,86 @@ class _Content extends StatelessWidget {
                         _sectionTitle(context, 'Pembayaran'),
                         _DetailLine(
                           label: 'Estimasi harga',
-                          value:
-                              'Rp ${state.estimatedPrice} • ${state.convertToCurrency(state.estimatedPrice)?.toStringAsFixed(2) ?? '-'}',
+                          value: paymentLabel(
+                            amount: state.estimatedPrice,
+                            selectedCurrency: state.selectedCurrency,
+                            convertToCurrency: state.convertToCurrency,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         _DetailLine(
                           label: 'Estimasi denda',
-                          value:
-                              'Rp ${state.estimatedLateFine} • ${state.convertToCurrency(state.estimatedLateFine)?.toStringAsFixed(2) ?? '-'}',
+                          value: paymentLabel(
+                            amount: state.estimatedLateFine,
+                            selectedCurrency: state.selectedCurrency,
+                            convertToCurrency: state.convertToCurrency,
+                          ),
                         ),
                         if (rental?.payment.initial != null &&
                             rental?.payment.finalAmount == null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Estimasi total',
-                            value:
-                                'Rp ${state.estimatedTotalPrice} • ${state.convertToCurrency(state.estimatedTotalPrice)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: state.estimatedTotalPrice,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                         if (rental?.payment.initial != null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Pembayaran awal',
-                            value:
-                                'Rp ${rental!.payment.initial} • ${state.convertToCurrency(rental.payment.initial)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: rental!.payment.initial!,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                         if (rental?.payment.finalAmount != null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Pembayaran akhir',
-                            value:
-                                'Rp ${rental!.payment.finalAmount} • ${state.convertToCurrency(rental.payment.finalAmount)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: rental!.payment.finalAmount!,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                         if (rental?.payment.lateFine != null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Denda terlambat',
-                            value:
-                                'Rp ${rental!.payment.lateFine} • ${state.convertToCurrency(rental.payment.lateFine)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: rental!.payment.lateFine!,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                         if (rental?.payment.damageFine != null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Denda kerusakan',
-                            value:
-                                'Rp ${rental!.payment.damageFine} • ${state.convertToCurrency(rental.payment.damageFine)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: rental!.payment.damageFine!,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                         if (rental?.payment.finalAmount != null) ...[
                           const SizedBox(height: 12),
                           _DetailLine(
                             label: 'Total pembayaran',
-                            value:
-                                'Rp ${state.totalPayment} • ${state.convertToCurrency(state.totalPayment)?.toStringAsFixed(2) ?? '-'}',
+                            value: paymentLabel(
+                              amount: state.totalPayment,
+                              selectedCurrency: state.selectedCurrency,
+                              convertToCurrency: state.convertToCurrency,
+                            ),
                           ),
                         ],
                       ],
@@ -408,35 +399,55 @@ class _Content extends StatelessWidget {
                   alignment: WrapAlignment.start,
                   children: [
                     if (rental?.state == RentState.pendingApproval)
-                      OutlinedButton(
+                      FilledButton(
                         onPressed: () =>
                             context.read<MyRentalDetailCubit>().onApprove(),
                         child: const Text('Approve'),
                       ),
                     if (rental?.state == RentState.pendingApproval)
-                      OutlinedButton(
-                        onPressed: () => showDialog(
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                        onPressed: () => showModalBottomSheet(
                           context: context,
-                          builder: (context) =>
-                              MyRentalRejectDialog(id: state.id),
+                          isScrollControlled: true,
+                          builder: (context) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: MyRentalRejectBottomSheet(id: state.id),
+                          ),
                         ),
                         child: const Text('Reject'),
                       ),
                     if (rental?.state == RentState.awaitingHandover)
-                      OutlinedButton(
-                        onPressed: () => showDialog(
+                      FilledButton(
+                        onPressed: () => showModalBottomSheet(
                           context: context,
-                          builder: (context) =>
-                              MyRentalHandoverDialog(rental: rental!),
+                          isScrollControlled: true,
+                          builder: (context) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: MyRentalHandoverBottomSheet(rental: rental!),
+                          ),
                         ),
                         child: const Text('Handover'),
                       ),
                     if (rental?.state == RentState.awaitingReturnConfirmation)
-                      OutlinedButton(
-                        onPressed: () => showDialog(
+                      FilledButton(
+                        onPressed: () => showModalBottomSheet(
                           context: context,
-                          builder: (context) =>
-                              MyRentalConfirmReturnDialog(rental: rental!),
+                          isScrollControlled: true,
+                          builder: (context) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: MyRentalConfirmReturnBottomSheet(
+                              rental: rental!,
+                            ),
+                          ),
                         ),
                         child: const Text('Confirm Return'),
                       ),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:openrent_client/data/remote/order.dart';
+import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/components/info_chip.dart';
+import 'package:openrent_client/ui/components/rental_status_label.dart';
 import 'package:openrent_client/ui/my_order_detail/page.dart';
 import 'package:openrent_client/ui/my_orders/cubit.dart';
 import 'package:openrent_client/ui/my_orders/state.dart';
@@ -15,8 +19,8 @@ class MyOrdersPage extends StatelessWidget {
       create: (context) => MyOrdersCubit(orderRepository: context.read()),
       child: ScaffoldMessenger(
         child: Scaffold(
-          body: _Content(),
-          appBar: AppBar(title: Text("My Orders")),
+          body: const _Content(),
+          appBar: AppBar(title: const Text("My Orders")),
         ),
       ),
     );
@@ -43,18 +47,26 @@ class _Content extends StatelessWidget {
           context.read<MyOrdersCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => Column(
-        children: [
-          if (state.isLoading) LinearProgressIndicator(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: state.list.length,
-              itemBuilder: (context, index) =>
-                  _Item(item: state.list.elementAt(index)),
-            ),
+      builder: (context, state) {
+        if (state.isLoading && state.list.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state.list.isEmpty) {
+          return const Center(child: Text('Kamu belum memiliki pesanan.'));
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async => context.read<MyOrdersCubit>().onRefresh(),
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: state.list.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) =>
+                _Item(item: state.list.elementAt(index)),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -62,28 +74,97 @@ class _Content extends StatelessWidget {
 class _Item extends StatelessWidget {
   final OrderResponseItem item;
 
-  const _Item({super.key, required this.item});
+  const _Item({required this.item});
+
+  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
 
   @override
   Widget build(BuildContext context) {
-    return Card.filled(
+    final theme = Theme.of(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () =>
             Navigator.of(context).push(MyOrderDetailPage.route(item.id)),
-        child: Column(
-          children: [
-            if (item.product.imageUrl != null) Image.network(item.product.imageUrl!, height: 96,),
-            Text("${item.user.name} - ${item.product.name}"),
-            Text("${item.startDate} - ${item.endDate}"),
-            Text("${item.quantity} - ${item.state}"),
-            if (item.review == null && item.state == .completed)
-              OutlinedButton(
-                onPressed: () => Navigator.of(
-                  context,
-                ).push(ReviewFormPage.routeAdd(rentId: item.id)),
-                child: Text("Add Review"),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      child: item.product.imageUrl != null
+                          ? Image.network(
+                              item.product.imageUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.photo,
+                              color: theme.colorScheme.onSurfaceVariant,
+                              size: 40,
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.product.name,
+                          style: theme.textTheme.titleMedium,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Pemilik: ${item.user.name}',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: [
+                            InfoChip(
+                              label:
+                                  '${_formatDate(item.startDate)} - ${_formatDate(item.endDate)}',
+                              // icon: Icons.date_range,
+                            ),
+                            InfoChip(
+                              label: 'Jumlah: ${item.quantity}',
+                              // icon: Icons.inventory_2,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InfoChip(label: rentalStatusLabel(item.state)),
+                  if (item.review == null && item.state == RentState.completed)
+                    FilledButton(
+                      onPressed: () => Navigator.of(
+                        context,
+                      ).push(ReviewFormPage.routeAdd(rentId: item.id)),
+                      child: const Text("Beri Ulasan"),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
