@@ -17,6 +17,10 @@ import '../product_detail/page.dart';
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => SearchPage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -26,39 +30,41 @@ class SearchPage extends StatelessWidget {
         settingsRepository: context.read(),
         locationRepository: context.read(),
       ),
-      child: Column(
-        children: [
-          BlocListener<SearchCubit, SearchState>(
-            listener: (context, state) {
-              if (state.error != null) {
-                final source = state.error!.source;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error!.message),
-                    action: source == .data
-                        ? null
-                        : SnackBarAction(
-                            label: "Refresh",
-                            onPressed: () => context
-                                .read<SearchCubit>()
-                                .onRefreshExchangeRate(),
-                          ),
-                  ),
-                );
-                context.read<SearchCubit>().onErrorHandled(state.error!);
-              }
-            },
-            child: Center(),
-          ),
-          _SearchInput(),
-          Expanded(child: _SearchResult()),
-          BlocBuilder<SearchCubit, SearchState>(
-            builder: (context, state) => OutlinedButton(
-              onPressed: () => context.read<SearchCubit>().onToggleView(),
-              child: Text(state.isMapView ? "List" : "Map"),
+      child: Scaffold(
+        body: Column(
+          children: [
+            BlocListener<SearchCubit, SearchState>(
+              listener: (context, state) {
+                if (state.error != null) {
+                  final source = state.error!.source;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error!.message),
+                      action: source == .data
+                          ? null
+                          : SnackBarAction(
+                              label: "Refresh",
+                              onPressed: () => context
+                                  .read<SearchCubit>()
+                                  .onRefreshExchangeRate(),
+                            ),
+                    ),
+                  );
+                  context.read<SearchCubit>().onErrorHandled(state.error!);
+                }
+              },
+              child: Center(),
             ),
-          ),
-        ],
+            _SearchInput(),
+            Expanded(child: _SearchResult()),
+            BlocBuilder<SearchCubit, SearchState>(
+              builder: (context, state) => OutlinedButton(
+                onPressed: () => context.read<SearchCubit>().onToggleView(),
+                child: Text(state.isMapView ? "List" : "Map"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

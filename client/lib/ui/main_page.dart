@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:openrent_client/ui/chats/page.dart';
+import 'package:openrent_client/ui/home/page.dart';
 import 'package:openrent_client/ui/my_orders/page.dart';
 import 'package:openrent_client/ui/my_products/page.dart';
 import 'package:openrent_client/ui/profile/page.dart';
 import 'package:openrent_client/ui/search/page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const HomePage());
+    return MaterialPageRoute<void>(builder: (_) => const MainPage());
   }
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
-    SearchPage(),
+    HomePage(),
     ChatsPage(),
     MyOrdersPage(),
     MyProductsPage(),

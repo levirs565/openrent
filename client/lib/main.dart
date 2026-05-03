@@ -25,7 +25,7 @@ import 'package:openrent_client/data/review.dart';
 import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/data/user.dart';
 import 'package:openrent_client/ui/biometric_failed.dart';
-import 'package:openrent_client/ui/home.dart';
+import 'package:openrent_client/ui/main_page.dart';
 import 'package:openrent_client/ui/login/page.dart';
 import 'package:openrent_client/ui/splash.dart';
 
@@ -174,7 +174,7 @@ class _AppViewState extends State<AppView> {
               if (data == null) {
                 _navigator.pushAndRemoveUntil(LoginPage.route(), (_) => false);
               } else {
-                _navigator.pushAndRemoveUntil(HomePage.route(), (_) => false);
+                _navigator.pushAndRemoveUntil(MainPage.route(), (_) => false);
               }
             } else if (state.state is AuthStateBiometricFailed) {
               _navigator.pushAndRemoveUntil(
