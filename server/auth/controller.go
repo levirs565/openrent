@@ -17,6 +17,14 @@ type loginUserRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type refreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
+}
+
+type logoutRequest struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
+}
+
 type avatarPresignedRequest struct {
 	Size        int64  `json:"size" validate:"required,min=1"`
 	ContentType string `json:"content_type" validate:"required"`
@@ -67,23 +75,13 @@ func (ct *Controller) login(c *echo.Context) error {
 		return err
 	}
 
-	session := core.GetSession(c)
 	result, err := ct.service.Login(c.Request().Context(), payload.Email, payload.Password)
 
 	if err != nil {
 		return err
 	}
 
-	core.SetUserSession(session, core.UserSession{
-		ID:   result.ID,
-		Role: result.Role,
-	})
-
-	if err := session.Save(c.Request(), c.Response()); err != nil {
-		return err
-	}
-
-	return c.JSON(200, core.CreateActionResponse(true))
+	return c.JSON(200, result)
 }
 
 func (ct *Controller) getState(c *echo.Context) error {
@@ -100,11 +98,32 @@ func (ct *Controller) getState(c *echo.Context) error {
 	return c.JSON(200, response)
 }
 
-func (ct *Controller) logout(c *echo.Context) error {
-	session := core.GetSession(c)
-	clear(session.Values)
+func (ct *Controller) refreshToken(c *echo.Context) error {
+	payload := refreshTokenRequest{}
 
-	if err := session.Save(c.Request(), c.Response()); err != nil {
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	resposne, err := ct.service.RefreshToken(c.Request().Context(), payload.RefreshToken)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, resposne)
+}
+
+func (ct *Controller) logout(c *echo.Context) error {
+	payload := logoutRequest{}
+
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	err := ct.service.Logout(c.Request().Context(), payload.RefreshToken)
+
+	if err != nil {
 		return err
 	}
 
@@ -181,8 +200,9 @@ func RegisterRoutes(e *echo.Echo, ct *Controller) {
 
 	g.POST("/register", ct.register, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
 	g.POST("/login", ct.login, core.NewGuardRoleMiddleware(core.GuardRoleNotLoggedIn))
-	g.GET("/state", ct.getState)
-	g.POST("/logout", ct.logout, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.GET("/state", ct.getState, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
+	g.POST("/logout", ct.logout)
+	g.POST("/refresh_token", ct.refreshToken)
 	g.POST("/avatar/presigned-url", ct.avatarPresignedURL, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 	g.POST("/avatar/confirm", ct.avatarConfirm, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
 	g.POST("/me/fcm", ct.addFCMToken, core.NewGuardRoleMiddleware(core.GuardRoleLoggedIn))
