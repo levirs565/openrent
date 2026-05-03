@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:openrent_client/data/remote/message.dart';
 import 'package:openrent_client/data/resource.dart';
 
@@ -12,8 +14,13 @@ abstract interface class MessageRepository {
 
 class MessageDataSource implements MessageRepository {
   final MessageService _service;
+  final StreamController<void> _newChatController;
 
-  MessageDataSource({required MessageService service}) : _service = service;
+  MessageDataSource({
+    required MessageService service,
+    required StreamController<void> newChatController,
+  }) : _newChatController = newChatController,
+       _service = service;
 
   @override
   Future<Result<List<MessageResponseItem>>> getByOtherUser(
@@ -28,9 +35,13 @@ class MessageDataSource implements MessageRepository {
   }
 
   @override
-  Future<Result<void>> send({required int otherUserId, required String message}) async {
+  Future<Result<void>> send({
+    required int otherUserId,
+    required String message,
+  }) async {
     try {
       await _service.send(otherUserId, MessageAddRequest(message: message));
+      _newChatController.add(null);
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);

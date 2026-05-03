@@ -6,7 +6,6 @@ import 'package:openrent_client/ui/map_picker/page.dart';
 import 'package:openrent_client/ui/my_addresses/cubit.dart';
 import 'package:openrent_client/ui/my_addresses/state.dart';
 
-// TODO: Refresh
 class MyAddressesPage extends StatelessWidget {
   const MyAddressesPage({super.key});
 

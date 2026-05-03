@@ -12,31 +12,30 @@ import 'package:timezone/timezone.dart' as tz;
 
 class ChatsCubit extends Cubit<ChatsState> {
   final ChatRepository _repository;
-  StreamSubscription? _fcmSubscription;
+  StreamSubscription? _streamSubscription;
 
   ChatsCubit({
     required ChatRepository repository,
     required SettingsRepository settingsRepository,
-  }) : _repository = repository,
-       super(
-         ChatsState(
-           isLoading: false,
-           list: List.empty(),
-           error: null,
-           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
-         ),
-       ) {
+  })
+      : _repository = repository,
+        super(
+        ChatsState(
+          isLoading: false,
+          list: List.empty(),
+          error: null,
+          timeZone: tz.getLocation(settingsRepository.getTimeZone()),
+        ),
+      ) {
     onRefresh();
-    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
-      if (event.data["type"] == "message") {
-        onRefresh();
-      }
+    _streamSubscription = _repository.watchChanged().listen((data) {
+      onRefresh();
     });
   }
 
   @override
   Future<void> close() {
-    _fcmSubscription?.cancel();
+    _streamSubscription?.cancel();
     return super.close();
   }
 
@@ -54,7 +53,8 @@ class ChatsCubit extends Cubit<ChatsState> {
             isLoading: false,
             list: result.data
                 .map(
-                  (element) => element.copyWith(
+                  (element) =>
+                  element.copyWith(
                     lastMessage: element.lastMessage.copyWith(
                       createdAt: tz.TZDateTime.from(
                         element.lastMessage.createdAt.toLocal(),
@@ -62,7 +62,7 @@ class ChatsCubit extends Cubit<ChatsState> {
                       ),
                     ),
                   ),
-                )
+            )
                 .toList(),
           ),
         );

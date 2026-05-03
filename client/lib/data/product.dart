@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/remote/auth.dart';
@@ -53,14 +55,29 @@ abstract interface class ProductRepository {
   );
 
   Future<Result<void>> uploadImage({required int id, required XFile file});
+
+  Stream<void> watchMyProductChanged();
+
+  void dispose();
 }
 
 class ProductDataSource implements ProductRepository {
   final ProductService service;
   final Dio _dioUploader;
+  final _streamController = StreamController<void>.broadcast();
 
   ProductDataSource({required this.service, required Dio dioUploader})
     : _dioUploader = dioUploader;
+
+  @override
+  void dispose() {
+    _streamController.close();
+  }
+
+  @override
+  Stream<void> watchMyProductChanged() {
+    return _streamController.stream;
+  }
 
   @override
   Future<Result<List<ProductResponseItemShort>>> searchProduct({
@@ -126,6 +143,7 @@ class ProductDataSource implements ProductRepository {
   Future<Result<MyProductResponseItem>> add(ProductAddRequest request) async {
     try {
       final result = await service.addProduct(request);
+      _streamController.add(null);
       return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);
@@ -139,6 +157,7 @@ class ProductDataSource implements ProductRepository {
   ) async {
     try {
       final result = await service.updateProduct(id, request);
+      _streamController.add(null);
       return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);
@@ -175,6 +194,7 @@ class ProductDataSource implements ProductRepository {
         id,
         ProductImageConfirmRequest(name: presigned.name),
       );
+      _streamController.add(null);
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
