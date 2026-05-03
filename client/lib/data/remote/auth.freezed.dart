@@ -1344,4 +1344,1080 @@ as int,
 
 }
 
+
+/// @nodoc
+mixin _$LoginResponse {
+
+ int get id; String get role;@JsonKey(name: "refresh_token") String get refreshToken;@JsonKey(name: "refresh_token_expires_at") DateTime get refreshTokenExpiresAt;@JsonKey(name: "access_token") String get accessToken;@JsonKey(name: "access_token_expires_at") DateTime get accessTokenExpiresAt;
+/// Create a copy of LoginResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoginResponseCopyWith<LoginResponse> get copyWith => _$LoginResponseCopyWithImpl<LoginResponse>(this as LoginResponse, _$identity);
+
+  /// Serializes this LoginResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.role, role) || other.role == role)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.refreshTokenExpiresAt, refreshTokenExpiresAt) || other.refreshTokenExpiresAt == refreshTokenExpiresAt)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.accessTokenExpiresAt, accessTokenExpiresAt) || other.accessTokenExpiresAt == accessTokenExpiresAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,role,refreshToken,refreshTokenExpiresAt,accessToken,accessTokenExpiresAt);
+
+@override
+String toString() {
+  return 'LoginResponse(id: $id, role: $role, refreshToken: $refreshToken, refreshTokenExpiresAt: $refreshTokenExpiresAt, accessToken: $accessToken, accessTokenExpiresAt: $accessTokenExpiresAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoginResponseCopyWith<$Res>  {
+  factory $LoginResponseCopyWith(LoginResponse value, $Res Function(LoginResponse) _then) = _$LoginResponseCopyWithImpl;
+@useResult
+$Res call({
+ int id, String role,@JsonKey(name: "refresh_token") String refreshToken,@JsonKey(name: "refresh_token_expires_at") DateTime refreshTokenExpiresAt,@JsonKey(name: "access_token") String accessToken,@JsonKey(name: "access_token_expires_at") DateTime accessTokenExpiresAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoginResponseCopyWithImpl<$Res>
+    implements $LoginResponseCopyWith<$Res> {
+  _$LoginResponseCopyWithImpl(this._self, this._then);
+
+  final LoginResponse _self;
+  final $Res Function(LoginResponse) _then;
+
+/// Create a copy of LoginResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? role = null,Object? refreshToken = null,Object? refreshTokenExpiresAt = null,Object? accessToken = null,Object? accessTokenExpiresAt = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,refreshTokenExpiresAt: null == refreshTokenExpiresAt ? _self.refreshTokenExpiresAt : refreshTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
+as String,accessTokenExpiresAt: null == accessTokenExpiresAt ? _self.accessTokenExpiresAt : accessTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [LoginResponse].
+extension LoginResponsePatterns on LoginResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LoginResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LoginResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LoginResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _LoginResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LoginResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LoginResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String role, @JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LoginResponse() when $default != null:
+return $default(_that.id,_that.role,_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String role, @JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)  $default,) {final _that = this;
+switch (_that) {
+case _LoginResponse():
+return $default(_that.id,_that.role,_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String role, @JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)?  $default,) {final _that = this;
+switch (_that) {
+case _LoginResponse() when $default != null:
+return $default(_that.id,_that.role,_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _LoginResponse implements LoginResponse {
+  const _LoginResponse({required this.id, required this.role, @JsonKey(name: "refresh_token") required this.refreshToken, @JsonKey(name: "refresh_token_expires_at") required this.refreshTokenExpiresAt, @JsonKey(name: "access_token") required this.accessToken, @JsonKey(name: "access_token_expires_at") required this.accessTokenExpiresAt});
+  factory _LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
+
+@override final  int id;
+@override final  String role;
+@override@JsonKey(name: "refresh_token") final  String refreshToken;
+@override@JsonKey(name: "refresh_token_expires_at") final  DateTime refreshTokenExpiresAt;
+@override@JsonKey(name: "access_token") final  String accessToken;
+@override@JsonKey(name: "access_token_expires_at") final  DateTime accessTokenExpiresAt;
+
+/// Create a copy of LoginResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoginResponseCopyWith<_LoginResponse> get copyWith => __$LoginResponseCopyWithImpl<_LoginResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$LoginResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.role, role) || other.role == role)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.refreshTokenExpiresAt, refreshTokenExpiresAt) || other.refreshTokenExpiresAt == refreshTokenExpiresAt)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.accessTokenExpiresAt, accessTokenExpiresAt) || other.accessTokenExpiresAt == accessTokenExpiresAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,role,refreshToken,refreshTokenExpiresAt,accessToken,accessTokenExpiresAt);
+
+@override
+String toString() {
+  return 'LoginResponse(id: $id, role: $role, refreshToken: $refreshToken, refreshTokenExpiresAt: $refreshTokenExpiresAt, accessToken: $accessToken, accessTokenExpiresAt: $accessTokenExpiresAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoginResponseCopyWith<$Res> implements $LoginResponseCopyWith<$Res> {
+  factory _$LoginResponseCopyWith(_LoginResponse value, $Res Function(_LoginResponse) _then) = __$LoginResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String role,@JsonKey(name: "refresh_token") String refreshToken,@JsonKey(name: "refresh_token_expires_at") DateTime refreshTokenExpiresAt,@JsonKey(name: "access_token") String accessToken,@JsonKey(name: "access_token_expires_at") DateTime accessTokenExpiresAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$LoginResponseCopyWithImpl<$Res>
+    implements _$LoginResponseCopyWith<$Res> {
+  __$LoginResponseCopyWithImpl(this._self, this._then);
+
+  final _LoginResponse _self;
+  final $Res Function(_LoginResponse) _then;
+
+/// Create a copy of LoginResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? role = null,Object? refreshToken = null,Object? refreshTokenExpiresAt = null,Object? accessToken = null,Object? accessTokenExpiresAt = null,}) {
+  return _then(_LoginResponse(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,refreshTokenExpiresAt: null == refreshTokenExpiresAt ? _self.refreshTokenExpiresAt : refreshTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
+as String,accessTokenExpiresAt: null == accessTokenExpiresAt ? _self.accessTokenExpiresAt : accessTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RefreshTokenResponse {
+
+@JsonKey(name: "refresh_token") String get refreshToken;@JsonKey(name: "refresh_token_expires_at") DateTime get refreshTokenExpiresAt;@JsonKey(name: "access_token") String get accessToken;@JsonKey(name: "access_token_expires_at") DateTime get accessTokenExpiresAt;
+/// Create a copy of RefreshTokenResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RefreshTokenResponseCopyWith<RefreshTokenResponse> get copyWith => _$RefreshTokenResponseCopyWithImpl<RefreshTokenResponse>(this as RefreshTokenResponse, _$identity);
+
+  /// Serializes this RefreshTokenResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshTokenResponse&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.refreshTokenExpiresAt, refreshTokenExpiresAt) || other.refreshTokenExpiresAt == refreshTokenExpiresAt)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.accessTokenExpiresAt, accessTokenExpiresAt) || other.accessTokenExpiresAt == accessTokenExpiresAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken,refreshTokenExpiresAt,accessToken,accessTokenExpiresAt);
+
+@override
+String toString() {
+  return 'RefreshTokenResponse(refreshToken: $refreshToken, refreshTokenExpiresAt: $refreshTokenExpiresAt, accessToken: $accessToken, accessTokenExpiresAt: $accessTokenExpiresAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RefreshTokenResponseCopyWith<$Res>  {
+  factory $RefreshTokenResponseCopyWith(RefreshTokenResponse value, $Res Function(RefreshTokenResponse) _then) = _$RefreshTokenResponseCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken,@JsonKey(name: "refresh_token_expires_at") DateTime refreshTokenExpiresAt,@JsonKey(name: "access_token") String accessToken,@JsonKey(name: "access_token_expires_at") DateTime accessTokenExpiresAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$RefreshTokenResponseCopyWithImpl<$Res>
+    implements $RefreshTokenResponseCopyWith<$Res> {
+  _$RefreshTokenResponseCopyWithImpl(this._self, this._then);
+
+  final RefreshTokenResponse _self;
+  final $Res Function(RefreshTokenResponse) _then;
+
+/// Create a copy of RefreshTokenResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? refreshToken = null,Object? refreshTokenExpiresAt = null,Object? accessToken = null,Object? accessTokenExpiresAt = null,}) {
+  return _then(_self.copyWith(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,refreshTokenExpiresAt: null == refreshTokenExpiresAt ? _self.refreshTokenExpiresAt : refreshTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
+as String,accessTokenExpiresAt: null == accessTokenExpiresAt ? _self.accessTokenExpiresAt : accessTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RefreshTokenResponse].
+extension RefreshTokenResponsePatterns on RefreshTokenResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RefreshTokenResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RefreshTokenResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RefreshTokenResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _RefreshTokenResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RefreshTokenResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RefreshTokenResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RefreshTokenResponse() when $default != null:
+return $default(_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)  $default,) {final _that = this;
+switch (_that) {
+case _RefreshTokenResponse():
+return $default(_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "refresh_token")  String refreshToken, @JsonKey(name: "refresh_token_expires_at")  DateTime refreshTokenExpiresAt, @JsonKey(name: "access_token")  String accessToken, @JsonKey(name: "access_token_expires_at")  DateTime accessTokenExpiresAt)?  $default,) {final _that = this;
+switch (_that) {
+case _RefreshTokenResponse() when $default != null:
+return $default(_that.refreshToken,_that.refreshTokenExpiresAt,_that.accessToken,_that.accessTokenExpiresAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RefreshTokenResponse implements RefreshTokenResponse {
+  const _RefreshTokenResponse({@JsonKey(name: "refresh_token") required this.refreshToken, @JsonKey(name: "refresh_token_expires_at") required this.refreshTokenExpiresAt, @JsonKey(name: "access_token") required this.accessToken, @JsonKey(name: "access_token_expires_at") required this.accessTokenExpiresAt});
+  factory _RefreshTokenResponse.fromJson(Map<String, dynamic> json) => _$RefreshTokenResponseFromJson(json);
+
+@override@JsonKey(name: "refresh_token") final  String refreshToken;
+@override@JsonKey(name: "refresh_token_expires_at") final  DateTime refreshTokenExpiresAt;
+@override@JsonKey(name: "access_token") final  String accessToken;
+@override@JsonKey(name: "access_token_expires_at") final  DateTime accessTokenExpiresAt;
+
+/// Create a copy of RefreshTokenResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RefreshTokenResponseCopyWith<_RefreshTokenResponse> get copyWith => __$RefreshTokenResponseCopyWithImpl<_RefreshTokenResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RefreshTokenResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RefreshTokenResponse&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.refreshTokenExpiresAt, refreshTokenExpiresAt) || other.refreshTokenExpiresAt == refreshTokenExpiresAt)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.accessTokenExpiresAt, accessTokenExpiresAt) || other.accessTokenExpiresAt == accessTokenExpiresAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken,refreshTokenExpiresAt,accessToken,accessTokenExpiresAt);
+
+@override
+String toString() {
+  return 'RefreshTokenResponse(refreshToken: $refreshToken, refreshTokenExpiresAt: $refreshTokenExpiresAt, accessToken: $accessToken, accessTokenExpiresAt: $accessTokenExpiresAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RefreshTokenResponseCopyWith<$Res> implements $RefreshTokenResponseCopyWith<$Res> {
+  factory _$RefreshTokenResponseCopyWith(_RefreshTokenResponse value, $Res Function(_RefreshTokenResponse) _then) = __$RefreshTokenResponseCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken,@JsonKey(name: "refresh_token_expires_at") DateTime refreshTokenExpiresAt,@JsonKey(name: "access_token") String accessToken,@JsonKey(name: "access_token_expires_at") DateTime accessTokenExpiresAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$RefreshTokenResponseCopyWithImpl<$Res>
+    implements _$RefreshTokenResponseCopyWith<$Res> {
+  __$RefreshTokenResponseCopyWithImpl(this._self, this._then);
+
+  final _RefreshTokenResponse _self;
+  final $Res Function(_RefreshTokenResponse) _then;
+
+/// Create a copy of RefreshTokenResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? refreshToken = null,Object? refreshTokenExpiresAt = null,Object? accessToken = null,Object? accessTokenExpiresAt = null,}) {
+  return _then(_RefreshTokenResponse(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,refreshTokenExpiresAt: null == refreshTokenExpiresAt ? _self.refreshTokenExpiresAt : refreshTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
+as String,accessTokenExpiresAt: null == accessTokenExpiresAt ? _self.accessTokenExpiresAt : accessTokenExpiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RefreshTokenRequest {
+
+@JsonKey(name: "refresh_token") String get refreshToken;
+/// Create a copy of RefreshTokenRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RefreshTokenRequestCopyWith<RefreshTokenRequest> get copyWith => _$RefreshTokenRequestCopyWithImpl<RefreshTokenRequest>(this as RefreshTokenRequest, _$identity);
+
+  /// Serializes this RefreshTokenRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshTokenRequest&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken);
+
+@override
+String toString() {
+  return 'RefreshTokenRequest(refreshToken: $refreshToken)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RefreshTokenRequestCopyWith<$Res>  {
+  factory $RefreshTokenRequestCopyWith(RefreshTokenRequest value, $Res Function(RefreshTokenRequest) _then) = _$RefreshTokenRequestCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken
+});
+
+
+
+
+}
+/// @nodoc
+class _$RefreshTokenRequestCopyWithImpl<$Res>
+    implements $RefreshTokenRequestCopyWith<$Res> {
+  _$RefreshTokenRequestCopyWithImpl(this._self, this._then);
+
+  final RefreshTokenRequest _self;
+  final $Res Function(RefreshTokenRequest) _then;
+
+/// Create a copy of RefreshTokenRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? refreshToken = null,}) {
+  return _then(_self.copyWith(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RefreshTokenRequest].
+extension RefreshTokenRequestPatterns on RefreshTokenRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RefreshTokenRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RefreshTokenRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RefreshTokenRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _RefreshTokenRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RefreshTokenRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RefreshTokenRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RefreshTokenRequest() when $default != null:
+return $default(_that.refreshToken);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken)  $default,) {final _that = this;
+switch (_that) {
+case _RefreshTokenRequest():
+return $default(_that.refreshToken);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "refresh_token")  String refreshToken)?  $default,) {final _that = this;
+switch (_that) {
+case _RefreshTokenRequest() when $default != null:
+return $default(_that.refreshToken);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RefreshTokenRequest implements RefreshTokenRequest {
+  const _RefreshTokenRequest({@JsonKey(name: "refresh_token") required this.refreshToken});
+  factory _RefreshTokenRequest.fromJson(Map<String, dynamic> json) => _$RefreshTokenRequestFromJson(json);
+
+@override@JsonKey(name: "refresh_token") final  String refreshToken;
+
+/// Create a copy of RefreshTokenRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RefreshTokenRequestCopyWith<_RefreshTokenRequest> get copyWith => __$RefreshTokenRequestCopyWithImpl<_RefreshTokenRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RefreshTokenRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RefreshTokenRequest&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken);
+
+@override
+String toString() {
+  return 'RefreshTokenRequest(refreshToken: $refreshToken)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RefreshTokenRequestCopyWith<$Res> implements $RefreshTokenRequestCopyWith<$Res> {
+  factory _$RefreshTokenRequestCopyWith(_RefreshTokenRequest value, $Res Function(_RefreshTokenRequest) _then) = __$RefreshTokenRequestCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken
+});
+
+
+
+
+}
+/// @nodoc
+class __$RefreshTokenRequestCopyWithImpl<$Res>
+    implements _$RefreshTokenRequestCopyWith<$Res> {
+  __$RefreshTokenRequestCopyWithImpl(this._self, this._then);
+
+  final _RefreshTokenRequest _self;
+  final $Res Function(_RefreshTokenRequest) _then;
+
+/// Create a copy of RefreshTokenRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? refreshToken = null,}) {
+  return _then(_RefreshTokenRequest(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$LogoutRequest {
+
+@JsonKey(name: "refresh_token") String get refreshToken;
+/// Create a copy of LogoutRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LogoutRequestCopyWith<LogoutRequest> get copyWith => _$LogoutRequestCopyWithImpl<LogoutRequest>(this as LogoutRequest, _$identity);
+
+  /// Serializes this LogoutRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutRequest&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken);
+
+@override
+String toString() {
+  return 'LogoutRequest(refreshToken: $refreshToken)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LogoutRequestCopyWith<$Res>  {
+  factory $LogoutRequestCopyWith(LogoutRequest value, $Res Function(LogoutRequest) _then) = _$LogoutRequestCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken
+});
+
+
+
+
+}
+/// @nodoc
+class _$LogoutRequestCopyWithImpl<$Res>
+    implements $LogoutRequestCopyWith<$Res> {
+  _$LogoutRequestCopyWithImpl(this._self, this._then);
+
+  final LogoutRequest _self;
+  final $Res Function(LogoutRequest) _then;
+
+/// Create a copy of LogoutRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? refreshToken = null,}) {
+  return _then(_self.copyWith(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [LogoutRequest].
+extension LogoutRequestPatterns on LogoutRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LogoutRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LogoutRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LogoutRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _LogoutRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LogoutRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LogoutRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LogoutRequest() when $default != null:
+return $default(_that.refreshToken);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "refresh_token")  String refreshToken)  $default,) {final _that = this;
+switch (_that) {
+case _LogoutRequest():
+return $default(_that.refreshToken);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "refresh_token")  String refreshToken)?  $default,) {final _that = this;
+switch (_that) {
+case _LogoutRequest() when $default != null:
+return $default(_that.refreshToken);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _LogoutRequest implements LogoutRequest {
+  const _LogoutRequest({@JsonKey(name: "refresh_token") required this.refreshToken});
+  factory _LogoutRequest.fromJson(Map<String, dynamic> json) => _$LogoutRequestFromJson(json);
+
+@override@JsonKey(name: "refresh_token") final  String refreshToken;
+
+/// Create a copy of LogoutRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LogoutRequestCopyWith<_LogoutRequest> get copyWith => __$LogoutRequestCopyWithImpl<_LogoutRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$LogoutRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LogoutRequest&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,refreshToken);
+
+@override
+String toString() {
+  return 'LogoutRequest(refreshToken: $refreshToken)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LogoutRequestCopyWith<$Res> implements $LogoutRequestCopyWith<$Res> {
+  factory _$LogoutRequestCopyWith(_LogoutRequest value, $Res Function(_LogoutRequest) _then) = __$LogoutRequestCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "refresh_token") String refreshToken
+});
+
+
+
+
+}
+/// @nodoc
+class __$LogoutRequestCopyWithImpl<$Res>
+    implements _$LogoutRequestCopyWith<$Res> {
+  __$LogoutRequestCopyWithImpl(this._self, this._then);
+
+  final _LogoutRequest _self;
+  final $Res Function(_LogoutRequest) _then;
+
+/// Create a copy of LogoutRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? refreshToken = null,}) {
+  return _then(_LogoutRequest(
+refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 // dart format on

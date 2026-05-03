@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/remote/auth.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/token_storage.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class AuthUserState extends Equatable {
@@ -51,45 +52,57 @@ abstract interface class AuthRepository {
 class AuthDataSource implements AuthRepository {
   final Dio _dioUploaded;
   final AuthService service;
+  final TokenStorage tokenStorage;
+
+  StreamSubscription? _tokenSubscription;
 
   Resource<AuthUserState?> _lastState = ResourceLoading();
   final _stateTriggerController = StreamController<void>();
   final _stateController =
-      StreamController<Resource<AuthUserState?>>.broadcast();
+  StreamController<Resource<AuthUserState?>>.broadcast();
   StreamSubscription? _stateSubscription;
 
   int? _lastFcmTokenId;
   StreamSubscription? _fcmTokenUpdater, _fcmStateSubscription;
   Completer? _fcmTokenCompleter, _fcmTokenStopSignal;
 
-  AuthDataSource({required this.service, required Dio dioUploaded})
-    : _dioUploaded = dioUploaded {
+  AuthDataSource({
+    required this.service,
+    required Dio dioUploaded,
+    required this.tokenStorage,
+  }) : _dioUploaded = dioUploaded {
     _stateSubscription = _stateTriggerController.stream
         .asyncMap((void _) => _getUserState())
         .listen((data) {
-          _stateController.add(data);
-        });
+      _stateController.add(data);
+    });
     _stateTriggerController.add(null);
 
     _fcmStateSubscription = _stateController.stream
         .map((state) {
-          switch (state) {
-            case ResourceLoading<AuthUserState?>():
-              return false;
-            case ResourceSuccess<AuthUserState?>():
-              return state.data != null;
-            case ResourceError<AuthUserState?>():
-              return false;
-          }
-        })
+      switch (state) {
+        case ResourceLoading<AuthUserState?>():
+          return false;
+        case ResourceSuccess<AuthUserState?>():
+          return state.data != null;
+        case ResourceError<AuthUserState?>():
+          return false;
+      }
+    })
         .distinct()
         .listen((data) {
-          if (data) {
-            _startFcmTokenUpdater();
-          } else {
-            _stopFcmTokenUpdater();
-          }
-        });
+      if (data) {
+        _startFcmTokenUpdater();
+      } else {
+        _stopFcmTokenUpdater();
+      }
+    });
+
+    _tokenSubscription = tokenStorage.watchChanged().listen((data) {
+      if (data.$1 == null || data.$2 == null) {
+        _stateTriggerController.add(null);
+      }
+    });
   }
 
   @override
@@ -100,7 +113,9 @@ class AuthDataSource implements AuthRepository {
 
   Future<Resource<AuthUserState?>> _getUserState() async {
     try {
-      final result = await service.getUserState();
+      final haveToken = (await tokenStorage.getAccessToken() != null) &&
+          (await tokenStorage.getRefreshToken() != null);
+      final result = !haveToken ? null : await service.getUserState();
 
       if (result != null) {
         _lastState = ResourceSuccess(
@@ -127,9 +142,7 @@ class AuthDataSource implements AuthRepository {
   Stream<String?> _getFcmTokenStream() async* {
     const webVapidKey = String.fromEnvironment("WEB_VAPID_KEY");
     yield await FirebaseMessaging.instance.getToken(
-      vapidKey: kIsWeb
-          ? webVapidKey
-          : null,
+      vapidKey: kIsWeb ? webVapidKey : null,
     );
     yield* FirebaseMessaging.instance.onTokenRefresh;
   }
@@ -146,42 +159,42 @@ class AuthDataSource implements AuthRepository {
     _fcmTokenUpdater = _getFcmTokenStream()
         .takeUntil(stopSignal.future)
         .asyncExpand((token) async* {
-          log("FCM new token: $token");
-          if (_lastFcmTokenId != null) {
-            while (!stopSignal.isCompleted) {
-              try {
-                await service.deleteFCMToken(_lastFcmTokenId!);
-                _lastFcmTokenId = null;
-                break;
-              } catch (e) {
-                log("Error while deleting FCM token: $e");
-                // TODO: continue when token not found
-                await Future.any([
-                  Future.delayed(Duration(seconds: 2)),
-                  stopSignal.future,
-                ]);
-              }
-            }
+      log("FCM new token: $token");
+      if (_lastFcmTokenId != null) {
+        while (!stopSignal.isCompleted) {
+          try {
+            await service.deleteFCMToken(_lastFcmTokenId!);
+            _lastFcmTokenId = null;
+            break;
+          } catch (e) {
+            log("Error while deleting FCM token: $e");
+            // TODO: continue when token not found
+            await Future.any([
+              Future.delayed(Duration(seconds: 2)),
+              stopSignal.future,
+            ]);
           }
-          if (token != null) {
-            while (!stopSignal.isCompleted) {
-              try {
-                final result = await service.addFCMToken(
-                  FCMTokenAddRequest(token: token),
-                );
-                _lastFcmTokenId = result.id;
-                log("FCM token id: ${result.id}");
-                break;
-              } catch (e) {
-                log("Error while sending FCM token to server: $e");
-                await Future.any([
-                  Future.delayed(Duration(seconds: 2)),
-                  stopSignal.future,
-                ]);
-              }
-            }
+        }
+      }
+      if (token != null) {
+        while (!stopSignal.isCompleted) {
+          try {
+            final result = await service.addFCMToken(
+              FCMTokenAddRequest(token: token),
+            );
+            _lastFcmTokenId = result.id;
+            log("FCM token id: ${result.id}");
+            break;
+          } catch (e) {
+            log("Error while sending FCM token to server: $e");
+            await Future.any([
+              Future.delayed(Duration(seconds: 2)),
+              stopSignal.future,
+            ]);
           }
-        })
+        }
+      }
+    })
         .listen((event) {}, onDone: () => completer.complete());
   }
 
@@ -215,7 +228,12 @@ class AuthDataSource implements AuthRepository {
   @override
   Future<Result<void>> login(String email, String password) async {
     try {
-      await service.login(LoginRequest(email: email, password: password));
+      final result = await service.login(
+          LoginRequest(email: email, password: password));
+      await tokenStorage.saveTokens(
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      );
       _stateTriggerController.add(null);
       return ResultSuccess(null);
     } catch (e) {
@@ -232,8 +250,14 @@ class AuthDataSource implements AuthRepository {
         // TODO: When not found must not error
         _lastFcmTokenId = null;
       }
-      await service.logout();
-      _stateTriggerController.add(null);
+      final token = await tokenStorage.getRefreshToken();
+      if (token != null) {
+        await service.logout(
+          LogoutRequest(refreshToken: token),
+        );
+      }
+      await tokenStorage.clearTokens();
+      // Refresh is handled by token subscription
       return ResultSuccess(null);
     } catch (e) {
       return mapDioErrorToResult(e);
@@ -264,7 +288,8 @@ class AuthDataSource implements AuthRepository {
         options: Options(headers: headers),
       );
       await service.confirmAvatar(
-          UserAvatarConfirmRequest(name: presigned.name));
+        UserAvatarConfirmRequest(name: presigned.name),
+      );
       _stateTriggerController.add(null);
       return ResultSuccess(null);
     } catch (e) {
@@ -274,6 +299,7 @@ class AuthDataSource implements AuthRepository {
 
   @override
   void dispose() {
+    _tokenSubscription?.cancel();
     _fcmStateSubscription?.cancel();
     _stateSubscription?.cancel();
     _stateController.close();

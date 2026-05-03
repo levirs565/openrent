@@ -3,40 +3,47 @@ package core
 import (
 	"net/http"
 	"openrent-server/models"
+	"strconv"
+	"strings"
 
-	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v5"
 )
 
 const (
-	rawSessionKey  string = "session"
 	userSessionKey string = "user_session"
 )
 
-func NewSessionMiddleware(store sessions.Store) echo.MiddlewareFunc {
+func NewSessionMiddleware(tokenHelper *TokenHelper) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
-			session, err := store.Get(c.Request(), "session")
-			if err != nil {
-				return err
+			authorization := c.Request().Header.Get("Authorization")
+
+			session := UserSession{
+				IsLoggedIn: false,
+				ID:         0,
+			}
+			if after, ok := strings.CutPrefix(authorization, "Bearer "); ok {
+				token := after
+				claims, err := tokenHelper.VerifyAccessToken(token)
+
+				if err != nil {
+					return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
+				}
+
+				id, err := strconv.ParseUint(claims.Subject, 10, 64)
+				if err == nil {
+					session.IsLoggedIn = true
+					session.ID = uint(id)
+					session.Role = string(claims.Role)
+				}
+
 			}
 
-			userSession := GetUserSessionFromSession(session)
-
-			c.Set(rawSessionKey, session)
-			c.Set(userSessionKey, userSession)
+			c.Set(userSessionKey, session)
 
 			return next(c)
 		}
 	}
-}
-
-func GetSession(c *echo.Context) *sessions.Session {
-	session, err := echo.ContextGet[*sessions.Session](c, rawSessionKey)
-	if err != nil {
-		panic("SessionMiddleware is not registerd")
-	}
-	return session
 }
 
 func GetUserSession(c *echo.Context) UserSession {
@@ -47,30 +54,10 @@ func GetUserSession(c *echo.Context) UserSession {
 	return session
 }
 
-func SetUserSession(session *sessions.Session, user UserSession) {
-	session.Values[userIdKey] = user.ID
-	session.Values[userRoleKey] = user.Role
-}
-
 type UserSession struct {
 	IsLoggedIn bool
 	ID         uint
 	Role       string
-}
-
-const (
-	userIdKey   = "user_id"
-	userRoleKey = "user_role"
-)
-
-func GetUserSessionFromSession(session *sessions.Session) UserSession {
-	id, hasId := session.Values[userIdKey].(uint)
-	role, hasRole := session.Values[userRoleKey].(string)
-	return UserSession{
-		ID:         id,
-		Role:       role,
-		IsLoggedIn: hasId && hasRole,
-	}
 }
 
 type GuardRoleRule string

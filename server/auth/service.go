@@ -26,18 +26,21 @@ var ErrInvalidContentType = errors.New("invalid content type")
 var ErrAvatarSizeExceedLimit = errors.New("avatar size exceeds limits")
 var ErrAvatarNotFound = errors.New("avatar not found")
 var ErrFCMTokenNotFound = errors.New("fcm token not found")
+var ErrInvalidRefreshToken = errors.New("invalid refresh token")
 
 type Service struct {
-	db       *gorm.DB
-	s3       *s3.Client
-	s3Bucket string
+	db          *gorm.DB
+	s3          *s3.Client
+	s3Bucket    string
+	tokenHelper *core.TokenHelper
 }
 
-func NewService(db *gorm.DB, s3Client *s3.Client, s3Bucket string) *Service {
+func NewService(db *gorm.DB, s3Client *s3.Client, s3Bucket string, tokenHelper *core.TokenHelper) *Service {
 	return &Service{
-		db:       db,
-		s3:       s3Client,
-		s3Bucket: s3Bucket,
+		db:          db,
+		s3:          s3Client,
+		s3Bucket:    s3Bucket,
+		tokenHelper: tokenHelper,
 	}
 }
 
@@ -78,8 +81,12 @@ func (s *Service) CreateUserAccount(ctx context.Context, input CreateUserInput) 
 }
 
 type LoginResult struct {
-	ID   uint
-	Role string
+	ID                    uint      `json:"id"`
+	Role                  string    `json:"role"`
+	RefreshToken          string    `json:"refresh_token"`
+	RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
+	AccessToken           string    `json:"access_token"`
+	AccessTokenExpiresAt  time.Time `json:"access_token_expires_at"`
 }
 
 func (s *Service) Login(ctx context.Context, email string, password string) (LoginResult, error) {
@@ -103,9 +110,134 @@ func (s *Service) Login(ctx context.Context, email string, password string) (Log
 		return LoginResult{}, ErrPasswordNotMatch
 	}
 
+	token, err := s.tokenHelper.GenerateToken(account.ID, models.AccountRole(account.Role))
+
+	if err != nil {
+		return LoginResult{}, err
+	}
+
+	err = gorm.G[models.RefreshToken](s.db).Create(ctx, &models.RefreshToken{
+		AccountID: account.ID,
+		TokenHash: token.RefreshTokenHash,
+		ExpiresAt: token.RefreshTokenExpiresAt,
+	})
+
+	if err != nil {
+		return LoginResult{}, err
+	}
+
 	return LoginResult{
-		ID:   account.ID,
-		Role: account.Role,
+		ID:                    account.ID,
+		Role:                  account.Role,
+		RefreshToken:          token.RefreshToken,
+		RefreshTokenExpiresAt: token.RefreshTokenExpiresAt,
+		AccessToken:           token.AccessToken,
+		AccessTokenExpiresAt:  token.AccessTokenExpiresAt,
+	}, nil
+}
+
+func (s *Service) Logout(ctx context.Context, refreshToken string) error {
+	tokenHash := s.tokenHelper.HashToken(refreshToken)
+	rowsAffected, err := gorm.G[models.RefreshToken](s.db).
+		Where("token_hash = ?", tokenHash).
+		Delete(ctx)
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return ErrInvalidRefreshToken
+	}
+	return nil
+}
+
+type RefreshTokenResult struct {
+	RefreshToken          string    `json:"refresh_token"`
+	RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
+	AccessToken           string    `json:"access_token"`
+	AccessTokenExpiresAt  time.Time `json:"access_token_expires_at"`
+}
+
+func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (RefreshTokenResult, error) {
+	tokenHash := s.tokenHelper.HashToken(refreshToken)
+	var tokenResult *core.TokenResult
+
+	err := s.db.Transaction(func(tx *gorm.DB) error {
+		tokenModel := models.RefreshToken{}
+		err := tx.WithContext(ctx).
+			Model(&tokenModel).
+			Clauses(clause.Locking{Strength: "UPDATE"}).
+			Select("id", "expires_at", "account_id", "replaced_by_id").
+			Where("token_hash = ?", tokenHash).
+			First(&tokenModel).Error
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrInvalidRefreshToken
+			}
+			return err
+		}
+
+		if time.Now().After(tokenModel.ExpiresAt) {
+			return ErrInvalidRefreshToken
+		}
+
+		// TODO: After token is deleted, query never return deleted token
+		if tokenModel.ReplacedByID != nil {
+			return ErrInvalidRefreshToken
+		}
+
+		userModel, err := gorm.G[models.Account](tx).
+			Select("Role").
+			Where("id = ?", tokenModel.AccountID).
+			First(ctx)
+
+		if err != nil {
+			return err
+		}
+
+		newToken, err := s.tokenHelper.GenerateToken(tokenModel.AccountID, models.AccountRole(userModel.Role))
+		if err != nil {
+			return err
+		}
+
+		tokenResult = newToken
+
+		newTokenModel := models.RefreshToken{
+			AccountID: tokenModel.AccountID,
+			TokenHash: newToken.RefreshTokenHash,
+			ExpiresAt: newToken.RefreshTokenExpiresAt,
+		}
+
+		err = gorm.G[models.RefreshToken](tx).
+			Create(ctx, &newTokenModel)
+
+		if err != nil {
+			return err
+		}
+
+		_, err = gorm.G[models.RefreshToken](tx).
+			Where("id = ?", tokenModel.ID).
+			Update(ctx, "replaced_by_id", newTokenModel.ID)
+		if err != nil {
+			return err
+		}
+
+		_, err = gorm.G[models.RefreshToken](tx).
+			Where("id = ?", tokenModel.ID).
+			Delete(ctx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return RefreshTokenResult{}, err
+	}
+	return RefreshTokenResult{
+		RefreshToken:          tokenResult.RefreshToken,
+		RefreshTokenExpiresAt: tokenResult.RefreshTokenExpiresAt,
+		AccessToken:           tokenResult.AccessToken,
+		AccessTokenExpiresAt:  tokenResult.AccessTokenExpiresAt,
 	}, nil
 }
 
@@ -219,12 +351,12 @@ func (s *Service) ConfirmUserAvatar(ctx context.Context, userId uint, name strin
 
 	rows, err := gorm.G[models.UserAccount](s.db).Where("account_id = ?", userId).Update(ctx, "avatar_name", name)
 
-	if rows == 0 {
-		return ErrUserNotFound
-	}
-
 	if err != nil {
 		return err
+	}
+
+	if rows == 0 {
+		return ErrUserNotFound
 	}
 
 	if model.AvatarName != "" {
@@ -280,12 +412,12 @@ func (s *Service) RemoveFCMToken(ctx context.Context, userId uint, id uint) erro
 		Where("user_account_id = ? AND id = ?", userId, id).
 		Delete(ctx)
 
-	if rows == 0 {
-		return ErrFCMTokenNotFound
-	}
-
 	if err != nil {
 		return err
+	}
+
+	if rows == 0 {
+		return ErrFCMTokenNotFound
 	}
 
 	return nil

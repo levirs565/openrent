@@ -15,13 +15,16 @@ abstract class AuthService {
   Future<ActionResponse> register(@Body() RegisterRequest data);
 
   @POST("/auth/login")
-  Future<ActionResponse> login(@Body() LoginRequest data);
+  Future<LoginResponse> login(@Body() LoginRequest data);
 
   @GET("/auth/state")
   Future<UserStateResponse?> getUserState();
 
   @POST("/auth/logout")
-  Future<ActionResponse> logout();
+  Future<ActionResponse> logout(@Body() LogoutRequest request);
+
+  @POST("/auth/refresh_token")
+  Future<RefreshTokenResponse> refreshToken(@Body() RefreshTokenRequest request);
 
   @POST("/auth/avatar/presigned-url")
   Future<UserAvatarPresignedResponse> createAvatarPresignedUrl(
@@ -155,4 +158,52 @@ abstract class FCMTokenAddResponse with _$FCMTokenAddResponse {
 
   factory FCMTokenAddResponse.fromJson(Map<String, dynamic> json) =>
       _$FCMTokenAddResponseFromJson(json);
+}
+
+@freezed
+abstract class LoginResponse with _$LoginResponse {
+  const factory LoginResponse({
+    required int id,
+    required String role,
+    @JsonKey(name: "refresh_token") required String refreshToken,
+    @JsonKey(name: "refresh_token_expires_at") required DateTime refreshTokenExpiresAt,
+    @JsonKey(name: "access_token") required String accessToken,
+    @JsonKey(name: "access_token_expires_at") required DateTime accessTokenExpiresAt,
+  }) = _LoginResponse;
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
+}
+
+@freezed
+abstract class RefreshTokenResponse with _$RefreshTokenResponse {
+  const factory RefreshTokenResponse({
+    @JsonKey(name: "refresh_token") required String refreshToken,
+    @JsonKey(name: "refresh_token_expires_at") required DateTime refreshTokenExpiresAt,
+    @JsonKey(name: "access_token") required String accessToken,
+    @JsonKey(name: "access_token_expires_at") required DateTime accessTokenExpiresAt,
+  }) = _RefreshTokenResponse;
+
+  factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) =>
+      _$RefreshTokenResponseFromJson(json);
+}
+
+@freezed
+abstract class RefreshTokenRequest with _$RefreshTokenRequest {
+  const factory RefreshTokenRequest({
+    @JsonKey(name: "refresh_token") required String refreshToken,
+  }) = _RefreshTokenRequest;
+
+  factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) =>
+      _$RefreshTokenRequestFromJson(json);
+}
+
+@freezed
+abstract class LogoutRequest with _$LogoutRequest {
+  const factory LogoutRequest({
+    @JsonKey(name: "refresh_token") required String refreshToken,
+  }) = _LogoutRequest;
+
+  factory LogoutRequest.fromJson(Map<String, dynamic> json) =>
+      _$LogoutRequestFromJson(json);
 }

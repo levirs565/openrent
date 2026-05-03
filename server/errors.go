@@ -12,6 +12,7 @@ import (
 	"openrent-server/product"
 	"openrent-server/rent"
 	"openrent-server/review"
+	"openrent-server/user"
 
 	"github.com/labstack/echo/v5"
 )
@@ -28,6 +29,7 @@ var error_codes map[error]int = map[error]int{
 	auth.ErrAvatarSizeExceedLimit: http.StatusBadRequest,
 	auth.ErrAvatarNotFound:        http.StatusBadRequest,
 	auth.ErrFCMTokenNotFound:      http.StatusNotFound,
+	auth.ErrInvalidRefreshToken:   http.StatusUnauthorized,
 
 	chat.ErrCannotSendToSelf: http.StatusConflict,
 
@@ -55,6 +57,8 @@ var error_codes map[error]int = map[error]int{
 	rent.ErrReviewDuplicated: http.StatusConflict,
 
 	review.ErrNotFound: http.StatusNotFound,
+
+	user.ErrNotFound: http.StatusNotFound,
 }
 
 func mapError(err error) error {
