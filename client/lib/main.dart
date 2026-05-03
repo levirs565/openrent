@@ -29,6 +29,7 @@ import 'package:openrent_client/ui/home.dart';
 import 'package:openrent_client/ui/login/page.dart';
 import 'package:openrent_client/ui/splash.dart';
 
+import 'data/local/token_storage.dart';
 import 'data/remote/address.dart';
 import 'data/remote/auth.dart';
 import 'data/remote/chat.dart';
@@ -50,7 +51,9 @@ void main() async {
 
   await openSettingsBox();
 
-  final dioInstance = await createRemoteDio();
+  final tokenStorage = HiveTokenStorage();
+  final dioInstance = await createRemoteDio(tokenStorage);
+
   final authService = AuthService(dioInstance);
   final addressService = AddressService(dioInstance);
   final productService = ProductService(dioInstance);
@@ -68,8 +71,11 @@ void main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (_) =>
-              AuthDataSource(service: authService, dioUploaded: Dio()),
+          create: (_) => AuthDataSource(
+            service: authService,
+            dioUploaded: Dio(),
+            tokenStorage: tokenStorage,
+          ),
           dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<AddressRepository>(
