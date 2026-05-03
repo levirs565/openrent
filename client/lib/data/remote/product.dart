@@ -23,6 +23,9 @@ abstract class ProductService {
     @Query("lat") double? lat,
     @Query("lng") double? lng,
     @Query("radius_km") int? radiusKm,
+    @Query("start_date") String? startDate,
+    @Query("end_date") String? endDate,
+    @Query("quantity") int? quantity,
     @CancelRequest() CancelToken? cancelToken,
   });
 

@@ -437,6 +437,9 @@ class _ProductService implements ProductService {
     double? lat,
     double? lng,
     int? radiusKm,
+    String? startDate,
+    String? endDate,
+    int? quantity,
     CancelToken? cancelToken,
   }) async {
     final _extra = <String, dynamic>{};
@@ -448,6 +451,9 @@ class _ProductService implements ProductService {
       r'lat': lat,
       r'lng': lng,
       r'radius_km': radiusKm,
+      r'start_date': startDate,
+      r'end_date': endDate,
+      r'quantity': quantity,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
