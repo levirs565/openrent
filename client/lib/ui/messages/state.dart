@@ -10,8 +10,6 @@ enum MessagesErrorSource { data, dataUser, actionSend }
 
 typedef MessagesError = ErrorData<MessagesErrorSource>;
 
-// TODO: Other user data
-
 @freezed
 abstract class MessagesState with _$MessagesState {
   const MessagesState._();

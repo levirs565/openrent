@@ -45,11 +45,11 @@ abstract mixin class $MyAddressesStateCopyWith<$Res>  {
   factory $MyAddressesStateCopyWith(MyAddressesState value, $Res Function(MyAddressesState) _then) = _$MyAddressesStateCopyWithImpl;
 @useResult
 $Res call({
- List<AddressResponseItem> data, ErrorData<MyAddressesErrorSource>? error, DataStatus dataStatus, bool isActionLoading
+ DataStatus dataStatus, bool isActionLoading, List<AddressResponseItem> data, MyAddressesError? error
 });
 
 
-
+$ErrorDataCopyWith<MyAddressesErrorSource, $Res>? get error;
 
 }
 /// @nodoc
@@ -62,16 +62,28 @@ class _$MyAddressesStateCopyWithImpl<$Res>
 
 /// Create a copy of MyAddressesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? error = freezed,Object? dataStatus = null,Object? isActionLoading = null,}) {
-  return _then(MyAddressesState(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as List<AddressResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as ErrorData<MyAddressesErrorSource>?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? dataStatus = null,Object? isActionLoading = null,Object? data = null,Object? error = freezed,}) {
+  return _then(_self.copyWith(
+dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as List<AddressResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as MyAddressesError?,
   ));
 }
+/// Create a copy of MyAddressesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<MyAddressesErrorSource, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
 
+  return $ErrorDataCopyWith<MyAddressesErrorSource, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 
@@ -89,10 +101,11 @@ extension MyAddressesStatePatterns on MyAddressesState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MyAddressesState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -110,10 +123,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MyAddressesState value)  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -130,10 +144,11 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MyAddressesState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -150,9 +165,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DataStatus dataStatus,  bool isActionLoading,  List<AddressResponseItem> data,  MyAddressesError? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState() when $default != null:
+return $default(_that.dataStatus,_that.isActionLoading,_that.data,_that.error);case _:
   return orElse();
 
 }
@@ -170,9 +186,10 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DataStatus dataStatus,  bool isActionLoading,  List<AddressResponseItem> data,  MyAddressesError? error)  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState():
+return $default(_that.dataStatus,_that.isActionLoading,_that.data,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -189,14 +206,105 @@ case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>() {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DataStatus dataStatus,  bool isActionLoading,  List<AddressResponseItem> data,  MyAddressesError? error)?  $default,) {final _that = this;
 switch (_that) {
-case _:
+case _MyAddressesState() when $default != null:
+return $default(_that.dataStatus,_that.isActionLoading,_that.data,_that.error);case _:
   return null;
 
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _MyAddressesState extends MyAddressesState {
+  const _MyAddressesState({required this.dataStatus, required this.isActionLoading, required final  List<AddressResponseItem> data, required this.error}): _data = data,super._();
+  
+
+@override final  DataStatus dataStatus;
+@override final  bool isActionLoading;
+ final  List<AddressResponseItem> _data;
+@override List<AddressResponseItem> get data {
+  if (_data is EqualUnmodifiableListView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_data);
+}
+
+@override final  MyAddressesError? error;
+
+/// Create a copy of MyAddressesState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MyAddressesStateCopyWith<_MyAddressesState> get copyWith => __$MyAddressesStateCopyWithImpl<_MyAddressesState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyAddressesState&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,dataStatus,isActionLoading,const DeepCollectionEquality().hash(_data),error);
+
+@override
+String toString() {
+  return 'MyAddressesState(dataStatus: $dataStatus, isActionLoading: $isActionLoading, data: $data, error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MyAddressesStateCopyWith<$Res> implements $MyAddressesStateCopyWith<$Res> {
+  factory _$MyAddressesStateCopyWith(_MyAddressesState value, $Res Function(_MyAddressesState) _then) = __$MyAddressesStateCopyWithImpl;
+@override @useResult
+$Res call({
+ DataStatus dataStatus, bool isActionLoading, List<AddressResponseItem> data, MyAddressesError? error
+});
+
+
+@override $ErrorDataCopyWith<MyAddressesErrorSource, $Res>? get error;
+
+}
+/// @nodoc
+class __$MyAddressesStateCopyWithImpl<$Res>
+    implements _$MyAddressesStateCopyWith<$Res> {
+  __$MyAddressesStateCopyWithImpl(this._self, this._then);
+
+  final _MyAddressesState _self;
+  final $Res Function(_MyAddressesState) _then;
+
+/// Create a copy of MyAddressesState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? dataStatus = null,Object? isActionLoading = null,Object? data = null,Object? error = freezed,}) {
+  return _then(_MyAddressesState(
+dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
+as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
+as bool,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as List<AddressResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as MyAddressesError?,
+  ));
+}
+
+/// Create a copy of MyAddressesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ErrorDataCopyWith<MyAddressesErrorSource, $Res>? get error {
+    if (_self.error == null) {
+    return null;
+  }
+
+  return $ErrorDataCopyWith<MyAddressesErrorSource, $Res>(_self.error!, (value) {
+    return _then(_self.copyWith(error: value));
+  });
+}
 }
 
 // dart format on

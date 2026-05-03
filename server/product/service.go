@@ -91,6 +91,32 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 		}
 	}
 
+	if !parameters.StartDate.IsZero() && !parameters.EndDate.IsZero() {
+		quntity := parameters.Quantity
+		if quntity == 0 {
+			quntity = 1
+		}
+		q = q.Joins(`
+				LEFT JOIN rents ON
+				rents.product_id = products.id AND
+				rents.state NOT IN ? AND
+				(
+					(rents.start_date <= ? AND rents.end_date >= ?) OR
+					(rents.end_date < CURRENT_DATE)
+				)
+				`,
+			[]models.RentState{
+				models.RentStateAwaitingFinalPayment,
+				models.RentStateCompleted,
+				models.RentStateCancelled,
+			},
+			datatypes.Date(parameters.EndDate),
+			datatypes.Date(parameters.StartDate),
+		).
+			Group(`products.id, "UserAccount__Account".id,  "UserAddress".id`).
+			Having("products.stock - COALESCE(SUM(rents.quantity), 0) >= ?", quntity)
+	}
+
 	var products []models.Product
 	result := q.Limit(50).Find(&products)
 
@@ -173,6 +199,11 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		return ResponseItemDetail{}, err
 	}
 
+	availability, err := core.GetRentAvailability(ctx, s.db, id)
+	if err != nil {
+		return ResponseItemDetail{}, err
+	}
+
 	return ResponseItemDetail{
 		ResponseItem: modelToResponse(model),
 		Recommendations: lo.Map(recomendations, func(item models.Product, index int) ResponseItemShort {
@@ -181,7 +212,8 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		TopReviews: lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
 			return core.ReviewDetailFromModel(item)
 		}),
-		ImageURL: core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
+		ImageURL:     core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
+		Availability: availability,
 	}, nil
 }
 

@@ -141,6 +141,9 @@ _ProductResponseItemDetail _$ProductResponseItemDetailFromJson(
   topReviews: (json['top_reviews'] as List<dynamic>)
       .map((e) => ProductReviewDetail.fromJson(e as Map<String, dynamic>))
       .toList(),
+  availability: (json['availability'] as List<dynamic>)
+      .map((e) => ProductRentsAvailability.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$ProductResponseItemDetailToJson(
@@ -159,6 +162,7 @@ Map<String, dynamic> _$ProductResponseItemDetailToJson(
   'recommendations': instance.recommendations,
   'image_url': instance.imageUrl,
   'top_reviews': instance.topReviews,
+  'availability': instance.availability,
 };
 
 _MyProductResponseItemShort _$MyProductResponseItemShortFromJson(
@@ -344,6 +348,24 @@ const _$RentStateEnumMap = {
   RentState.awaitingFinalPayment: 'final_payment',
   RentState.completed: 'completed',
   RentState.cancelled: 'cancelled',
+};
+
+_ProductRentsAvailability _$ProductRentsAvailabilityFromJson(
+  Map<String, dynamic> json,
+) => _ProductRentsAvailability(
+  startDate: const Iso8601Converter().fromJson(json['start_date'] as String),
+  endDate: const Iso8601Converter().fromJson(json['end_date'] as String),
+  quantity: (json['quantity'] as num).toInt(),
+  isOverdue: json['is_overdue'] as bool,
+);
+
+Map<String, dynamic> _$ProductRentsAvailabilityToJson(
+  _ProductRentsAvailability instance,
+) => <String, dynamic>{
+  'start_date': const Iso8601Converter().toJson(instance.startDate),
+  'end_date': const Iso8601Converter().toJson(instance.endDate),
+  'quantity': instance.quantity,
+  'is_overdue': instance.isOverdue,
 };
 
 _ProductImagePresignedRequest _$ProductImagePresignedRequestFromJson(

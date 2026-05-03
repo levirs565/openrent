@@ -113,9 +113,10 @@ func modelToRentItem(model models.Rent) RentItem {
 
 type ResponseItemDetail struct {
 	ResponseItem
-	ImageURL   *string             `json:"image_url"`
-	TopReviews []core.ReviewDetail `json:"top_reviews"`
-	Rents      []RentItem          `json:"rents"`
+	ImageURL     *string                 `json:"image_url"`
+	TopReviews   []core.ReviewDetail     `json:"top_reviews"`
+	Rents        []RentItem              `json:"rents"`
+	Availability []core.RentAvailability `json:"availability"`
 }
 
 type AddRequest struct {

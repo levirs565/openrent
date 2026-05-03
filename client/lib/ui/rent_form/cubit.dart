@@ -42,12 +42,40 @@ class RentFormCubit extends Cubit<RentFormState> {
     onRefreshExchangeRate();
   }
 
-  void setStartDate(DateTime date) {
-    emit(state.copyWith(startDate: date));
+  int getAvailableStock(DateTime day) {
+    final stateSnapshot = state;
+    if (stateSnapshot.data == null) return 0;
+
+    int usedStock = 0;
+    for (final rent in stateSnapshot.data!.availability) {
+      if (rent.isOverdue ||
+          (!rent.startDate.isAfter(day) && !rent.endDate.isBefore(day))) {
+        usedStock += rent.quantity;
+      }
+    }
+    return stateSnapshot.data!.stock - usedStock;
   }
 
-  void setEndDate(DateTime date) {
-    emit(state.copyWith(endDate: date));
+  void setSelectedRange(DateTime start, DateTime end) {
+    final stateSnapshot = state;
+    if (stateSnapshot.data == null) return;
+
+    int used = 0;
+    for (final rent in stateSnapshot.data!.availability) {
+      if (rent.isOverdue ||
+          (!rent.startDate.isAfter(end) && !rent.endDate.isBefore(start))) {
+        used += rent.quantity;
+      }
+    }
+
+    if (stateSnapshot.data!.stock - used <= 0) {
+      emit(state.copyWith(
+        error: .new(source: .dateRanges, message: "Tidak ada stok")
+      ));
+      return;
+    }
+
+    emit(state.copyWith(startDate: start, endDate: end));
   }
 
   void setQuantity(int? quantity) {

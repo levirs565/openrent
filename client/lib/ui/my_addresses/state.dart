@@ -10,18 +10,15 @@ enum MyAddressesErrorSource { data, action }
 typedef MyAddressesError = ErrorData<MyAddressesErrorSource>;
 
 @freezed
-class MyAddressesState with _$MyAddressesState {
-  final DataStatus dataStatus;
-  final bool isActionLoading;
-  final List<AddressResponseItem> data;
-  final MyAddressesError? error;
+abstract class MyAddressesState with _$MyAddressesState {
+  const factory MyAddressesState({
+    required DataStatus dataStatus,
+    required bool isActionLoading,
+    required List<AddressResponseItem> data,
+    required MyAddressesError? error,
+  }) = _MyAddressesState;
 
-  MyAddressesState({
-    required this.data,
-    required this.error,
-    required this.dataStatus,
-    required this.isActionLoading,
-  });
+  const MyAddressesState._();
 
   bool get isLoading => dataStatus == .loading || isActionLoading;
 }

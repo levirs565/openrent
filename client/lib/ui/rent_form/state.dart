@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
@@ -7,7 +9,7 @@ import 'package:openrent_client/ui/core/error_data.dart';
 
 part 'state.freezed.dart';
 
-enum RentFormErrorSource { data, exchangeRate, submit }
+enum RentFormErrorSource { data, exchangeRate, dateRanges, submit }
 
 typedef RentFormError = ErrorData<RentFormErrorSource>;
 
@@ -31,7 +33,8 @@ abstract class RentFormState with _$RentFormState {
   }) = _RentFormState;
 
   double? convertToCurrency(int? amount) {
-    if (amount == null || exchangeRate == null ||
+    if (amount == null ||
+        exchangeRate == null ||
         !exchangeRate!.conversionRates.containsKey(selectedCurrency)) {
       return null;
     }
