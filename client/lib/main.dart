@@ -51,7 +51,7 @@ void main() async {
 
   await openSettingsBox();
 
-  final tokenStorage = HiveTokenStorage();
+  final tokenStorage = SecureTokenStorage();
   final dioInstance = await createRemoteDio(tokenStorage);
 
   final authService = AuthService(dioInstance);

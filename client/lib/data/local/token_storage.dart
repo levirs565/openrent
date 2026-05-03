@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:openrent_client/data/token_storage.dart';
 
@@ -43,7 +46,42 @@ class HiveTokenStorage implements TokenStorage {
   Stream<(String?, String?)> watchChanged() async* {
     await _ensureBoxOpen();
     yield* _box!.watch().map(
-      (event) => (_box!.get(_refreshTokenKey), _box!.get(_accessTokenKey)),
+          (event) => (_box!.get(_refreshTokenKey), _box!.get(_accessTokenKey)),
     );
+  }
+}
+
+class SecureTokenStorage implements TokenStorage {
+  final _storage = FlutterSecureStorage();
+  final _controller = StreamController.broadcast();
+
+  @override
+  Future<void> clearTokens() async {
+    await _storage.deleteAll();
+    _controller.add(null);
+  }
+
+  @override
+  Future<String?> getAccessToken() async {
+    return await _storage.read(key: _accessTokenKey);
+  }
+
+  @override
+  Future<String?> getRefreshToken() async {
+    return await _storage.read(key: _refreshTokenKey);
+  }
+
+  @override
+  Future<void> saveTokens(
+      {required String accessToken, required String refreshToken}) async {
+    await _storage.write(key: _refreshTokenKey, value: refreshToken);
+    await _storage.write(key: _accessTokenKey, value: accessToken);
+    _controller.add(null);
+  }
+
+  @override
+  Stream<(String?, String?)> watchChanged() {
+    return _controller.stream
+        .asyncMap((_) async => (await getRefreshToken(), await getAccessToken()));
   }
 }
