@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -34,8 +33,6 @@ import (
 	"openrent-server/rent"
 	"openrent-server/review"
 	"openrent-server/user"
-
-	"github.com/wader/gormstore/v2"
 )
 
 func main() {
@@ -141,19 +138,18 @@ func main() {
 		&models.Review{},
 		&models.Message{},
 		&models.FCMToken{},
+		&models.RefreshToken{},
 	)
 	if err != nil {
 		log.Panic("Cannot auto migrate", err)
 	}
 
-	store := gormstore.New(db, []byte("secret"))
-	quit := make(chan struct{})
-	go store.PeriodicCleanup(1*time.Hour, quit)
-
 	embedder, err := embedding.NewGeminiEmbedder("gemini-embedding-001")
 	if err != nil {
 		log.Panic("Cannot create embedder", err)
 	}
+
+	tokenHelper := core.NewTokenHelper(os.Getenv("JWT_SECRET"))
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -162,13 +158,13 @@ func main() {
 		AllowCredentials: true,
 	}))
 	e.Use(middleware.RequestLogger())
-	e.Use(core.NewSessionMiddleware(store))
+	e.Use(core.NewSessionMiddleware(tokenHelper))
 
 	e.HTTPErrorHandler = NewErrorHandler()
 	e.Validator = core.NewValidator()
 
 	notificationService := notification.NewFCMService(messaging, db)
-	authService := auth.NewService(db, s3Client, s3Bucket)
+	authService := auth.NewService(db, s3Client, s3Bucket, tokenHelper)
 	addressService := address.NewService(db)
 	productService := product.NewService(db, embedder, notificationService, s3Client, s3Bucket)
 	myProductService := my_product.NewService(db, embedder, s3Client, s3Bucket)

@@ -108,6 +108,66 @@ Map<String, dynamic> _$FCMTokenAddResponseToJson(
   _FCMTokenAddResponse instance,
 ) => <String, dynamic>{'id': instance.id};
 
+_LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
+    _LoginResponse(
+      id: (json['id'] as num).toInt(),
+      role: json['role'] as String,
+      refreshToken: json['refresh_token'] as String,
+      refreshTokenExpiresAt: DateTime.parse(
+        json['refresh_token_expires_at'] as String,
+      ),
+      accessToken: json['access_token'] as String,
+      accessTokenExpiresAt: DateTime.parse(
+        json['access_token_expires_at'] as String,
+      ),
+    );
+
+Map<String, dynamic> _$LoginResponseToJson(
+  _LoginResponse instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'role': instance.role,
+  'refresh_token': instance.refreshToken,
+  'refresh_token_expires_at': instance.refreshTokenExpiresAt.toIso8601String(),
+  'access_token': instance.accessToken,
+  'access_token_expires_at': instance.accessTokenExpiresAt.toIso8601String(),
+};
+
+_RefreshTokenResponse _$RefreshTokenResponseFromJson(
+  Map<String, dynamic> json,
+) => _RefreshTokenResponse(
+  refreshToken: json['refresh_token'] as String,
+  refreshTokenExpiresAt: DateTime.parse(
+    json['refresh_token_expires_at'] as String,
+  ),
+  accessToken: json['access_token'] as String,
+  accessTokenExpiresAt: DateTime.parse(
+    json['access_token_expires_at'] as String,
+  ),
+);
+
+Map<String, dynamic> _$RefreshTokenResponseToJson(
+  _RefreshTokenResponse instance,
+) => <String, dynamic>{
+  'refresh_token': instance.refreshToken,
+  'refresh_token_expires_at': instance.refreshTokenExpiresAt.toIso8601String(),
+  'access_token': instance.accessToken,
+  'access_token_expires_at': instance.accessTokenExpiresAt.toIso8601String(),
+};
+
+_RefreshTokenRequest _$RefreshTokenRequestFromJson(Map<String, dynamic> json) =>
+    _RefreshTokenRequest(refreshToken: json['refresh_token'] as String);
+
+Map<String, dynamic> _$RefreshTokenRequestToJson(
+  _RefreshTokenRequest instance,
+) => <String, dynamic>{'refresh_token': instance.refreshToken};
+
+_LogoutRequest _$LogoutRequestFromJson(Map<String, dynamic> json) =>
+    _LogoutRequest(refreshToken: json['refresh_token'] as String);
+
+Map<String, dynamic> _$LogoutRequestToJson(_LogoutRequest instance) =>
+    <String, dynamic>{'refresh_token': instance.refreshToken};
+
 // dart format off
 
 // **************************************************************************
@@ -154,13 +214,13 @@ class _AuthService implements AuthService {
   }
 
   @override
-  Future<ActionResponse> login(LoginRequest data) async {
+  Future<LoginResponse> login(LoginRequest data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(data.toJson());
-    final _options = _setStreamType<ActionResponse>(
+    final _options = _setStreamType<LoginResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -171,9 +231,9 @@ class _AuthService implements AuthService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ActionResponse _value;
+    late LoginResponse _value;
     try {
-      _value = ActionResponse.fromJson(_result.data!);
+      _value = LoginResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -211,11 +271,12 @@ class _AuthService implements AuthService {
   }
 
   @override
-  Future<ActionResponse> logout() async {
+  Future<ActionResponse> logout(LogoutRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
     final _options = _setStreamType<ActionResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -230,6 +291,34 @@ class _AuthService implements AuthService {
     late ActionResponse _value;
     try {
       _value = ActionResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<RefreshTokenResponse> refreshToken(RefreshTokenRequest request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<RefreshTokenResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/refresh_token',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late RefreshTokenResponse _value;
+    try {
+      _value = RefreshTokenResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

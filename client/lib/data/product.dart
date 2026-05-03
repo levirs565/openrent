@@ -16,12 +16,24 @@ class ProductLocationSearchParameter {
   });
 }
 
+class ProductDateRangeSearchParameter {
+  final DateTime start, end;
+  final int quantity;
+
+  ProductDateRangeSearchParameter({
+    required this.start,
+    required this.end,
+    required this.quantity,
+  });
+}
+
 abstract interface class ProductRepository {
   Future<Result<List<ProductResponseItemShort>>> searchProduct({
     required String keyword,
     bool? disableAiSearch,
     List<String>? regions,
     ProductLocationSearchParameter? location,
+    ProductDateRangeSearchParameter? dateRange,
     CancelToken? cancelToken,
   });
 
@@ -56,6 +68,7 @@ class ProductDataSource implements ProductRepository {
     bool? disableAiSearch,
     List<String>? regions,
     ProductLocationSearchParameter? location,
+    ProductDateRangeSearchParameter? dateRange,
     CancelToken? cancelToken,
   }) async {
     try {
@@ -66,6 +79,9 @@ class ProductDataSource implements ProductRepository {
         lat: location?.lat,
         lng: location?.lng,
         radiusKm: location?.radiusKm,
+        startDate: dateRange?.start.toUtc().toIso8601String(),
+        endDate: dateRange?.end.toUtc().toIso8601String(),
+        quantity: dateRange?.quantity,
         cancelToken: cancelToken,
       );
       return ResultSuccess(result);
