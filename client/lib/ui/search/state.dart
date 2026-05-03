@@ -9,6 +9,8 @@ part 'state.freezed.dart';
 
 enum SearchErrorSource { data, exchangeRate }
 
+
+
 typedef SearchError = ErrorData<SearchErrorSource>;
 
 @freezed
@@ -23,6 +25,9 @@ abstract class SearchState with _$SearchState {
     required bool isSearchLoading,
     required SearchError? error,
     required LatLng? currentPosition,
+    required bool disableAISearch,
+    required DateTime? startDate,
+    required DateTime? endDate,
     required bool isMapView,
   }) = _SearchState;
 

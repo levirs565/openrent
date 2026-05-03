@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/components/product_card.dart';
@@ -63,15 +64,74 @@ class SearchPage extends StatelessWidget {
   }
 }
 
+final _dateFormat = DateFormat('dd MMM yyyy');
+
 class _SearchInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
-      builder: (context, state) => TextField(
-        decoration: InputDecoration(label: Text("Keyword")),
-        enabled: state.canEdit,
-        onChanged: (keyword) =>
-            context.read<SearchCubit>().onKeywordChanged(keyword),
+      builder: (context, state) => Column(
+        children: [
+          Row(
+            children: [
+              Checkbox(
+                value: state.disableAISearch,
+                onChanged: (value) => context
+                    .read<SearchCubit>()
+                    .onDisableAISearchChanged(value ?? !state.disableAISearch),
+              ),
+              Text("Disable AI search")
+            ],
+          ),
+          TextField(
+            decoration: InputDecoration(label: Text("Keyword")),
+            enabled: state.canEdit,
+            onChanged: (keyword) =>
+                context.read<SearchCubit>().onKeywordChanged(keyword),
+          ),
+          Row(
+            children: [
+              Text(
+                "${state.startDate == null ? "null" : _dateFormat.format(state.startDate!)} - ${state.endDate == null ? "null" : _dateFormat.format(state.endDate!)}",
+              ),
+              OutlinedButton(
+                onPressed: !state.canEdit
+                    ? null
+                    : () async {
+                        final result = await showDateRangePicker(
+                          context: context,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.utc(2099, 12, 30),
+                          initialDateRange:
+                              state.startDate == null || state.endDate == null
+                              ? null
+                              : DateTimeRange(
+                                  start: state.startDate!,
+                                  end: state.endDate!,
+                                ),
+                        );
+                        if (result == null) return;
+
+                        if (!context.mounted) return;
+                        context.read<SearchCubit>().onDateRangeChanged(
+                          result.start,
+                          result.end,
+                        );
+                      },
+                child: Text("Change"),
+              ),
+              OutlinedButton(
+                onPressed: !state.canEdit
+                    ? null
+                    : () => context.read<SearchCubit>().onDateRangeChanged(
+                        null,
+                        null,
+                      ),
+                child: Text("Clear"),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

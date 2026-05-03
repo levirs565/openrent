@@ -19,6 +19,7 @@ class SearchCubit extends Cubit<SearchState> {
   final ExchangeRatesRepository _exchangeRatesRepository;
   final LocationRepository _locationRepository;
   final _searchController = StreamController<String>();
+  String _lastKeyword = "";
   StreamSubscription? _searchSubscription;
   StreamSubscription? _locationSubscription;
   CancelToken? _cancelToken;
@@ -40,6 +41,9 @@ class SearchCubit extends Cubit<SearchState> {
            selectedCurrency: settingsRepository.getCurrency(),
            exchangeRateStatus: .initial,
            currentPosition: null,
+           startDate: null,
+           endDate: null,
+           disableAISearch: false
          ),
        ) {
     _searchSubscription = _searchController.stream
@@ -49,7 +53,7 @@ class SearchCubit extends Cubit<SearchState> {
     _locationSubscription = _locationRepository.watchCurrentLocation().listen((
       data,
     ) {
-      if (data is ResultSuccess<LatLng>) {
+      if (data is ResultSuccess<LatLng> && !isClosed) {
         emit(state.copyWith(currentPosition: data.data));
       }
     });
@@ -57,7 +61,18 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void onKeywordChanged(String keyword) {
+    _lastKeyword = keyword;
     _searchController.add(keyword);
+  }
+
+  void onDateRangeChanged(DateTime? startDate, DateTime? endDate) {
+    emit(state.copyWith(startDate: startDate, endDate: endDate));
+    _doSearch(_lastKeyword);
+  }
+
+  void onDisableAISearchChanged(bool disabled) {
+    emit(state.copyWith(disableAISearch: disabled));
+    _doSearch(_lastKeyword);
   }
 
   void onRefreshExchangeRate() async {
@@ -85,6 +100,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   @override
   Future<void> close() {
+    _locationSubscription?.cancel();
     _searchSubscription?.cancel();
     return super.close();
   }
@@ -98,8 +114,15 @@ class SearchCubit extends Cubit<SearchState> {
 
     final result = await repository.searchProduct(
       keyword: keyword,
-      disableAiSearch: true,
+      disableAiSearch: state.disableAISearch,
       cancelToken: cancelToken,
+      dateRange: state.startDate == null || state.endDate == null
+          ? null
+          : ProductDateRangeSearchParameter(
+              start: state.startDate!,
+              end: state.endDate!,
+              quantity: 1,
+            ),
     );
 
     if (cancelToken.isCancelled) return;
