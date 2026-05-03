@@ -34,11 +34,10 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     onRefreshExchangeRate();
   }
 
-  void onRefreshExchangeRate() async {
+  Future<void> onRefreshExchangeRate() async {
     if (state.exchangeRateStatus == .loading) return;
 
     final result = await _exchangeRatesRepository.get();
-
     switch (result) {
       case ResultSuccess<ExchangeRateResponse>():
         emit(
@@ -47,7 +46,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
             exchangeRate: result.data,
           ),
         );
-        onRefresh();
+        await onRefresh();
       case ResultError<ExchangeRateResponse>():
         emit(
           state.copyWith(
@@ -58,7 +57,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState> {
     }
   }
 
-  void onRefresh() async {
+  Future<void> onRefresh() async {
     if (state.isLoading) return;
 
     emit(state.copyWith(dataStatus: .loading));

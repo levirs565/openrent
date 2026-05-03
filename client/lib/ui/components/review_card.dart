@@ -8,13 +8,40 @@ class ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
-      child: Column(
-        children: [
-          Text(item.user.name),
-          Text("${item.rating} Star"),
-          Text(item.content),
-        ],
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  item.user.name,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: List.generate(
+                    5,
+                    (index) => Icon(
+                      index < item.rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 24),
+            Text(item.content, style: textTheme.bodyMedium),
+          ],
+        ),
       ),
     );
   }

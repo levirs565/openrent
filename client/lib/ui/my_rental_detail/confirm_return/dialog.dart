@@ -3,14 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/ui/components/controlled_text_field.dart';
+import 'package:openrent_client/ui/components/currency_format.dart';
+import 'package:openrent_client/ui/components/loading_button.dart';
 
 import 'cubit.dart';
 import 'state.dart';
 
-class MyRentalConfirmReturnDialog extends StatelessWidget {
+class MyRentalConfirmReturnBottomSheet extends StatelessWidget {
   final RentalResponseItemDetails rental;
 
-  const MyRentalConfirmReturnDialog({super.key, required this.rental});
+  const MyRentalConfirmReturnBottomSheet({super.key, required this.rental});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,9 @@ class MyRentalConfirmReturnDialog extends StatelessWidget {
       create: (context) => MyRentalConfirmReturnCubit(
         rental: rental,
         rentalRepository: context.read(),
-        exchangeRatesRepository: context.read()
+        exchangeRatesRepository: context.read(),
       ),
-      child: _Content(),
+      child: const _Content(),
     );
   }
 }
@@ -30,6 +32,7 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<MyRentalConfirmReturnCubit, MyRentalConfirmReturnState>(
       listener: (context, state) {
         if (state.isFinished) {
@@ -37,98 +40,198 @@ class _Content extends StatelessWidget {
           context.read<MyRentalConfirmReturnCubit>().onFinishedHandled();
         }
       },
-      builder: (context, state) => AlertDialog(
-        title: const Text("Confirm Return Rental"),
-        content: Column(
-          mainAxisSize: .min,
-          children: [
-            if (state.exchangeRateStatus == .loading) LinearProgressIndicator(),
-            if (state.exchangeRateStatus == .fail)
-              OutlinedButton(
-                onPressed: () => context
-                    .read<MyRentalConfirmReturnCubit>()
-                    .onRefreshExchangeRate(),
-                child: Text("Refresh"),
+      builder: (context, state) => Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Konfirmasi Pengembalian',
+                style: theme.textTheme.headlineSmall,
               ),
-            ControlledTextField<MyRentalConfirmReturnCubit, MyRentalConfirmReturnState>(
-              selector: (state) => state.selectedFromCurrency,
-              builder: (controller) => DropdownMenu<String>(
-                controller: controller,
-                selectOnly: true,
-                enabled: state.canEdit,
-                label: const Text('From Currency'),
-                dropdownMenuEntries:
-                state.exchangeRate?.conversionRates.keys
-                    .map(
-                      (item) => DropdownMenuEntry(value: item, label: item),
-                )
-                    .toList() ??
-                    List.empty(),
-                onSelected: (value) => context
-                    .read<MyRentalConfirmReturnCubit>()
-                    .onFromCurrencyChanged(value ?? "IDR"),
+              const SizedBox(height: 16),
+              if (state.exchangeRateStatus == .loading)
+                const LinearProgressIndicator(),
+              if (state.exchangeRateStatus == .fail)
+                OutlinedButton(
+                  onPressed: () => context
+                      .read<MyRentalConfirmReturnCubit>()
+                      .onRefreshExchangeRate(),
+                  child: const Text('Refresh Kurs'),
+                ),
+              if (state.exchangeRate != null) ...[
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: state.selectedFromCurrency,
+                  decoration: const InputDecoration(
+                    labelText: 'Konversi ke',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: state.exchangeRate!.conversionRates.keys
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      context
+                          .read<MyRentalConfirmReturnCubit>()
+                          .onFromCurrencyChanged(value);
+                    }
+                  },
+                ),
+              ],
+              const SizedBox(height: 16),
+              _DetailRow(
+                label: 'Estimasi Harga',
+                value: paymentLabel(
+                  amount: state.estimatedPriceIdr,
+                  selectedCurrency: state.selectedFromCurrency,
+                  convertToCurrency: (amount) => state.estimatedPrice,
+                ),
               ),
-            ),
-            Text("Estimated Price: ${state.estimatedPriceIdr} IDR or ${state.estimatedPrice}"),
-            Text("Initial Payment: ${state.rental.payment.initial ?? 0} IDR"),
-            Text("Estimated Final Payment: ${state.estimatedFinalPaymentIdr} IDR or ${state.estimatedFinalPayment}"),
-            Text("Estimated Late Fine: ${state.estimatedLateFineIdr} IDR or ${state.estimatedLateFine}"),
-            TextField(
-              decoration: InputDecoration(label: Text("Final Payment")),
-              onChanged: (payment) => context
-                  .read<MyRentalConfirmReturnCubit>()
-                  .onPaymentChanged(double.tryParse(payment)),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
+              const SizedBox(height: 12),
+              _DetailRow(
+                label: 'Pembayaran Awal',
+                value: formatCurrencyAmount(
+                  state.rental.payment.initial ?? 0,
+                  'IDR',
+                ),
+              ),
+              const SizedBox(height: 12),
+              _DetailRow(
+                label: 'Estimasi Sisa Bayar',
+                value: paymentLabel(
+                  amount: state.estimatedFinalPaymentIdr,
+                  selectedCurrency: state.selectedFromCurrency,
+                  convertToCurrency: (amount) => state.estimatedFinalPayment,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _DetailRow(
+                label: 'Estimasi Denda',
+                value: paymentLabel(
+                  amount: state.estimatedLateFineIdr,
+                  selectedCurrency: state.selectedFromCurrency,
+                  convertToCurrency: (amount) => state.estimatedLateFine,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Pembayaran Akhir',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (payment) => context
+                    .read<MyRentalConfirmReturnCubit>()
+                    .onPaymentChanged(double.tryParse(payment)),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Denda Keterlambatan',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (payment) => context
+                    .read<MyRentalConfirmReturnCubit>()
+                    .onLateFinePaymentChanged(double.tryParse(payment)),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Denda Kerusakan',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (payment) => context
+                    .read<MyRentalConfirmReturnCubit>()
+                    .onDamageFinePaymentChanged(double.tryParse(payment)),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _DetailRow(
+                label: 'Total Diterima',
+                value: paymentLabel(
+                  amount: state.totalPaymentIdr ?? 0,
+                  selectedCurrency: state.selectedFromCurrency,
+                  convertToCurrency: (amount) => state.totalPayment,
+                ),
+              ),
+              if (state.error != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  'Error: ${state.error?.message}',
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
               ],
-            ),
-            TextField(
-              decoration: InputDecoration(label: Text("Late Fine Payment")),
-              onChanged: (payment) => context
-                  .read<MyRentalConfirmReturnCubit>()
-                  .onLateFinePaymentChanged(double.tryParse(payment)),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
-              ],
-            ),
-            TextField(
-              decoration: InputDecoration(label: Text("Damage Fine Payment")),
-              onChanged: (payment) => context
-                  .read<MyRentalConfirmReturnCubit>()
-                  .onDamageFinePaymentChanged(double.tryParse(payment)),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
-              ],
-            ),
-            Text("Total: ${state.totalPayment} or ${state.totalPaymentIdr} IDR"),
-            Text("Total Price: ${state.totalPriceIdr} IDR"),
-            if (state.error != null) Text("Error: ${state.error?.message}"),
-          ],
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: LoadingButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: state.isLoading
+                          ? null
+                          : () => Navigator.of(context).pop(),
+                      child: const Text('Batal'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: LoadingButton(
+                      onPressed: !state.canSubmit
+                          ? null
+                          : () => context
+                                .read<MyRentalConfirmReturnCubit>()
+                                .onSubmit(),
+                      isLoading: state.isLoading,
+                      child: const Text('Konfirmasi'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: state.isLoading
-                ? null
-                : () => Navigator.of(context).pop(),
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: !state.canSubmit
-                ? null
-                : () => context.read<MyRentalConfirmReturnCubit>().onSubmit(),
-            child: state.isLoading
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text("Confirm Return"),
-          ),
-        ],
       ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DetailRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 4),
+        Text(value, style: Theme.of(context).textTheme.titleMedium),
+      ],
     );
   }
 }

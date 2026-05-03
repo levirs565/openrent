@@ -71,7 +71,7 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
       rental.product.pricePerDay *
       (rental.endDate.difference(rental.startDate).inDays + 1);
 
-  int get estimatedFinalPayment =>
+  int get estimatedFinalPaymentIdr =>
       max(estimatedPriceIdr - rental.payment.initial!, 0);
 
   // TODO: Check is right?
@@ -81,8 +81,8 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
 
   double? get estimatedPrice => convertToCurrency(estimatedPriceIdr);
 
-  double? get estimatedFinalPaymentIdr =>
-      convertToCurrency(estimatedFinalPayment);
+  double? get estimatedFinalPayment =>
+      convertToCurrency(estimatedFinalPaymentIdr);
 
   double? get estimatedLateFine => convertToCurrency(estimatedLateFineIdr);
 

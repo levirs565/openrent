@@ -20,43 +20,46 @@ class RemoveReviewDialog extends StatelessWidget {
 }
 
 class _Content extends StatelessWidget {
-  const _Content({super.key});
+  const _Content();
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RemoveReviewCubit, RemoveReviewState>(
       listener: (context, state) {
         if (state.submitState == .finished) {
-          Navigator.of(context).pop();
-          context.read<RemoveReviewCubit>().onFinishedHandled();
+          Navigator.of(context).pop(true);
         }
       },
       builder: (context, state) => AlertDialog(
-        title: const Text("Delete Review"),
-        content: Column(
-          mainAxisSize: .min,
-          children: [
-            if (state.error != null) Text("Error: ${state.error?.message}"),
-          ],
+        title: const Text("Hapus Ulasan"),
+        content: const Text(
+          "Apakah Anda yakin ingin menghapus ulasan ini? Tindakan ini tidak dapat dibatalkan.",
         ),
         actions: [
-          TextButton(
+          FilledButton(
+            style: OutlinedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: state.isLoading
                 ? null
                 : () => Navigator.of(context).pop(),
-            child: Text("Cancel"),
+            child: const Text("Batal"),
           ),
-          TextButton(
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
             onPressed: !state.canSubmit
                 ? null
                 : () => context.read<RemoveReviewCubit>().onSubmit(),
             child: state.isLoading
-                ? SizedBox(
+                ? const SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text("Delete"),
+                : const Text("Delete"),
           ),
         ],
       ),
