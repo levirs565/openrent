@@ -4,12 +4,11 @@ import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 part 'state.freezed.dart';
 
 enum SearchErrorSource { data, exchangeRate }
-
-
 
 typedef SearchError = ErrorData<SearchErrorSource>;
 
@@ -29,6 +28,7 @@ abstract class SearchState with _$SearchState {
     required DateTime? startDate,
     required DateTime? endDate,
     required bool isMapView,
+    required tz.Location timeZone,
   }) = _SearchState;
 
   bool get isLoading => exchangeRateStatus == .loading || isSearchLoading;

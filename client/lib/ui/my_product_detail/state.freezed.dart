@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyProductDetailState {
 
- MyProductResponseItemDetail? get data; MyProductDetailError? get error; int get id; DataStatus get dataStatus; bool get isImageUpload;
+ MyProductResponseItemDetail? get data; MyProductDetailError? get error; int get id; DataStatus get dataStatus; bool get isImageUpload; tz.Location get timeZone;
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyProductDetailStateCopyWith<MyProductDetailState> get copyWith => _$MyProductD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload);
+int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload,timeZone);
 
 @override
 String toString() {
-  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload)';
+  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload, timeZone: $timeZone)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MyProductDetailStateCopyWith<$Res>  {
   factory $MyProductDetailStateCopyWith(MyProductDetailState value, $Res Function(MyProductDetailState) _then) = _$MyProductDetailStateCopyWithImpl;
 @useResult
 $Res call({
- MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload
+ MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload, tz.Location timeZone
 });
 
 
@@ -62,14 +62,15 @@ class _$MyProductDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,Object? timeZone = null,}) {
   return _then(_self.copyWith(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as MyProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as MyProductDetailError?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isImageUpload: null == isImageUpload ? _self.isImageUpload : isImageUpload // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 /// Create a copy of MyProductDetailState
@@ -178,10 +179,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload,  tz.Location timeZone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyProductDetailState() when $default != null:
-return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload,_that.timeZone);case _:
   return orElse();
 
 }
@@ -199,10 +200,10 @@ return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload,  tz.Location timeZone)  $default,) {final _that = this;
 switch (_that) {
 case _MyProductDetailState():
-return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload,_that.timeZone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +220,10 @@ return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MyProductResponseItemDetail? data,  MyProductDetailError? error,  int id,  DataStatus dataStatus,  bool isImageUpload,  tz.Location timeZone)?  $default,) {final _that = this;
 switch (_that) {
 case _MyProductDetailState() when $default != null:
-return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload);case _:
+return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUpload,_that.timeZone);case _:
   return null;
 
 }
@@ -234,7 +235,7 @@ return $default(_that.data,_that.error,_that.id,_that.dataStatus,_that.isImageUp
 
 
 class _MyProductDetailState extends MyProductDetailState {
-  const _MyProductDetailState({required this.data, required this.error, required this.id, required this.dataStatus, required this.isImageUpload}): super._();
+  const _MyProductDetailState({required this.data, required this.error, required this.id, required this.dataStatus, required this.isImageUpload, required this.timeZone}): super._();
   
 
 @override final  MyProductResponseItemDetail? data;
@@ -242,6 +243,7 @@ class _MyProductDetailState extends MyProductDetailState {
 @override final  int id;
 @override final  DataStatus dataStatus;
 @override final  bool isImageUpload;
+@override final  tz.Location timeZone;
 
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -253,16 +255,16 @@ _$MyProductDetailStateCopyWith<_MyProductDetailState> get copyWith => __$MyProdu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProductDetailState&&(identical(other.data, data) || other.data == data)&&(identical(other.error, error) || other.error == error)&&(identical(other.id, id) || other.id == id)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isImageUpload, isImageUpload) || other.isImageUpload == isImageUpload)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload);
+int get hashCode => Object.hash(runtimeType,data,error,id,dataStatus,isImageUpload,timeZone);
 
 @override
 String toString() {
-  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload)';
+  return 'MyProductDetailState(data: $data, error: $error, id: $id, dataStatus: $dataStatus, isImageUpload: $isImageUpload, timeZone: $timeZone)';
 }
 
 
@@ -273,7 +275,7 @@ abstract mixin class _$MyProductDetailStateCopyWith<$Res> implements $MyProductD
   factory _$MyProductDetailStateCopyWith(_MyProductDetailState value, $Res Function(_MyProductDetailState) _then) = __$MyProductDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload
+ MyProductResponseItemDetail? data, MyProductDetailError? error, int id, DataStatus dataStatus, bool isImageUpload, tz.Location timeZone
 });
 
 
@@ -290,14 +292,15 @@ class __$MyProductDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyProductDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,Object? error = freezed,Object? id = null,Object? dataStatus = null,Object? isImageUpload = null,Object? timeZone = null,}) {
   return _then(_MyProductDetailState(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as MyProductResponseItemDetail?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as MyProductDetailError?,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isImageUpload: null == isImageUpload ? _self.isImageUpload : isImageUpload // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 

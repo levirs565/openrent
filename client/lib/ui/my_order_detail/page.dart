@@ -45,7 +45,7 @@ class MyOrderDetailPage extends StatelessWidget {
 class _Content extends StatelessWidget {
   const _Content();
 
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
+  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy HH:mm').format(date);
 
   String _formatAddress(RentalProductAddressDetails address) {
     return '${address.detail}, ${address.district}, ${address.regency}, ${address.province}';
@@ -437,7 +437,7 @@ class _Content extends StatelessWidget {
                 runSpacing: 12,
                 alignment: WrapAlignment.start,
                 children: [
-                  if (order.state == RentState.readyForPickup)
+                  if (order.state == RentState.readyForPickup && !DateTime.now().isBefore(order.startDate))
                     FilledButton(
                       onPressed: () =>
                           context.read<MyOrderDetailCubit>().onReceive(),

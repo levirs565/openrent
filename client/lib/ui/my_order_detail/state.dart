@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/order.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../core/enum.dart';
 
@@ -27,6 +28,7 @@ abstract class MyOrderDetailState with _$MyOrderDetailState {
     required DataStatus dataStatus,
     required bool isActionLoading,
     required MyOrderDetailError? error,
+    required tz.Location timeZone,
   }) = _MyOrderDetailState;
 
   bool get isLoading =>
@@ -57,9 +59,9 @@ abstract class MyOrderDetailState with _$MyOrderDetailState {
   int get estimatedLateFine => data == null
       ? 0
       : data!.product.lateFeePerDay *
-            (DateUtils.dateOnly(
+            max((DateUtils.dateOnly(
               data!.returnedAt ?? DateTime.now(),
-            ).difference(data!.endDate).inDays);
+            ).difference(data!.endDate).inDays), 0);
 
   int get estimatedTotalPrice => estimatedPrice + estimatedLateFine;
 

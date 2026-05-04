@@ -15,7 +15,10 @@ class MyRentalsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyRentalsCubit(rentalRepository: context.read()),
+      create: (context) => MyRentalsCubit(
+        rentalRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: BlocConsumer<MyRentalsCubit, MyRentalsState>(
         listener: (context, state) {
           if (state.error != null) {
@@ -85,7 +88,7 @@ class _RentalItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateLabel =
-        '${DateFormat('dd/MM/yyyy').format(item.startDate)} - ${DateFormat('dd/MM/yyyy').format(item.endDate)}';
+        '${DateFormat('dd MMM yyyy HH:mm').format(item.startDate)} - ${DateFormat('dd MMM yyyy HH:mm').format(item.endDate)}';
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),

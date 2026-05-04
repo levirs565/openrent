@@ -8,6 +8,7 @@ import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/order.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/settings.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import 'state.dart';
 
@@ -20,7 +21,7 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
     required int id,
     required OrderRepository orderRepository,
     required ExchangeRatesRepository exchangeRatesRepository,
-    required SettingsRepository settingsRepository
+    required SettingsRepository settingsRepository,
   }) : _exchangeRatesRepository = exchangeRatesRepository,
        _orderRepository = orderRepository,
        super(
@@ -33,6 +34,7 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
            exchangeRate: null,
            selectedCurrency: settingsRepository.getCurrency(),
            exchangeRateStatus: .initial,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     onRefreshExchangeRate();
@@ -83,7 +85,18 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
 
     switch (result) {
       case ResultSuccess<OrderResponseItemDetails>():
-        emit(state.copyWith(dataStatus: .success, data: result.data));
+        emit(
+          state.copyWith(
+            dataStatus: .success,
+            data: result.data.copyWith(
+              startDate: tz.TZDateTime.from(
+                result.data.startDate,
+                state.timeZone,
+              ),
+              endDate: tz.TZDateTime.from(result.data.endDate, state.timeZone),
+            ),
+          ),
+        );
       case ResultError<OrderResponseItemDetails>():
         emit(
           state.copyWith(

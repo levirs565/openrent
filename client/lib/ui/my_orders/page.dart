@@ -16,7 +16,10 @@ class MyOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyOrdersCubit(orderRepository: context.read()),
+      create: (context) => MyOrdersCubit(
+        orderRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: ScaffoldMessenger(
         child: Scaffold(
           body: const _Content(),
@@ -76,7 +79,7 @@ class _Item extends StatelessWidget {
 
   const _Item({required this.item});
 
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
+  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy HH:mm').format(date);
 
   @override
   Widget build(BuildContext context) {

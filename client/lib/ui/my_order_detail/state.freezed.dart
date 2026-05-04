@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyOrderDetailState {
 
- int get id; ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; OrderResponseItemDetails? get data; DataStatus get dataStatus; bool get isActionLoading; MyOrderDetailError? get error;
+ int get id; ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; OrderResponseItemDetails? get data; DataStatus get dataStatus; bool get isActionLoading; MyOrderDetailError? get error; tz.Location get timeZone;
 /// Create a copy of MyOrderDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyOrderDetailStateCopyWith<MyOrderDetailState> get copyWith => _$MyOrderDetailS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyOrderDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyOrderDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error,timeZone);
 
 @override
 String toString() {
-  return 'MyOrderDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
+  return 'MyOrderDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MyOrderDetailStateCopyWith<$Res>  {
   factory $MyOrderDetailStateCopyWith(MyOrderDetailState value, $Res Function(MyOrderDetailState) _then) = _$MyOrderDetailStateCopyWithImpl;
 @useResult
 $Res call({
- int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, OrderResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyOrderDetailError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, OrderResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyOrderDetailError? error, tz.Location timeZone
 });
 
 
@@ -62,7 +62,7 @@ class _$MyOrderDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyOrderDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
@@ -72,7 +72,8 @@ as DataStatus,data: freezed == data ? _self.data : data // ignore: cast_nullable
 as OrderResponseItemDetails?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as MyOrderDetailError?,
+as MyOrderDetailError?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 /// Create a copy of MyOrderDetailState
@@ -193,10 +194,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error,  tz.Location timeZone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyOrderDetailState() when $default != null:
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error,_that.timeZone);case _:
   return orElse();
 
 }
@@ -214,10 +215,10 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error,  tz.Location timeZone)  $default,) {final _that = this;
 switch (_that) {
 case _MyOrderDetailState():
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error,_that.timeZone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -234,10 +235,10 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  OrderResponseItemDetails? data,  DataStatus dataStatus,  bool isActionLoading,  MyOrderDetailError? error,  tz.Location timeZone)?  $default,) {final _that = this;
 switch (_that) {
 case _MyOrderDetailState() when $default != null:
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.dataStatus,_that.isActionLoading,_that.error,_that.timeZone);case _:
   return null;
 
 }
@@ -249,7 +250,7 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 
 
 class _MyOrderDetailState extends MyOrderDetailState {
-  const _MyOrderDetailState({required this.id, required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required this.data, required this.dataStatus, required this.isActionLoading, required this.error}): super._();
+  const _MyOrderDetailState({required this.id, required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required this.data, required this.dataStatus, required this.isActionLoading, required this.error, required this.timeZone}): super._();
   
 
 @override final  int id;
@@ -260,6 +261,7 @@ class _MyOrderDetailState extends MyOrderDetailState {
 @override final  DataStatus dataStatus;
 @override final  bool isActionLoading;
 @override final  MyOrderDetailError? error;
+@override final  tz.Location timeZone;
 
 /// Create a copy of MyOrderDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -271,16 +273,16 @@ _$MyOrderDetailStateCopyWith<_MyOrderDetailState> get copyWith => __$MyOrderDeta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyOrderDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyOrderDetailState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,dataStatus,isActionLoading,error,timeZone);
 
 @override
 String toString() {
-  return 'MyOrderDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error)';
+  return 'MyOrderDetailState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, dataStatus: $dataStatus, isActionLoading: $isActionLoading, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -291,7 +293,7 @@ abstract mixin class _$MyOrderDetailStateCopyWith<$Res> implements $MyOrderDetai
   factory _$MyOrderDetailStateCopyWith(_MyOrderDetailState value, $Res Function(_MyOrderDetailState) _then) = __$MyOrderDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, OrderResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyOrderDetailError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, OrderResponseItemDetails? data, DataStatus dataStatus, bool isActionLoading, MyOrderDetailError? error, tz.Location timeZone
 });
 
 
@@ -308,7 +310,7 @@ class __$MyOrderDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of MyOrderDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? dataStatus = null,Object? isActionLoading = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_MyOrderDetailState(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
@@ -318,7 +320,8 @@ as DataStatus,data: freezed == data ? _self.data : data // ignore: cast_nullable
 as OrderResponseItemDetails?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as MyOrderDetailError?,
+as MyOrderDetailError?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 

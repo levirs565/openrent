@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 part 'state.freezed.dart';
 
@@ -19,6 +20,7 @@ abstract class MyProductDetailState with _$MyProductDetailState {
     required int id,
     required DataStatus dataStatus,
     required bool isImageUpload,
+    required tz.Location timeZone,
   }) = _MyProductDetailState;
 
   bool get isLoading => dataStatus == .loading || isImageUpload;

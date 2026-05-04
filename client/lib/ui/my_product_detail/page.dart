@@ -25,8 +25,11 @@ class MyProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MyProductDetailCubit(id: id, productRepository: context.read()),
+      create: (context) => MyProductDetailCubit(
+        id: id,
+        productRepository: context.read(),
+        settingsRepository: context.read(),
+      ),
       child: ScaffoldMessenger(child: _MyProductDetailPageContent()),
     );
   }
@@ -40,7 +43,7 @@ class _MyProductDetailPageContent extends StatelessWidget {
   }
 
   String _formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy').format(date);
+    return DateFormat('dd MMM yyyy HH:mm').format(date);
   }
 
   @override

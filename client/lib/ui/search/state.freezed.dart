@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; List<ProductResponseItemShort> get result; bool get isSearchLoading; SearchError? get error; LatLng? get currentPosition; bool get disableAISearch; DateTime? get startDate; DateTime? get endDate; bool get isMapView;
+ ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; List<ProductResponseItemShort> get result; bool get isSearchLoading; SearchError? get error; LatLng? get currentPosition; bool get disableAISearch; DateTime? get startDate; DateTime? get endDate; bool get isMapView; tz.Location get timeZone;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SearchStateCopyWith<SearchState> get copyWith => _$SearchStateCopyWithImpl<Sear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other.result, result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.disableAISearch, disableAISearch) || other.disableAISearch == disableAISearch)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other.result, result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.disableAISearch, disableAISearch) || other.disableAISearch == disableAISearch)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(result),isSearchLoading,error,currentPosition,disableAISearch,startDate,endDate,isMapView);
+int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(result),isSearchLoading,error,currentPosition,disableAISearch,startDate,endDate,isMapView,timeZone);
 
 @override
 String toString() {
-  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, currentPosition: $currentPosition, disableAISearch: $disableAISearch, startDate: $startDate, endDate: $endDate, isMapView: $isMapView)';
+  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, currentPosition: $currentPosition, disableAISearch: $disableAISearch, startDate: $startDate, endDate: $endDate, isMapView: $isMapView, timeZone: $timeZone)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, LatLng? currentPosition, bool disableAISearch, DateTime? startDate, DateTime? endDate, bool isMapView
+ ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, LatLng? currentPosition, bool disableAISearch, DateTime? startDate, DateTime? endDate, bool isMapView, tz.Location timeZone
 });
 
 
@@ -62,7 +62,7 @@ class _$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? currentPosition = freezed,Object? disableAISearch = null,Object? startDate = freezed,Object? endDate = freezed,Object? isMapView = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? currentPosition = freezed,Object? disableAISearch = null,Object? startDate = freezed,Object? endDate = freezed,Object? isMapView = null,Object? timeZone = null,}) {
   return _then(_self.copyWith(
 exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
 as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as LatLng?,disableAISearch: null == disableAISearch ? _self.disableAISearch : di
 as bool,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 /// Create a copy of SearchState
@@ -184,10 +185,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView,  tz.Location timeZone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView,_that.timeZone);case _:
   return orElse();
 
 }
@@ -205,10 +206,10 @@ return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStat
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView,  tz.Location timeZone)  $default,) {final _that = this;
 switch (_that) {
 case _SearchState():
-return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView,_that.timeZone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -225,10 +226,10 @@ return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStat
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  List<ProductResponseItemShort> result,  bool isSearchLoading,  SearchError? error,  LatLng? currentPosition,  bool disableAISearch,  DateTime? startDate,  DateTime? endDate,  bool isMapView,  tz.Location timeZone)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView);case _:
+return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.result,_that.isSearchLoading,_that.error,_that.currentPosition,_that.disableAISearch,_that.startDate,_that.endDate,_that.isMapView,_that.timeZone);case _:
   return null;
 
 }
@@ -240,7 +241,7 @@ return $default(_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStat
 
 
 class _SearchState extends SearchState {
-   _SearchState({required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required final  List<ProductResponseItemShort> result, required this.isSearchLoading, required this.error, required this.currentPosition, required this.disableAISearch, required this.startDate, required this.endDate, required this.isMapView}): _result = result,super._();
+   _SearchState({required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required final  List<ProductResponseItemShort> result, required this.isSearchLoading, required this.error, required this.currentPosition, required this.disableAISearch, required this.startDate, required this.endDate, required this.isMapView, required this.timeZone}): _result = result,super._();
   
 
 @override final  ExchangeRateResponse? exchangeRate;
@@ -260,6 +261,7 @@ class _SearchState extends SearchState {
 @override final  DateTime? startDate;
 @override final  DateTime? endDate;
 @override final  bool isMapView;
+@override final  tz.Location timeZone;
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
@@ -271,16 +273,16 @@ _$SearchStateCopyWith<_SearchState> get copyWith => __$SearchStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other._result, _result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.disableAISearch, disableAISearch) || other.disableAISearch == disableAISearch)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&const DeepCollectionEquality().equals(other._result, _result)&&(identical(other.isSearchLoading, isSearchLoading) || other.isSearchLoading == isSearchLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.disableAISearch, disableAISearch) || other.disableAISearch == disableAISearch)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isMapView, isMapView) || other.isMapView == isMapView)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(_result),isSearchLoading,error,currentPosition,disableAISearch,startDate,endDate,isMapView);
+int get hashCode => Object.hash(runtimeType,exchangeRate,selectedCurrency,exchangeRateStatus,const DeepCollectionEquality().hash(_result),isSearchLoading,error,currentPosition,disableAISearch,startDate,endDate,isMapView,timeZone);
 
 @override
 String toString() {
-  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, currentPosition: $currentPosition, disableAISearch: $disableAISearch, startDate: $startDate, endDate: $endDate, isMapView: $isMapView)';
+  return 'SearchState(exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, result: $result, isSearchLoading: $isSearchLoading, error: $error, currentPosition: $currentPosition, disableAISearch: $disableAISearch, startDate: $startDate, endDate: $endDate, isMapView: $isMapView, timeZone: $timeZone)';
 }
 
 
@@ -291,7 +293,7 @@ abstract mixin class _$SearchStateCopyWith<$Res> implements $SearchStateCopyWith
   factory _$SearchStateCopyWith(_SearchState value, $Res Function(_SearchState) _then) = __$SearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, LatLng? currentPosition, bool disableAISearch, DateTime? startDate, DateTime? endDate, bool isMapView
+ ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, List<ProductResponseItemShort> result, bool isSearchLoading, SearchError? error, LatLng? currentPosition, bool disableAISearch, DateTime? startDate, DateTime? endDate, bool isMapView, tz.Location timeZone
 });
 
 
@@ -308,7 +310,7 @@ class __$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? currentPosition = freezed,Object? disableAISearch = null,Object? startDate = freezed,Object? endDate = freezed,Object? isMapView = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? result = null,Object? isSearchLoading = null,Object? error = freezed,Object? currentPosition = freezed,Object? disableAISearch = null,Object? startDate = freezed,Object? endDate = freezed,Object? isMapView = null,Object? timeZone = null,}) {
   return _then(_SearchState(
 exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
 as ExchangeRateResponse?,selectedCurrency: null == selectedCurrency ? _self.selectedCurrency : selectedCurrency // ignore: cast_nullable_to_non_nullable
@@ -321,7 +323,8 @@ as LatLng?,disableAISearch: null == disableAISearch ? _self.disableAISearch : di
 as bool,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,isMapView: null == isMapView ? _self.isMapView : isMapView // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 

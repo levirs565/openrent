@@ -11,6 +11,8 @@ import 'package:openrent_client/ui/components/product_card.dart';
 import 'package:openrent_client/ui/search/cubit.dart';
 import 'package:openrent_client/ui/search/state.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timezone/timezone.dart' as tz;
+
 
 import '../product_detail/page.dart';
 
@@ -70,7 +72,7 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-final _dateFormat = DateFormat('dd MMM yyyy');
+final _dateFormat = DateFormat('dd MMM yyyy HH:mm');
 
 class _SearchInput extends StatelessWidget {
   @override
@@ -106,7 +108,7 @@ class _SearchInput extends StatelessWidget {
                     : () async {
                         final result = await showDateRangePicker(
                           context: context,
-                          firstDate: DateTime.now(),
+                          firstDate: tz.TZDateTime.now(state.timeZone),
                           lastDate: DateTime.utc(2099, 12, 30),
                           initialDateRange:
                               state.startDate == null || state.endDate == null

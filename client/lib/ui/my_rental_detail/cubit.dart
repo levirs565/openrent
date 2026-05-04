@@ -9,6 +9,7 @@ import 'package:openrent_client/data/rental.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/ui/my_rental_detail/state.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
   final RentalRepository _rentalRepository;
@@ -19,7 +20,7 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
     required int id,
     required RentalRepository rentalRepository,
     required ExchangeRatesRepository exchangeRatesRepository,
-    required SettingsRepository settingsRepository
+    required SettingsRepository settingsRepository,
   }) : _exchangeRatesRepository = exchangeRatesRepository,
        _rentalRepository = rentalRepository,
        super(
@@ -32,6 +33,7 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
            exchangeRate: null,
            selectedCurrency: settingsRepository.getCurrency(),
            exchangeRateStatus: .initial,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     onRefreshExchangeRate();
@@ -82,7 +84,18 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
 
     switch (result) {
       case ResultSuccess<RentalResponseItemDetails>():
-        emit(state.copyWith(dataStatus: .success, data: result.data));
+        emit(
+          state.copyWith(
+            dataStatus: .success,
+            data: result.data.copyWith(
+              startDate: tz.TZDateTime.from(
+                result.data.startDate,
+                state.timeZone,
+              ),
+              endDate: tz.TZDateTime.from(result.data.endDate, state.timeZone),
+            ),
+          ),
+        );
       case ResultError<RentalResponseItemDetails>():
         emit(
           state.copyWith(

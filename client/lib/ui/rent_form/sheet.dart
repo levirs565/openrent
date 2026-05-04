@@ -8,6 +8,7 @@ import 'package:openrent_client/ui/rent_form/cubit.dart';
 import 'package:openrent_client/ui/rent_form/state.dart';
 import 'package:path/path.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class RentFormSheet extends StatelessWidget {
   final int id;
@@ -79,11 +80,11 @@ class _RentFormSheetContent extends StatelessWidget {
             if (state.isLoading) LinearProgressIndicator(),
             TableCalendar(
               focusedDay: state.startDate,
-              firstDay: DateTime.now(),
+              firstDay: tz.TZDateTime.now(state.timeZone),
               // TODO: Constant
               lastDay: DateTime.utc(2099, 12, 30),
-              rangeStartDay: state.startDate,
-              rangeEndDay: state.endDate,
+              rangeStartDay: DateUtils.dateOnly(state.startDate),
+              rangeEndDay: DateUtils.dateOnly(state.endDate),
               rangeSelectionMode: .enforced,
               enabledDayPredicate: (day) =>
                   context.read<RentFormCubit>().getAvailableStock(day) > 0,
@@ -97,6 +98,7 @@ class _RentFormSheetContent extends StatelessWidget {
                 (day) => context.read<RentFormCubit>().getAvailableStock(day),
               ),
             ),
+            Text("${state.normalizedStart}-${state.normalizedEnd}"),
             Text("Price ${state.priceIdr} IDR or ${state.price}"),
             OutlinedButton(
               onPressed: !state.canSubmit
