@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"openrent-server/embedding"
+	"openrent-server/ai"
 	"openrent-server/models"
 	"openrent-server/notification"
 	"os"
@@ -174,7 +174,7 @@ func TestRentRace(t *testing.T) {
 		return
 	}
 
-	service := NewService(db.db, embedding.NewNoopEmbedder(), notification.NewNoopService(), nil, "")
+	service := NewService(db.db, ai.NewNoopEmbedder(), notification.NewNoopService(), nil, "")
 
 	var wg sync.WaitGroup
 	start := make(chan struct{})

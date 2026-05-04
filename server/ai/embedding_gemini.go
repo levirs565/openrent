@@ -1,4 +1,4 @@
-package embedding
+package ai
 
 import (
 	"context"
@@ -15,12 +15,7 @@ type geminiEmbedder struct {
 
 var _ AIEmbedder = (*geminiEmbedder)(nil)
 
-func NewGeminiEmbedder(model string) (AIEmbedder, error) {
-	client, err := genai.NewClient(context.Background(), nil)
-	if err != nil {
-		return nil, err
-	}
-
+func NewGeminiEmbedder(client *genai.Client, model string) AIEmbedder {
 	result := &geminiEmbedder{
 		client:     client,
 		model:      model,
@@ -29,7 +24,7 @@ func NewGeminiEmbedder(model string) (AIEmbedder, error) {
 	result.embedConfig = &genai.EmbedContentConfig{
 		OutputDimensionality: &result.outputSize,
 	}
-	return result, nil
+	return result
 }
 
 // Embed implements [AIEmbedder].

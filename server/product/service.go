@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/ai"
 	"openrent-server/core"
-	"openrent-server/embedding"
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
@@ -25,14 +25,14 @@ var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 
 type Service struct {
 	db           *gorm.DB
-	embedder     embedding.AIEmbedder
+	embedder     ai.AIEmbedder
 	notification notification.Service
 	s3           *s3.Client
 	s3Bucket     string
 }
 
 func NewService(
-	db *gorm.DB, embedder embedding.AIEmbedder, notification notification.Service,
+	db *gorm.DB, embedder ai.AIEmbedder, notification notification.Service,
 	s3 *s3.Client, s3Bucket string,
 ) *Service {
 	return &Service{
@@ -367,8 +367,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
-	reviews, err := gorm.G[models.Review](s.db).
-		Select("reviews.id", "reviews.rating", "reviews.content").
+	reviews, err := gorm.G[models.Review](s.db.Debug()).
+		Select("reviews.id", "reviews.rating", "reviews.content", "reviews.score").
 		Joins(
 			clause.JoinTarget{Association: "Rent"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -377,6 +377,7 @@ func (s *Service) ListReview(ctx context.Context, userId uint, request ListRevie
 			},
 		).
 		Where(`"Rent".product_id = ?`, request.ID).
+		Order("reviews.score DESC").
 		Find(ctx)
 
 	if err != nil {

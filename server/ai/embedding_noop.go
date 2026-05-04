@@ -1,4 +1,4 @@
-package embedding
+package ai
 
 import (
 	"context"

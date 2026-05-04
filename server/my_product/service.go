@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/ai"
 	"openrent-server/core"
-	"openrent-server/embedding"
 	"openrent-server/models"
 	"strings"
 	"time"
@@ -26,12 +26,12 @@ var ErrImageNotFound = errors.New("avatar not found")
 
 type Service struct {
 	db       *gorm.DB
-	embedder embedding.AIEmbedder
+	embedder ai.AIEmbedder
 	s3       *s3.Client
 	s3Bucket string
 }
 
-func NewService(db *gorm.DB, embedder embedding.AIEmbedder, s3 *s3.Client, s3Bucket string) *Service {
+func NewService(db *gorm.DB, embedder ai.AIEmbedder, s3 *s3.Client, s3Bucket string) *Service {
 	return &Service{
 		db:       db,
 		embedder: embedder,

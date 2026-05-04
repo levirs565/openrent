@@ -2,8 +2,10 @@ package rent
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"openrent-server/ai"
 	"openrent-server/core"
 	"openrent-server/models"
 	"openrent-server/notification"
@@ -28,14 +30,22 @@ type Service struct {
 	notification notification.Service
 	s3           *s3.Client
 	s3Bucket     string
+	generative   ai.AIGenerative
 }
 
-func NewService(db *gorm.DB, notification notification.Service, s3 *s3.Client, s3Bucket string) *Service {
+func NewService(
+	db *gorm.DB,
+	notification notification.Service,
+	s3 *s3.Client,
+	s3Bucket string,
+	generative ai.AIGenerative,
+) *Service {
 	return &Service{
 		db:           db,
 		notification: notification,
 		s3:           s3,
 		s3Bucket:     s3Bucket,
+		generative:   generative,
 	}
 }
 
@@ -237,6 +247,40 @@ func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error
 	return nil
 }
 
+var reviewScoreSystemPrompt = `
+Anda adalah asisten ahli analisis konten untuk aplikasi persewaan (P2P Rental). Tugas Anda adalah menilai tingkat "Helpfulness" (kegunaan) sebuah ulasan dari pengguna. Berikan skor dari 0 hingga 100.
+
+Kriteria Penilaian:
+1. Spesifisitas (40%): Apakah ulasan menyebutkan kondisi barang secara detail? (Contoh: "Lensa bersih, tidak ada jamur" vs "Barangnya bagus").
+2. Konteks Transaksi (30%): Apakah mengulas tentang ketepatan waktu pengiriman, keramahan pemilik, atau kemudahan proses rental?
+3. Objektivitas (20%): Apakah ulasan memberikan gambaran seimbang (kelebihan dan kekurangan)?
+5. Keterbacaan (10%): Penggunaan bahasa yang jelas dan mudah dipahami.
+
+Aturan Output:
+- Output harus berupa JSON valid: {"score": number"}.
+- Jangan memberikan penjelasan di luar format JSON.
+- Skor 0 jika teks tidak relevan (spam/hanya karakter acak).
+`
+
+type reviewScoreResult struct {
+	Score uint `json:"score"`
+}
+
+func (s *Service) getReviewScore(ctx context.Context, text string) (uint, error) {
+	result, err := s.generative.Generate(ctx, reviewScoreSystemPrompt, text, "application/json")
+	if err != nil {
+		return 0, err
+	}
+
+	var resultObject reviewScoreResult
+	err = json.Unmarshal([]byte(result), &resultObject)
+	if err != nil {
+		return 0, err
+	}
+
+	return resultObject.Score, nil
+}
+
 func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("state").
@@ -253,10 +297,17 @@ func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRe
 	if data.State != models.RentStateCompleted {
 		return ErrNotCompleted
 	}
+
+	score, err := s.getReviewScore(ctx, reqest.Content)
+	if err != nil {
+		return err
+	}
+
 	model := models.Review{
 		RentID:  reqest.ID,
 		Rating:  reqest.Rating,
 		Content: reqest.Content,
+		Score:   score,
 	}
 	err = gorm.G[models.Review](s.db).Create(ctx, &model)
 	if err != nil {

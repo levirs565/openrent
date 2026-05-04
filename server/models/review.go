@@ -8,4 +8,5 @@ type Review struct {
 	Rent    Rent
 	Rating  uint
 	Content string
+	Score   uint `gorm:"not null;default:0"`
 }
