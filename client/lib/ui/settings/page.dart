@@ -30,7 +30,7 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _Content extends StatelessWidget {
-  const _Content({super.key});
+  const _Content();
 
   @override
   Widget build(BuildContext context) {
@@ -50,52 +50,70 @@ class _Content extends StatelessWidget {
           context.read<SettingsCubit>().onErrorHandled(state.error!);
         }
       },
-      builder: (context, state) => Column(
-        children: [
-          if (state.currencyStatus == .loading) LinearProgressIndicator(),
-          FilledButton(
-            onPressed: !state.canUseBiometric
-                ? null
-                : () => context.read<SettingsCubit>().onToggleBiometrics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 14),
-              child: state.isBiometricOn
-                  ? Text('Nonaktifkan Biometric')
-                  : Text("Aktifkan Biometric"),
+      builder: (context, state) {
+        return ListView(
+          children: [
+            if (state.currencyStatus == .loading)
+              const LinearProgressIndicator(),
+            SwitchListTile(
+              title: const Text('Kunci Biometrik'),
+              subtitle: const Text(
+                'Gunakan kunci biometrik untuk membuka aplikasi',
+              ),
+              value: state.isBiometricOn,
+              onChanged: !state.canUseBiometric
+                  ? null
+                  : (value) =>
+                        context.read<SettingsCubit>().onToggleBiometrics(),
             ),
-          ),
-          ControlledTextField<SettingsCubit, SettingsState>(
-            selector: (state) => state.currency,
-            builder: (controller) => DropdownMenu<String>(
-              controller: controller,
-              selectOnly: true,
-              enabled: state.currencyStatus == .success,
-              label: const Text('Currency'),
-              dropdownMenuEntries: state.currencyList
-                  .map((item) => DropdownMenuEntry(value: item, label: item))
-                  .toList(),
-              onSelected: (value) => context
-                  .read<SettingsCubit>()
-                  .onCurrencyChanged(value ?? "IDR"),
+            const Divider(),
+            ListTile(
+              title: const Text('Mata Uang'),
+              subtitle: ControlledTextField<SettingsCubit, SettingsState>(
+                selector: (state) => state.currency,
+                builder: (controller) => DropdownMenu<String>(
+                  controller: controller,
+                  selectOnly: true,
+                  enabled: state.currencyStatus == .success,
+                  // label: const Text('Currency'),
+                  dropdownMenuEntries: state.currencyList
+                      .map(
+                        (item) => DropdownMenuEntry(value: item, label: item),
+                      )
+                      .toList(),
+                  onSelected: (value) => context
+                      .read<SettingsCubit>()
+                      .onCurrencyChanged(value ?? "IDR"),
+                ),
+              ),
             ),
-          ),
-          ControlledTextField<SettingsCubit, SettingsState>(
-            selector: (state) => state.timeZoneList[state.timeZone] ?? "",
-            builder: (controller) => DropdownMenu<String>(
-              controller: controller,
-              selectOnly: true,
-              enabled: state.currencyStatus == .success,
-              label: const Text('Time Zone'),
-              dropdownMenuEntries: state.timeZoneList.entries
-                  .map((item) => DropdownMenuEntry(value: item.key, label: item.value))
-                  .toList(),
-              onSelected: (value) => context
-                  .read<SettingsCubit>()
-                  .onTimeZoneChanged(value ?? "Asia/Jakarta"),
+            const Divider(),
+            ListTile(
+              title: const Text('Zona Waktu'),
+              subtitle: ControlledTextField<SettingsCubit, SettingsState>(
+                selector: (state) => state.timeZoneList[state.timeZone] ?? "",
+                builder: (controller) => DropdownMenu<String>(
+                  controller: controller,
+                  selectOnly: true,
+                  enabled: state.currencyStatus == .success,
+                  // label: const Text('Time Zone'),
+                  dropdownMenuEntries: state.timeZoneList.entries
+                      .map(
+                        (item) => DropdownMenuEntry(
+                          value: item.key,
+                          label: item.value,
+                        ),
+                      )
+                      .toList(),
+                  onSelected: (value) => context
+                      .read<SettingsCubit>()
+                      .onTimeZoneChanged(value ?? "Asia/Jakarta"),
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }

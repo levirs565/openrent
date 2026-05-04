@@ -11,13 +11,13 @@ class MyProductsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My Products'),
+          title: const Text('Produk Saya'),
           centerTitle: true,
           elevation: 0,
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'Product List'),
-              Tab(text: 'Rentals'),
+              Tab(text: 'List Barang'),
+              Tab(text: 'List Rental'),
             ],
           ),
         ),

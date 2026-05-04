@@ -191,10 +191,10 @@ class _Content extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             FilledButton(
-              onPressed:() => Navigator.of(context).push(SettingsPage.route()),
+              onPressed: () => Navigator.of(context).push(SettingsPage.route()),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 14),
-                child: Text("Settings")
+                child: Text("Pengaturan"),
               ),
             ),
             const SizedBox(height: 12),

@@ -231,19 +231,21 @@ class _ProductDetailPageContent extends StatelessWidget {
                                 ),
                                 const Gap(8),
                                 SizedBox(
-                                  height: 240,
+                                  height: 280,
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: product!.recommendations.length,
                                     separatorBuilder: (context, index) =>
                                         const Gap(8),
                                     itemBuilder: (context, index) {
+                                      final recommendation =
+                                          product.recommendations[index];
                                       return ConstrainedBox(
                                         constraints: const BoxConstraints(
                                           maxWidth: 200,
                                         ),
                                         child: ProductCard(
-                                          item: product.recommendations[index],
+                                          item: recommendation,
                                           currency: state.selectedCurrency,
                                           convertToCurrency:
                                               state.convertToCurrency,

@@ -16,19 +16,80 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card.filled(
+    final textTheme = Theme.of(context).textTheme;
+    final price = convertToCurrency(item.pricePerDay);
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () =>
             Navigator.of(context).push(ProductDetailPage.route(item.id)),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (item.imageUrl != null)
-              Image.network(item.imageUrl!, height: 96),
-            Text(item.name),
-            Text(
-              "${item.pricePerDay} IDR Per Day or ${convertToCurrency(item.pricePerDay)} Per Day - ${item.stock} Stock",
+            SizedBox(
+              height: 150,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
+                child: item.imageUrl != null
+                    ? Image.network(
+                        item.imageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.broken_image),
+                      )
+                    : const Icon(Icons.image_not_supported),
+              ),
             ),
-            Text("${item.address.regency} - ${item.user.name}"),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.name, style: textTheme.titleMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    price != null
+                        ? '$currency ${price.toStringAsFixed(2)} / day'
+                        : '${item.pricePerDay} IDR / day',
+                    style: textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_outlined, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${item.address.regency}',
+                          style: textTheme.bodySmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.person_outline, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          item.user.name,
+                          style: textTheme.bodySmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
