@@ -110,8 +110,8 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 				models.RentStateCompleted,
 				models.RentStateCancelled,
 			},
-			datatypes.Date(parameters.EndDate),
-			datatypes.Date(parameters.StartDate),
+			core.ConvertTimeToDate(parameters.EndDate),
+			core.ConvertTimeToDate(parameters.StartDate),
 		).
 			Group(`products.id, "UserAccount__Account".id,  "UserAddress".id`).
 			Having("products.stock - COALESCE(SUM(rents.quantity), 0) >= ?", quntity)
@@ -256,8 +256,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			).
 			Where(clause.Or(
 				clause.And(
-					gorm.Expr("rents.start_date <= ?", datatypes.Date(request.EndDate)),
-					gorm.Expr("rents.end_date >= ?", datatypes.Date(request.StartDate)),
+					gorm.Expr("rents.start_date <= ?", core.ConvertTimeToDate(request.EndDate)),
+					gorm.Expr("rents.end_date >= ?", core.ConvertTimeToDate(request.StartDate)),
 				),
 				gorm.Expr("rents.end_date < CURRENT_DATE"),
 			)).
@@ -332,8 +332,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			},
 			OwnerSnapshotName:  model.UserAccount.Account.Name,
 			RenterSnapshotName: userData.Name,
-			StartDate:          datatypes.Date(request.StartDate),
-			EndDate:            datatypes.Date(request.EndDate),
+			StartDate:          core.ConvertTimeToDate(request.StartDate),
+			EndDate:            core.ConvertTimeToDate(request.EndDate),
 			Quantity:           request.Quantity,
 		}
 		err = gorm.G[models.Rent](tx).Create(ctx, &rentModel)

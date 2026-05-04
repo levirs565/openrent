@@ -8,6 +8,7 @@ import (
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
+	"time"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -124,7 +125,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 
 func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
-		Select("rents.state", "rents.product_snapshot_name").
+		Select("rents.state", "rents.product_snapshot_name", "rents.start_date").
 		Joins(
 			clause.JoinTarget{Association: "Product"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -142,6 +143,10 @@ func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 		return err
 	}
 	if data.State != models.RentStateReadyForPickup {
+		return ErrNotReady
+	}
+
+	if time.Now().Before(core.ConvertDateToTime(data.StartDate)) {
 		return ErrNotReady
 	}
 

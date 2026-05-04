@@ -3,16 +3,18 @@ package core
 import (
 	"context"
 	"openrent-server/models"
+	"time"
 
+	"github.com/samber/lo"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 type RentAvailability struct {
-	StartDate datatypes.Date `json:"start_date"`
-	EndDate   datatypes.Date `json:"end_date"`
-	Quantity  int            `json:"quantity"`
-	IsOverdue bool           `json:"is_overdue"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
+	Quantity  int       `json:"quantity"`
+	IsOverdue bool      `json:"is_overdue"`
 }
 
 func GetRentAvailability(
@@ -20,7 +22,14 @@ func GetRentAvailability(
 	db *gorm.DB,
 	productID uint,
 ) ([]RentAvailability, error) {
-	var result []RentAvailability
+	type row struct {
+		StartDate datatypes.Date
+		EndDate   datatypes.Date
+		Quantity  int
+		IsOverdue bool
+	}
+
+	var result []row
 	err := gorm.G[models.Rent](db).
 		Select(
 			"rents.start_date", "rents.end_date", "rents.quantity",
@@ -41,5 +50,12 @@ func GetRentAvailability(
 		return []RentAvailability{}, err
 	}
 
-	return result, nil
+	return lo.Map(result, func(item row, index int) RentAvailability {
+		return RentAvailability{
+			StartDate: ConvertDateToTime(item.StartDate),
+			EndDate:   ConvertDateToTimeForEnd(item.EndDate),
+			Quantity:  item.Quantity,
+			IsOverdue: item.IsOverdue,
+		}
+	}), nil
 }
