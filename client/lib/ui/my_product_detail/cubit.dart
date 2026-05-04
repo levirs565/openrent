@@ -3,7 +3,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
+import 'package:openrent_client/data/settings.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import 'state.dart';
 
@@ -14,6 +16,7 @@ class MyProductDetailCubit extends Cubit<MyProductDetailState> {
   MyProductDetailCubit({
     required int id,
     required ProductRepository productRepository,
+    required SettingsRepository settingsRepository,
   }) : _productRepository = productRepository,
        super(
          MyProductDetailState(
@@ -22,6 +25,7 @@ class MyProductDetailCubit extends Cubit<MyProductDetailState> {
            error: null,
            dataStatus: .initial,
            isImageUpload: false,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     _refresh();
@@ -40,7 +44,28 @@ class MyProductDetailCubit extends Cubit<MyProductDetailState> {
 
     switch (result) {
       case ResultSuccess<MyProductResponseItemDetail>():
-        emit(state.copyWith(dataStatus: .success, data: result.data));
+        emit(
+          state.copyWith(
+            dataStatus: .success,
+            data: result.data.copyWith(
+              createdAt: tz.TZDateTime.from(result.data.createdAt, state.timeZone),
+              rents: result.data.rents
+                  .map(
+                    (element) => element.copyWith(
+                      startDate: tz.TZDateTime.from(
+                        element.startDate,
+                        state.timeZone,
+                      ),
+                      endDate: tz.TZDateTime.from(
+                        element.endDate,
+                        state.timeZone,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        );
       case ResultError<MyProductResponseItemDetail>():
         emit(
           state.copyWith(

@@ -45,7 +45,7 @@ class MyRentalDetailPage extends StatelessWidget {
 class _Content extends StatelessWidget {
   const _Content({super.key});
 
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
+  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy HH:mm').format(date);
 
   String _formatAddress(product) {
     return '${product.address.detail}, ${product.address.district}, ${product.address.regency}, ${product.address.province}';

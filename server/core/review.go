@@ -12,7 +12,7 @@ import (
 func GetProductTopReviews(ctx context.Context, db *gorm.DB, id uint) ([]models.Review, error) {
 	// TODO Sort by AI
 	return gorm.G[models.Review](db).
-		Select("reviews.id", "reviews.rating", "reviews.content").
+		Select("reviews.id", "reviews.rating", "reviews.content", "reviews.score").
 		Joins(
 			clause.JoinTarget{Association: "Rent"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -21,6 +21,7 @@ func GetProductTopReviews(ctx context.Context, db *gorm.DB, id uint) ([]models.R
 			},
 		).
 		Where(`"Rent".product_id = ?`, id).
+		Order("reviews.score DESC").
 		Limit(5).
 		Find(ctx)
 }

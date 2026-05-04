@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -67,6 +69,8 @@ void main() async {
   final exchangeRateService = ExchangeRateService(dioInstance);
   final locationIQService = LocationIQService(Dio());
 
+  final newChatController = StreamController<void>();
+
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -80,10 +84,12 @@ void main() async {
         ),
         RepositoryProvider<AddressRepository>(
           create: (_) => AddressDataSource(addressService: addressService),
+          dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<ProductRepository>(
           create: (_) =>
               ProductDataSource(service: productService, dioUploader: Dio()),
+          dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<ReviewRepository>(
           create: (_) => ReviewDataSource(reviewService: reviewService),
@@ -102,10 +108,17 @@ void main() async {
           create: (_) => OrderDataSource(service: orderService),
         ),
         RepositoryProvider<MessageRepository>(
-          create: (_) => MessageDataSource(service: messageService),
+          create: (_) => MessageDataSource(
+            service: messageService,
+            newChatController: newChatController,
+          ),
         ),
         RepositoryProvider<ChatRepository>(
-          create: (_) => ChatDataSource(chatService: chatService),
+          create: (_) => ChatDataSource(
+            chatService: chatService,
+            newChatStream: newChatController.stream,
+          ),
+          dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<UserRepository>(
           create: (_) => UserDataSource(service: userService),

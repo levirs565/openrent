@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/address.dart';
 import 'package:openrent_client/data/remote/address.dart';
@@ -6,6 +8,7 @@ import 'package:openrent_client/ui/my_addresses/state.dart';
 
 class MyAddressesCubit extends Cubit<MyAddressesState> {
   final AddressRepository _addressRepository;
+  StreamSubscription? _streamSubscription;
 
   MyAddressesCubit({required AddressRepository addressRepository})
     : _addressRepository = addressRepository,
@@ -18,10 +21,19 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
         ),
       ) {
     onRefresh();
+    _streamSubscription = _addressRepository.watchChanged().listen((_) {
+      onRefresh();
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _streamSubscription?.cancel();
+    return super.close();
   }
 
   void onRefresh() async {
-    if (state.isLoading) return;
+    if (state.dataStatus == .loading) return;
 
     emit(state.copyWith(dataStatus: .loading));
 
@@ -41,7 +53,7 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
   }
 
   void onDelete(int id) async {
-    if (state.isLoading) return;
+    if (state.isActionLoading) return;
 
     emit(state.copyWith(isActionLoading: true));
 
@@ -50,7 +62,6 @@ class MyAddressesCubit extends Cubit<MyAddressesState> {
     switch (result) {
       case ResultSuccess<void>():
         emit(state.copyWith(isActionLoading: false));
-        onRefresh();
       case ResultError<void>():
         emit(
           state.copyWith(

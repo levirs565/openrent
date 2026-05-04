@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/ui/core/date.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:openrent_client/data/exchange_rates.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
@@ -28,8 +31,8 @@ class RentFormCubit extends Cubit<RentFormState> {
          RentFormState(
            id: id,
            data: null,
-           startDate: DateTime.now(),
-           endDate: DateTime.now(),
+           startDate: DateUtils.dateOnly(DateTime.now()),
+           endDate: DateUtils.dateOnly(DateTime.now()),
            quantity: 1,
            dataStatus: .initial,
            actionStatus: .idle,
@@ -37,26 +40,32 @@ class RentFormCubit extends Cubit<RentFormState> {
            exchangeRate: null,
            selectedCurrency: settingsRepository.getCurrency(),
            exchangeRateStatus: .initial,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     onRefreshExchangeRate();
   }
 
   int getAvailableStock(DateTime day) {
+    final normalized = normalizeStartDate(state.timeZone, day);
     final stateSnapshot = state;
     if (stateSnapshot.data == null) return 0;
 
     int usedStock = 0;
     for (final rent in stateSnapshot.data!.availability) {
       if (rent.isOverdue ||
-          (!rent.startDate.isAfter(day) && !rent.endDate.isBefore(day))) {
+          (!rent.startDate.isAfter(normalized) &&
+              !rent.endDate.isBefore(normalized))) {
         usedStock += rent.quantity;
       }
     }
     return stateSnapshot.data!.stock - usedStock;
   }
 
-  void setSelectedRange(DateTime start, DateTime end) {
+  void setSelectedRange(DateTime startDate, DateTime endDate) {
+    final start = normalizeStartDate(state.timeZone, startDate);
+    final end = normalizeEndDate(state.timeZone, endDate);
+
     final stateSnapshot = state;
     if (stateSnapshot.data == null) return;
 
@@ -69,13 +78,15 @@ class RentFormCubit extends Cubit<RentFormState> {
     }
 
     if (stateSnapshot.data!.stock - used <= 0) {
-      emit(state.copyWith(
-        error: .new(source: .dateRanges, message: "Tidak ada stok")
-      ));
+      emit(
+        state.copyWith(
+          error: .new(source: .dateRanges, message: "Tidak ada stok"),
+        ),
+      );
       return;
     }
 
-    emit(state.copyWith(startDate: start, endDate: end));
+    emit(state.copyWith(startDate: startDate, endDate: endDate));
   }
 
   void setQuantity(int? quantity) {
@@ -132,10 +143,13 @@ class RentFormCubit extends Cubit<RentFormState> {
 
     emit(state.copyWith(actionStatus: .loading));
 
+    final start = normalizeStartDate(state.timeZone, state.startDate);
+    final end = normalizeEndDate(state.timeZone, state.endDate);
+
     final result = await _rentRepository.startRent(
       productId: state.data!.id,
-      startDate: state.startDate,
-      endDate: state.endDate,
+      startDate: start,
+      endDate: end,
       quantity: state.quantity!,
     );
 

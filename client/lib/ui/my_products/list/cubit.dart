@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/product.dart';
 import 'package:openrent_client/data/remote/product.dart';
@@ -7,6 +9,7 @@ import 'package:openrent_client/ui/my_products/list/state.dart';
 
 class MyProductListCubit extends Cubit<MyProductListState> {
   final ProductRepository _productRepository;
+  StreamSubscription? _streamSubscription;
 
   MyProductListCubit({required ProductRepository productRepository})
     : _productRepository = productRepository,
@@ -14,6 +17,15 @@ class MyProductListCubit extends Cubit<MyProductListState> {
         MyProductListState(isLoading: false, data: List.empty(), error: null),
       ) {
     onRefresh();
+    _streamSubscription = _productRepository.watchMyProductChanged().listen((_) {
+      onRefresh();
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _streamSubscription?.cancel();
+    return super.close();
   }
 
   void onRefresh() async {

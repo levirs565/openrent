@@ -30,6 +30,7 @@ type ReviewDetail struct {
 	User    UserData `json:"user"`
 	Rating  uint     `json:"rating"`
 	Content string   `json:"content"`
+	Score   uint     `json:"score"`
 }
 
 func ReviewDetailFromModel(item models.Review) ReviewDetail {
@@ -41,6 +42,7 @@ func ReviewDetailFromModel(item models.Review) ReviewDetail {
 		},
 		Rating:  item.Rating,
 		Content: item.Content,
+		Score:   item.Score,
 	}
 }
 

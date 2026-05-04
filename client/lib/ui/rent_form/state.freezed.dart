@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$RentFormState {
 
  int get id; ExchangeRateResponse? get exchangeRate; String get selectedCurrency; DataStatus get exchangeRateStatus; ProductResponseItemDetail? get data; DateTime get startDate; DateTime get endDate; int? get quantity; DataStatus get dataStatus;// TODO: must send rent id after succcess
- ActionStatus get actionStatus; RentFormError? get error;
+ ActionStatus get actionStatus; RentFormError? get error; tz.Location get timeZone;
 /// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $RentFormStateCopyWith<RentFormState> get copyWith => _$RentFormStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RentFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,startDate,endDate,quantity,dataStatus,actionStatus,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,startDate,endDate,quantity,dataStatus,actionStatus,error,timeZone);
 
 @override
 String toString() {
-  return 'RentFormState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, startDate: $startDate, endDate: $endDate, quantity: $quantity, dataStatus: $dataStatus, actionStatus: $actionStatus, error: $error)';
+  return 'RentFormState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, startDate: $startDate, endDate: $endDate, quantity: $quantity, dataStatus: $dataStatus, actionStatus: $actionStatus, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $RentFormStateCopyWith<$Res>  {
   factory $RentFormStateCopyWith(RentFormState value, $Res Function(RentFormState) _then) = _$RentFormStateCopyWithImpl;
 @useResult
 $Res call({
- int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error, tz.Location timeZone
 });
 
 
@@ -63,7 +63,7 @@ class _$RentFormStateCopyWithImpl<$Res>
 
 /// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? startDate = null,Object? endDate = null,Object? quantity = freezed,Object? dataStatus = null,Object? actionStatus = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? startDate = null,Object? endDate = null,Object? quantity = freezed,Object? dataStatus = null,Object? actionStatus = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as DateTime,quantity: freezed == quantity ? _self.quantity : quantity // ignore:
 as int?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
 as ActionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as RentFormError?,
+as RentFormError?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 /// Create a copy of RentFormState
@@ -197,10 +198,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error,  tz.Location timeZone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RentFormState() when $default != null:
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error,_that.timeZone);case _:
   return orElse();
 
 }
@@ -218,10 +219,10 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error,  tz.Location timeZone)  $default,) {final _that = this;
 switch (_that) {
 case _RentFormState():
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error,_that.timeZone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -238,10 +239,10 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  ExchangeRateResponse? exchangeRate,  String selectedCurrency,  DataStatus exchangeRateStatus,  ProductResponseItemDetail? data,  DateTime startDate,  DateTime endDate,  int? quantity,  DataStatus dataStatus,  ActionStatus actionStatus,  RentFormError? error,  tz.Location timeZone)?  $default,) {final _that = this;
 switch (_that) {
 case _RentFormState() when $default != null:
-return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error);case _:
+return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchangeRateStatus,_that.data,_that.startDate,_that.endDate,_that.quantity,_that.dataStatus,_that.actionStatus,_that.error,_that.timeZone);case _:
   return null;
 
 }
@@ -253,7 +254,7 @@ return $default(_that.id,_that.exchangeRate,_that.selectedCurrency,_that.exchang
 
 
 class _RentFormState extends RentFormState {
-   _RentFormState({required this.id, required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required this.data, required this.startDate, required this.endDate, required this.quantity, required this.dataStatus, required this.actionStatus, required this.error}): super._();
+   _RentFormState({required this.id, required this.exchangeRate, required this.selectedCurrency, required this.exchangeRateStatus, required this.data, required this.startDate, required this.endDate, required this.quantity, required this.dataStatus, required this.actionStatus, required this.error, required this.timeZone}): super._();
   
 
 @override final  int id;
@@ -268,6 +269,7 @@ class _RentFormState extends RentFormState {
 // TODO: must send rent id after succcess
 @override final  ActionStatus actionStatus;
 @override final  RentFormError? error;
+@override final  tz.Location timeZone;
 
 /// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -279,16 +281,16 @@ _$RentFormStateCopyWith<_RentFormState> get copyWith => __$RentFormStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RentFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.exchangeRate, exchangeRate) || other.exchangeRate == exchangeRate)&&(identical(other.selectedCurrency, selectedCurrency) || other.selectedCurrency == selectedCurrency)&&(identical(other.exchangeRateStatus, exchangeRateStatus) || other.exchangeRateStatus == exchangeRateStatus)&&(identical(other.data, data) || other.data == data)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.dataStatus, dataStatus) || other.dataStatus == dataStatus)&&(identical(other.actionStatus, actionStatus) || other.actionStatus == actionStatus)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,startDate,endDate,quantity,dataStatus,actionStatus,error);
+int get hashCode => Object.hash(runtimeType,id,exchangeRate,selectedCurrency,exchangeRateStatus,data,startDate,endDate,quantity,dataStatus,actionStatus,error,timeZone);
 
 @override
 String toString() {
-  return 'RentFormState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, startDate: $startDate, endDate: $endDate, quantity: $quantity, dataStatus: $dataStatus, actionStatus: $actionStatus, error: $error)';
+  return 'RentFormState(id: $id, exchangeRate: $exchangeRate, selectedCurrency: $selectedCurrency, exchangeRateStatus: $exchangeRateStatus, data: $data, startDate: $startDate, endDate: $endDate, quantity: $quantity, dataStatus: $dataStatus, actionStatus: $actionStatus, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -299,7 +301,7 @@ abstract mixin class _$RentFormStateCopyWith<$Res> implements $RentFormStateCopy
   factory _$RentFormStateCopyWith(_RentFormState value, $Res Function(_RentFormState) _then) = __$RentFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error
+ int id, ExchangeRateResponse? exchangeRate, String selectedCurrency, DataStatus exchangeRateStatus, ProductResponseItemDetail? data, DateTime startDate, DateTime endDate, int? quantity, DataStatus dataStatus, ActionStatus actionStatus, RentFormError? error, tz.Location timeZone
 });
 
 
@@ -316,7 +318,7 @@ class __$RentFormStateCopyWithImpl<$Res>
 
 /// Create a copy of RentFormState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? startDate = null,Object? endDate = null,Object? quantity = freezed,Object? dataStatus = null,Object? actionStatus = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? exchangeRate = freezed,Object? selectedCurrency = null,Object? exchangeRateStatus = null,Object? data = freezed,Object? startDate = null,Object? endDate = null,Object? quantity = freezed,Object? dataStatus = null,Object? actionStatus = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_RentFormState(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,exchangeRate: freezed == exchangeRate ? _self.exchangeRate : exchangeRate // ignore: cast_nullable_to_non_nullable
@@ -329,7 +331,8 @@ as DateTime,quantity: freezed == quantity ? _self.quantity : quantity // ignore:
 as int?,dataStatus: null == dataStatus ? _self.dataStatus : dataStatus // ignore: cast_nullable_to_non_nullable
 as DataStatus,actionStatus: null == actionStatus ? _self.actionStatus : actionStatus // ignore: cast_nullable_to_non_nullable
 as ActionStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as RentFormError?,
+as RentFormError?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 

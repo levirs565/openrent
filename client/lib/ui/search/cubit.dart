@@ -10,9 +10,11 @@ import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/settings.dart';
+import 'package:openrent_client/ui/core/date.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:openrent_client/ui/search/state.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class SearchCubit extends Cubit<SearchState> {
   final ProductRepository repository;
@@ -43,7 +45,8 @@ class SearchCubit extends Cubit<SearchState> {
            currentPosition: null,
            startDate: null,
            endDate: null,
-           disableAISearch: false
+           disableAISearch: false,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone())
          ),
        ) {
     _searchSubscription = _searchController.stream
@@ -110,6 +113,7 @@ class SearchCubit extends Cubit<SearchState> {
     final cancelToken = CancelToken();
     _cancelToken = cancelToken;
 
+
     emit(state.copyWith(isSearchLoading: true));
 
     final result = await repository.searchProduct(
@@ -119,8 +123,8 @@ class SearchCubit extends Cubit<SearchState> {
       dateRange: state.startDate == null || state.endDate == null
           ? null
           : ProductDateRangeSearchParameter(
-              start: state.startDate!,
-              end: state.endDate!,
+              start: normalizeStartDate(state.timeZone, state.startDate!),
+              end: normalizeEndDate(state.timeZone, state.endDate!),
               quantity: 1,
             ),
     );

@@ -6,6 +6,7 @@ import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 part 'state.freezed.dart';
 
@@ -26,6 +27,7 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
     required DataStatus dataStatus,
     required bool isActionLoading,
     required MyRentalDetailError? error,
+    required tz.Location timeZone,
   }) = _MyRentalDetailState;
 
   bool get isLoading =>

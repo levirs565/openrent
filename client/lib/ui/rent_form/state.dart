@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
+import 'package:openrent_client/ui/core/date.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 part 'state.freezed.dart';
 
@@ -30,6 +32,7 @@ abstract class RentFormState with _$RentFormState {
     // TODO: must send rent id after succcess
     required ActionStatus actionStatus,
     required RentFormError? error,
+    required tz.Location timeZone,
   }) = _RentFormState;
 
   double? convertToCurrency(int? amount) {
@@ -63,4 +66,7 @@ abstract class RentFormState with _$RentFormState {
   double? get price => convertToCurrency(priceIdr);
 
   bool get canSubmit => canEdit && isValid;
+
+  DateTime get normalizedStart => normalizeStartDate(timeZone, startDate);
+  DateTime get normalizedEnd => normalizeEndDate(timeZone, endDate);
 }

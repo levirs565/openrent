@@ -42,7 +42,7 @@ func (ct *Controller) getById(c *echo.Context) error {
 		return err
 	}
 
-	return c.JSON(201, result)
+	return c.JSON(200, result)
 }
 
 func (ct *Controller) add(c *echo.Context) error {

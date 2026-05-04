@@ -15,14 +15,15 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
+	"google.golang.org/genai"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"openrent-server/address"
+	"openrent-server/ai"
 	"openrent-server/auth"
 	"openrent-server/chat"
 	"openrent-server/core"
-	"openrent-server/embedding"
 	"openrent-server/exchange_rate"
 	"openrent-server/message"
 	"openrent-server/models"
@@ -144,10 +145,13 @@ func main() {
 		log.Panic("Cannot auto migrate", err)
 	}
 
-	embedder, err := embedding.NewGeminiEmbedder("gemini-embedding-001")
+	client, err := genai.NewClient(context.Background(), nil)
 	if err != nil {
-		log.Panic("Cannot create embedder", err)
+		log.Panic("Cannot create GenAIClient", err)
 	}
+
+	embedder := ai.NewGeminiEmbedder(client, "gemini-embedding-001")
+	generative := ai.NewGeminiGenerative(client, "gemini-2.5-flash")
 
 	tokenHelper := core.NewTokenHelper(os.Getenv("JWT_SECRET"))
 
@@ -169,7 +173,7 @@ func main() {
 	productService := product.NewService(db, embedder, notificationService, s3Client, s3Bucket)
 	myProductService := my_product.NewService(db, embedder, s3Client, s3Bucket)
 	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
-	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket)
+	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket, generative)
 	reviwsService := review.NewService(db)
 	chatService := chat.NewService(db, notificationService, s3Client, s3Bucket)
 	messageService := message.NewService(db)

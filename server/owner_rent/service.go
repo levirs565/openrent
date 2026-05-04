@@ -150,11 +150,11 @@ func (s *Service) approve(ctx context.Context, userId uint, id uint) error {
 		Where("rents.state = ?", models.RentStatePendingApproval).
 		Select("ApprovedAt", "State").
 		Updates(ctx, model)
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
@@ -208,11 +208,11 @@ func (s *Service) reject(ctx context.Context, userId uint, request RejectRequest
 		Where("rents.state = ?", models.RentStatePendingApproval).
 		Select("CancelReason", "CancelReasonNote", "State").Updates(ctx, model)
 
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
@@ -267,11 +267,11 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 		Where("rents.state = ?", models.RentStateOnRent).
 		Select("CancelReason", "CancelReasonNote", "State").Updates(ctx, model)
 
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
@@ -324,11 +324,11 @@ func (s *Service) handover(ctx context.Context, userId uint, request HandoverReq
 		Where("rents.state = ?", models.RentStateAwaitingHandover).
 		Select("State", "InitialPayment").
 		Updates(ctx, model)
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{
@@ -385,11 +385,11 @@ func (s *Service) confirmReturn(ctx context.Context, userId uint, request Confir
 		Where("rents.state = ?", models.RentStateAwaitingReturnConfirmation).
 		Select("State", "ReturnedAt", "FinalPayment", "LateFinePayment", "DamageFinePayment").
 		Updates(ctx, model)
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.UserAccountID, notification.Notification{

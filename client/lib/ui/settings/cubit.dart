@@ -26,6 +26,7 @@ class SettingsCubit extends Cubit<SettingsState> {
            currencyList: List.empty(),
            timeZone: settingsRepository.getTimeZone(),
            timeZoneList: {
+             "Etc/UTC": "GMT",
              "Asia/Jakarta": "WIB",
              "Asia/Makassar": "WITA",
              "Asia/Jayapura": "WIT",

@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 )
 
 type Service struct {
 	apiKey       string
+	mu           sync.Mutex
 	lastResponse *exchangeRateApiResponse
 	baseCode     string
 }
@@ -31,7 +33,10 @@ func NewService(apiKey string) *Service {
 }
 
 func (s *Service) Get(ctx context.Context) (ExchangeRateDto, error) {
-	if s.lastResponse == nil || (*s.lastResponse.TimeNextUpdateUnix < time.Now().Unix()) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.lastResponse == nil || s.lastResponse.TimeNextUpdateUnix == nil || (*s.lastResponse.TimeNextUpdateUnix < time.Now().Unix()) {
 		resp, err := http.Get(fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/latest/%s", s.apiKey, s.baseCode))
 		if err != nil {
 			return ExchangeRateDto{}, err
@@ -45,10 +50,19 @@ func (s *Service) Get(ctx context.Context) (ExchangeRateDto, error) {
 		}
 
 		if result.Result != "success" {
-			return ExchangeRateDto{}, fmt.Errorf("unexpected result: %s", *result.ErrorType)
+			errType := "<unknown>"
+			if result.ErrorType != nil {
+				errType = *result.ErrorType
+			}
+			return ExchangeRateDto{}, fmt.Errorf("unexpected result: %s", errType)
 		}
 
 		s.lastResponse = &result
+	}
+
+	if s.lastResponse.BaseCode == nil || s.lastResponse.ConversionRates == nil ||
+		s.lastResponse.TimeLastUpdateUnix == nil || s.lastResponse.TimeNextUpdateUnix == nil {
+		return ExchangeRateDto{}, fmt.Errorf("exchange rate API returned incomplete data")
 	}
 
 	return ExchangeRateDto{

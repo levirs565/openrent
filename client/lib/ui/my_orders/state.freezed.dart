@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyOrdersState {
 
- bool get isLoading; List<OrderResponseItem> get list; GeneralErrorData? get error;
+ bool get isLoading; List<OrderResponseItem> get list; GeneralErrorData? get error; tz.Location get timeZone;
 /// Create a copy of MyOrdersState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MyOrdersStateCopyWith<MyOrdersState> get copyWith => _$MyOrdersStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyOrdersState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.list, list)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyOrdersState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.list, list)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(list),error);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(list),error,timeZone);
 
 @override
 String toString() {
-  return 'MyOrdersState(isLoading: $isLoading, list: $list, error: $error)';
+  return 'MyOrdersState(isLoading: $isLoading, list: $list, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MyOrdersStateCopyWith<$Res>  {
   factory $MyOrdersStateCopyWith(MyOrdersState value, $Res Function(MyOrdersState) _then) = _$MyOrdersStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, List<OrderResponseItem> list, GeneralErrorData? error
+ bool isLoading, List<OrderResponseItem> list, GeneralErrorData? error, tz.Location timeZone
 });
 
 
@@ -62,12 +62,13 @@ class _$MyOrdersStateCopyWithImpl<$Res>
 
 /// Create a copy of MyOrdersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? list = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? list = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,list: null == list ? _self.list : list // ignore: cast_nullable_to_non_nullable
 as List<OrderResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as GeneralErrorData?,
+as GeneralErrorData?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 /// Create a copy of MyOrdersState
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error,  tz.Location timeZone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyOrdersState() when $default != null:
-return $default(_that.isLoading,_that.list,_that.error);case _:
+return $default(_that.isLoading,_that.list,_that.error,_that.timeZone);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.isLoading,_that.list,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error,  tz.Location timeZone)  $default,) {final _that = this;
 switch (_that) {
 case _MyOrdersState():
-return $default(_that.isLoading,_that.list,_that.error);case _:
+return $default(_that.isLoading,_that.list,_that.error,_that.timeZone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.isLoading,_that.list,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  List<OrderResponseItem> list,  GeneralErrorData? error,  tz.Location timeZone)?  $default,) {final _that = this;
 switch (_that) {
 case _MyOrdersState() when $default != null:
-return $default(_that.isLoading,_that.list,_that.error);case _:
+return $default(_that.isLoading,_that.list,_that.error,_that.timeZone);case _:
   return null;
 
 }
@@ -220,7 +221,7 @@ return $default(_that.isLoading,_that.list,_that.error);case _:
 
 
 class _MyOrdersState implements MyOrdersState {
-   _MyOrdersState({required this.isLoading, required final  List<OrderResponseItem> list, required this.error}): _list = list;
+   _MyOrdersState({required this.isLoading, required final  List<OrderResponseItem> list, required this.error, required this.timeZone}): _list = list;
   
 
 @override final  bool isLoading;
@@ -232,6 +233,7 @@ class _MyOrdersState implements MyOrdersState {
 }
 
 @override final  GeneralErrorData? error;
+@override final  tz.Location timeZone;
 
 /// Create a copy of MyOrdersState
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +245,16 @@ _$MyOrdersStateCopyWith<_MyOrdersState> get copyWith => __$MyOrdersStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyOrdersState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other._list, _list)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyOrdersState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other._list, _list)&&(identical(other.error, error) || other.error == error)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_list),error);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_list),error,timeZone);
 
 @override
 String toString() {
-  return 'MyOrdersState(isLoading: $isLoading, list: $list, error: $error)';
+  return 'MyOrdersState(isLoading: $isLoading, list: $list, error: $error, timeZone: $timeZone)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$MyOrdersStateCopyWith<$Res> implements $MyOrdersStateCopy
   factory _$MyOrdersStateCopyWith(_MyOrdersState value, $Res Function(_MyOrdersState) _then) = __$MyOrdersStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, List<OrderResponseItem> list, GeneralErrorData? error
+ bool isLoading, List<OrderResponseItem> list, GeneralErrorData? error, tz.Location timeZone
 });
 
 
@@ -280,12 +282,13 @@ class __$MyOrdersStateCopyWithImpl<$Res>
 
 /// Create a copy of MyOrdersState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? list = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? list = null,Object? error = freezed,Object? timeZone = null,}) {
   return _then(_MyOrdersState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,list: null == list ? _self._list : list // ignore: cast_nullable_to_non_nullable
 as List<OrderResponseItem>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as GeneralErrorData?,
+as GeneralErrorData?,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as tz.Location,
   ));
 }
 

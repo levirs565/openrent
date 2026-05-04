@@ -4,8 +4,6 @@ import (
 	"openrent-server/core"
 	"openrent-server/models"
 	"time"
-
-	"gorm.io/datatypes"
 )
 
 type GetByIdRequest struct {
@@ -92,8 +90,8 @@ type RentItem struct {
 	ID        uint             `json:"id"`
 	User      UserShort        `json:"user"`
 	State     models.RentState `json:"state"`
-	StartDate datatypes.Date   `json:"start_date"`
-	EndDate   datatypes.Date   `json:"end_date"`
+	StartDate time.Time        `json:"start_date"`
+	EndDate   time.Time        `json:"end_date"`
 	Quantity  int              `json:"quantity"`
 }
 
@@ -105,8 +103,8 @@ func modelToRentItem(model models.Rent) RentItem {
 			Name: model.RenterSnapshotName,
 		},
 		State:     model.State,
-		StartDate: model.StartDate,
-		EndDate:   model.EndDate,
+		StartDate: core.ConvertDateToTime(model.StartDate),
+		EndDate:   core.ConvertDateToTimeForEnd(model.EndDate),
 		Quantity:  model.Quantity,
 	}
 }

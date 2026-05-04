@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"openrent-server/ai"
 	"openrent-server/core"
-	"openrent-server/embedding"
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
@@ -25,14 +25,14 @@ var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 
 type Service struct {
 	db           *gorm.DB
-	embedder     embedding.AIEmbedder
+	embedder     ai.AIEmbedder
 	notification notification.Service
 	s3           *s3.Client
 	s3Bucket     string
 }
 
 func NewService(
-	db *gorm.DB, embedder embedding.AIEmbedder, notification notification.Service,
+	db *gorm.DB, embedder ai.AIEmbedder, notification notification.Service,
 	s3 *s3.Client, s3Bucket string,
 ) *Service {
 	return &Service{
@@ -110,8 +110,8 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 				models.RentStateCompleted,
 				models.RentStateCancelled,
 			},
-			datatypes.Date(parameters.EndDate),
-			datatypes.Date(parameters.StartDate),
+			core.ConvertTimeToDate(parameters.EndDate),
+			core.ConvertTimeToDate(parameters.StartDate),
 		).
 			Group(`products.id, "UserAccount__Account".id,  "UserAddress".id`).
 			Having("products.stock - COALESCE(SUM(rents.quantity), 0) >= ?", quntity)
@@ -256,8 +256,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			).
 			Where(clause.Or(
 				clause.And(
-					gorm.Expr("rents.start_date <= ?", datatypes.Date(request.EndDate)),
-					gorm.Expr("rents.end_date >= ?", datatypes.Date(request.StartDate)),
+					gorm.Expr("rents.start_date <= ?", core.ConvertTimeToDate(request.EndDate)),
+					gorm.Expr("rents.end_date >= ?", core.ConvertTimeToDate(request.StartDate)),
 				),
 				gorm.Expr("rents.end_date < CURRENT_DATE"),
 			)).
@@ -332,8 +332,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 			},
 			OwnerSnapshotName:  model.UserAccount.Account.Name,
 			RenterSnapshotName: userData.Name,
-			StartDate:          datatypes.Date(request.StartDate),
-			EndDate:            datatypes.Date(request.EndDate),
+			StartDate:          core.ConvertTimeToDate(request.StartDate),
+			EndDate:            core.ConvertTimeToDate(request.EndDate),
 			Quantity:           request.Quantity,
 		}
 		err = gorm.G[models.Rent](tx).Create(ctx, &rentModel)
@@ -367,8 +367,8 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
-	reviews, err := gorm.G[models.Review](s.db).
-		Select("reviews.id", "reviews.rating", "reviews.content").
+	reviews, err := gorm.G[models.Review](s.db.Debug()).
+		Select("reviews.id", "reviews.rating", "reviews.content", "reviews.score").
 		Joins(
 			clause.JoinTarget{Association: "Rent"},
 			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
@@ -377,10 +377,11 @@ func (s *Service) ListReview(ctx context.Context, userId uint, request ListRevie
 			},
 		).
 		Where(`"Rent".product_id = ?`, request.ID).
+		Order("reviews.score DESC").
 		Find(ctx)
 
 	if err != nil {
-		return []core.ReviewDetail{}, nil
+		return []core.ReviewDetail{}, err
 	}
 
 	return lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
