@@ -1,0 +1,42 @@
+@startuml address_management
+title Diagram Activity - Manajemen Alamat
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Buka Halaman Alamat;
+:Melihat Daftar Alamat;
+
+if (Aksi User?) then (Tambah Alamat)
+  :Halaman Tambah Alamat;
+  if (Metode Pilih Lokasi?) then (Pilih di Peta)
+    :Pilih Lokasi di Peta;
+  else (Lokasi Saat Ini)
+    :Ambil Lokasi Saat Ini;
+  endif
+  :Isi Detail Alamat;
+  :Simpan Alamat;
+else (Edit Alamat)
+  :Halaman Detail Alamat;
+  :Edit Detail Alamat;
+  if (Set Ulang Lokasi?) then (Ya)
+    if (Metode Pilih Lokasi?) then (Pilih di Peta)
+      :Pilih Lokasi di Peta;
+    else (Lokasi Saat Ini)
+      :Ambil Lokasi Saat Ini;
+    endif
+  else (Tidak)
+  endif
+
+  :Simpan Alamat;
+endif
+
+:Kembali ke Daftar Alamat;
+
+stop
+@enduml
