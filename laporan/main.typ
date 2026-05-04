@@ -9,7 +9,7 @@
 
 #set page(
   paper: "a4",
-  margin: (top: 3cm, bottom: 3cm, left: 4cm, right: 3cm),
+  margin: (top: 2.54cm, bottom: 2.54cm, left: 2.54cm, right: 2.54cm),
 )
 
 #set text(
@@ -29,6 +29,10 @@
 
 // ── Halaman Pengesahan ─────────────────────────────────────
 #include "pengesahan.typ"
+#pagebreak()
+
+// ── Kata Pengantar ────────────────────────────────────────
+#include "kata_pengantar.typ"
 #pagebreak()
 
 // ── Daftar Isi ─────────────────────────────────────────────
