@@ -264,12 +264,17 @@ func (s *Service) GetUserState(ctx context.Context, id uint) (UserStateReponse, 
 		return UserStateReponse{}, err
 	}
 
+	var avatarName string
+	if account.User != nil {
+		avatarName = account.User.AvatarName
+	}
+
 	return UserStateReponse{
 		ID:        account.ID,
 		Email:     account.Email,
 		Name:      account.Name,
 		Role:      account.Role,
-		AvatarURL: core.FormatUserAvatarUrl(s.s3, s.s3Bucket, id, account.User.AvatarName),
+		AvatarURL: core.FormatUserAvatarUrl(s.s3, s.s3Bucket, id, avatarName),
 	}, nil
 }
 

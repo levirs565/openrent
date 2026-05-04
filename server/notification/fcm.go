@@ -46,9 +46,6 @@ func (s *fcmService) SendNotification(ctx context.Context, userId uint, notifica
 		APNS:         notification.APNS,
 		FCMOptions:   notification.FCMOptions,
 	})
-	if err != nil {
-		log.Printf("failed to send multicast message: %v", err)
-	}
 
 	if br.FailureCount > 0 {
 		var failedTokenIds []uint
@@ -67,5 +64,9 @@ func (s *fcmService) SendNotification(ctx context.Context, userId uint, notifica
 			}
 		}
 	}
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

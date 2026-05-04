@@ -158,11 +158,11 @@ func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 		Where("rents.state = ?", models.RentStateReadyForPickup).
 		Select("State").
 		Updates(ctx, model)
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.Product.UserAccountID, notification.Notification{
@@ -213,11 +213,11 @@ func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error
 		Where("rents.state = ?", models.RentStateOnRent).
 		Select("State").
 		Updates(ctx, model)
-	if rowsAffected == 0 {
-		return ErrNotFound
-	}
 	if err != nil {
 		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNotFound
 	}
 
 	err = s.notification.SendNotification(ctx, data.Product.UserAccountID, notification.Notification{

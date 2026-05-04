@@ -388,12 +388,12 @@ func (s *Service) ConfirmImage(ctx context.Context, userId uint, request ImageCo
 
 	rows, err := gorm.G[models.Product](s.db).Where("id = ?", request.ID).Update(ctx, "image_name", request.Name)
 
-	if rows == 0 {
-		return ErrNotFound
-	}
-
 	if err != nil {
 		return err
+	}
+
+	if rows == 0 {
+		return ErrNotFound
 	}
 
 	return nil

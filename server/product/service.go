@@ -380,7 +380,7 @@ func (s *Service) ListReview(ctx context.Context, userId uint, request ListRevie
 		Find(ctx)
 
 	if err != nil {
-		return []core.ReviewDetail{}, nil
+		return []core.ReviewDetail{}, err
 	}
 
 	return lo.Map(reviews, func(item models.Review, index int) core.ReviewDetail {
