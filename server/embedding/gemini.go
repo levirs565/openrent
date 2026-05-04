@@ -40,7 +40,11 @@ func (g *geminiEmbedder) Embed(ctx context.Context, text string) ([]float32, err
 
 	result, err := g.client.Models.EmbedContent(ctx, g.model, contents, g.embedConfig)
 	if err != nil {
-		return []float32{}, nil
+		return []float32{}, err
+	}
+
+	if len(result.Embeddings) == 0 {
+		return []float32{}, ErrSizeNotMatch
 	}
 
 	vector := result.Embeddings[0].Values
