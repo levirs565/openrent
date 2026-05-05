@@ -41,7 +41,7 @@
 
   #text(weight: "bold", size: 12pt)[Dosen Teknologi dan Pemrograman Mobile,]
 
-  #v(3em)
+  #v(6em)
 
   #text(weight: "bold", size: 12pt)[
     #underline[Bagus Muhammad Akbar, S. ST., M. Kom.] \

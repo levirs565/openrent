@@ -1,0 +1,81 @@
+@startuml rental_management_borrower
+title Diagram Activity - Manajemen Peminjaman (Peminjam)
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+<style>
+element {
+  MaximumWidth 100
+}
+.notwrap {
+  MaximumWidth 500
+}
+</style>
+
+start
+
+:Buka Halaman Daftar Peminjaman; <<notwrap>>
+:Pilih Peminjaman;
+
+:Melihat Detail Peminjaman;
+note right  <<notwrap>>
+  Menampilkan:
+  - Produk
+  - User Pemilik
+  - Tanggal Awal & Akhir
+  - Review (jika ada)
+  - Estimasi Biaya Awal
+  - Estimasi Biaya Telat
+  - Pembayaran Awal (jika ada)
+  - Pembayaran Akhir (jika ada)
+end note
+
+switch (Status Peminjaman?)
+case (Menunggu Persetujuan\nPemilik)
+
+  :Menunggu Keputusan Pemilik;
+
+case (Siap)
+
+  if (Tanggal Sekarang >=\nTanggal Awal Sewa?) then (Ya)
+    :Klik Terima;
+    :Status Berubah: Menunggu\nPenyerahan dari Pemilik;
+    :Sistem Kirim Notifikasi ke Pemilik;
+  else (Tidak)
+    :Menunggu Tanggal Mulai Sewa;
+  endif
+
+case (Menunggu Penyerahan\ndari Pemilik)
+
+  :Menunggu Pemilik\nMenyerahkan Barang;
+
+case (Dalam Peminjaman)
+
+  :Klik Kembalikan Barang;
+  :Status Berubah: Menunggu\nKonfirmasi Pengembalian;
+  :Sistem Kirim Notifikasi ke Pemilik;
+
+case (Menunggu Konfirmasi\nPengembalian)
+
+  :Menunggu Pemilik\nMengkonfirmasi Pengembalian;
+
+case (Selesai / Batal)
+
+  if (Status = Selesai?) then (Ya)
+    :Klik Tambahkan Review;
+    :Halaman Review;
+    :Isi Rating dan Deskripsi;
+    :Klik Simpan;
+    :Sistem Hitung Skor Review\nMenggunakan AI;
+  else (Batal)
+    :Tidak Ada Operasi\nyang Dapat Dilakukan;
+  endif
+
+endswitch
+
+stop
+@enduml

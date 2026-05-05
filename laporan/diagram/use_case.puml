@@ -1,0 +1,30 @@
+@startuml use_case
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor Pengguna
+
+rectangle "Sistem OpenRent" {
+  usecase "Autentikasi" as UC_AUTH
+  usecase "Manajemen Alamat" as UC_ADDRESS
+  usecase "Manajemen Produk" as UC_PRODUCT
+  usecase "Pencarian dan Mulai Sewa" as UC_SEARCH
+  usecase "Manajemen Peminjaman (Pemilik)" as UC_OWNER_RENT
+  usecase "Manajemen Peminjaman (Peminjam)" as UC_BORROWER_RENT
+  usecase "Melihat Alur Peminjaman" as UC_VIEW_FLOW
+  usecase "Memainkan Mini Game" as UC_GAME
+  usecase "Logout" as UC_LOGOUT
+}
+
+Pengguna -- UC_AUTH
+Pengguna -- UC_ADDRESS
+Pengguna -- UC_PRODUCT
+Pengguna -- UC_SEARCH
+Pengguna -- UC_OWNER_RENT
+Pengguna -- UC_BORROWER_RENT
+Pengguna -- UC_VIEW_FLOW
+Pengguna -- UC_GAME
+Pengguna -- UC_LOGOUT
+
+@enduml

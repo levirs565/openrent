@@ -1,0 +1,87 @@
+@startuml rental_management_owner
+title Diagram Activity - Manajemen Peminjaman (Pemilik)
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+<style>
+element {
+  MaximumWidth 100
+}
+.notwrap {
+  MaximumWidth 500
+}
+</style>
+
+start
+
+:Buka Halaman Daftar Peminjaman; <<notwrap>>
+:Pilih Peminjaman;
+
+:Melihat Detail Peminjaman;
+note right <<notwrap>>
+  Menampilkan:
+  - Produk
+  - User Peminjam
+  - Tanggal Awal & Akhir
+  - Review (jika ada)
+  - Estimasi Biaya Awal
+  - Estimasi Biaya Telat
+  - Pembayaran Awal (jika ada)
+  - Pembayaran Akhir (jika ada)
+end note
+
+switch (Status Peminjaman?)
+case (Menunggu Persetujuan\nPemilik)
+
+  if (Aksi Pemilik?) then (Terima)
+    :Status Berubah: Siap;
+  else (Tolak)
+    :Isi Alasan Penolakan;
+    :Simpan;
+    :Status Berubah: Ditolak;
+  endif
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Siap)
+
+  :Menunggu Penyewa Klik Terima;
+
+case (Menunggu Penyerahan\ndari Pemilik)
+
+  :Klik Serahkan Barang;
+  :Pilih Mata Uang Pembayaran;
+  :Tampil Estimasi Total Biaya Peminjaman\ndan Setengah Total Biaya\n(IDR & Mata Uang Dipilih);
+  :Masukkan Jumlah Uang\nyang Dibayarkan Peminjam;
+  :Tampil Jumlah dalam IDR;
+  :Simpan;
+  :Status Berubah: Dalam Peminjaman;
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Dalam Peminjaman)
+
+  :Menunggu Peminjam Klik Kembalikan;
+
+case (Menunggu Konfirmasi\nPengembalian)
+
+  :Klik Konfirmasi Pengembalian;
+  :Pilih Mata Uang;
+  :Tampil Total Biaya Peminjaman, Biaya Telat,\nBiaya Total, Pembayaran Awal,\ndan Pembayaran Kurang\n(IDR & Mata Uang Dipilih);
+  :Tampil Estimasi Biaya Awal, Biaya Telat,\nBiaya Total, Pembayaran Awal,\ndan Pembayaran Kurang\n(IDR & Mata Uang Dipilih);
+  :Isi Pembayaran Akhir,\nDenda Telat, dan Denda Kerusakan;
+  :Sistem Tampilkan Total Pembayaran\n(IDR & Mata Uang Dipilih);
+  :Simpan;
+  :Status Berubah: Selesai;
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Selesai / Batal)
+
+  :Tidak Ada Operasi\nyang Dapat Dilakukan;
+
+endswitch
+
+stop
+@enduml

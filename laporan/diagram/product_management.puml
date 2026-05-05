@@ -1,0 +1,50 @@
+@startuml product_management
+title Diagram Activity - Manajemen Produk
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Buka Halaman Produk Saya;
+:Melihat Daftar Produk;
+
+if (Aksi User?) then (Buat Produk)
+  :Halaman Buat Produk;
+  :Isi Detail Produk;
+  if (Metode Pilih Alamat?) then (Pilih Manual)
+    :Pilih Alamat dari Daftar;
+  else (Alamat Terdekat)
+    :Sistem Deteksi Lokasi Saat Ini;
+    :Pilih Alamat Terdekat;
+  endif
+  :Simpan Produk;
+else (Lihat Detail Produk)
+  :Halaman Detail Produk;
+  note right
+    Menampilkan:
+    - Daftar Peminjaman
+    - Review Teratas
+  end note
+
+  if (Ubah Foto Produk?) then (Ya)
+    :Upload Foto Produk;
+  else (Tidak)
+  endif
+
+  if (Edit Produk?) then (Ya)
+    :Halaman Edit Produk;
+    :Ubah Detail Produk;
+    :Submit;
+    :Kembali ke Detail Produk;
+  else (Tidak)
+  endif
+endif
+
+:Kembali ke Daftar Produk;
+
+stop
+@enduml

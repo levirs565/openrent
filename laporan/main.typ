@@ -14,7 +14,7 @@
 
 #set text(
   font: "Times New Roman",
-  size: 12pt,
+  size: 11pt,
   lang: "id",
 )
 
@@ -22,6 +22,8 @@
   justify: true,
   leading: 1em,
 )
+
+#set raw(theme: none)
 
 // ── Halaman Cover ──────────────────────────────────────────
 #include "cover.typ"
@@ -47,7 +49,7 @@
 #outline(
   title: none,
   indent: auto,
-  depth: 2,
+  depth: 3,
 )
 #pagebreak()
 

@@ -1,0 +1,62 @@
+@startuml sequence_rental_full_flow
+title Sequence Diagram - Alur Peminjaman Lengkap
+
+actor Peminjam as borrower
+participant "Server" as server
+actor Pemilik as owner
+
+== Peminjam Buat Request Sewa ==
+
+borrower -> borrower: Buka Halaman Produk
+borrower -> borrower: Isi Tanggal Awal & Akhir
+borrower -> server: Klik Sewa (Submit Request)
+server -> server: Create Rental dengan Status:\nMenunggu Persetujuan Pemilik
+server -> owner: Notifikasi Request Penyewaan
+
+== Pemilik Membuat Keputusan ==
+
+alt Keputusan?
+else Setuju
+    owner -> server: Terima Request
+    server -> server: Update Status: Siap
+    server -> borrower: Notifikasi Status Siap
+    
+    == Menunggu Waktu Mulai Sewa ==
+    
+    borrower -> borrower: Tunggu Waktu Mulai Sewa
+    borrower -> borrower: Cek Tanggal Sekarang >= Tanggal Awal
+    borrower -> server: Klik Terima
+    server -> server: Update Status:\nMenunggu Penyerahan dari Pemilik
+    server -> owner: Notifikasi Peminjam Siap Terima
+    
+    == Pemilik Serahkan & Terima Pembayaran Awal ==
+    
+    owner -> owner: Isi Data Pembayaran Awal
+    owner -> server: Submit Pembayaran Awal
+    server -> server: Update Status: Dalam Peminjaman
+    server -> borrower: Notifikasi Barang Sudah Diserahkan
+    
+    == Peminjam Dalam Masa Sewa ==
+    
+    borrower -> borrower: Tunggu Masa Sewa Selesai
+    borrower -> borrower: Klik Kembalikan Barang
+    borrower -> server: Submit Pengembalian
+    server -> server: Update Status:\nMenunggu Konfirmasi Pengembalian
+    server -> owner: Notifikasi Barang Dikembalikan
+    
+    == Pemilik Konfirmasi & Terima Pembayaran Akhir ==
+    
+    owner -> owner: Isi Data Pembayaran Akhir
+    owner -> owner: Isi Denda Telat & Kerusakan
+    owner -> server: Submit Konfirmasi Pengembalian
+    server -> server: Update Status: Selesai
+    server -> borrower: Notifikasi Rental Selesai
+
+else Tolak
+    owner -> owner: Isi Alasan Penolakan
+    owner -> server: Submit Penolakan
+    server -> server: Update Status: Batal
+    server -> borrower: Notifikasi Request Ditolak + Alasan
+end
+
+@enduml

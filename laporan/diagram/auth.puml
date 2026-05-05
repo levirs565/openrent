@@ -1,0 +1,58 @@
+@startuml auth
+title Diagram Activity - Autentikasi
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Membuka Aplikasi;
+
+:Cek Sesi Tersimpan;
+
+if (Ada Sesi Tersimpan?) then (Ya)
+  if (Perlu Biometric?) then (Ya)
+    repeat
+      :Tampilkan Biometric;
+      if (Biometric Sukses?) then (Ya)
+        :Masuk Halaman Utama;
+        stop
+      else (Tidak)
+        :Halaman Biometric Gagal;
+        if (Pilihan User?) then (Login)
+          break
+        else (Coba Lagi)
+        endif
+      endif
+    repeat while (Coba Lagi?) is (Ya)
+    :Halaman Login;
+  else (Tidak)
+    :Masuk Halaman Utama;
+    stop
+  endif
+else (Tidak)
+  :Halaman Login;
+endif
+
+repeat
+  :Input Kredensial;
+  if (Punya Kredensial?) then (Tidak)
+    :Halaman Register;
+    :Isi Data Registrasi;
+    :Registrasi Berhasil;
+    :Halaman Login;
+  else (Ya)
+    :Cek Kredensial;
+    if (Kredensial Valid?) then (Ya)
+      :Masuk Halaman Utama;
+      stop
+    else (Tidak)
+    endif
+  endif
+repeat while (Tetap di Halaman Login?) is (Ya)
+
+stop
+@enduml

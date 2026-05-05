@@ -168,6 +168,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.stock",
 			"products.user_account_id", "products.user_address_id",
+			"products.image_name",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},

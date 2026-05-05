@@ -1,0 +1,62 @@
+@startuml sequence_search_and_rent
+title Sequence Diagram - Pencarian dan Request Peminjaman
+
+actor User as user
+participant "Mobile App" as app
+participant "Server" as server
+
+== Pencarian ==
+
+user -> app: Isi Keyword Pencarian
+user -> app: Isi Tanggal Awal dan Akhir (Opsional)
+user -> app: Atur Opsi AI Search
+app -> server: Request Hasil Pencarian
+server --> app: Produk Data
+app --> user: Tampil Hasil Pencarian
+
+alt Mode Tampilan?
+else List
+    app --> user: Tampil Daftar Produk
+    user -> app: Pilih Produk
+else Map
+    app --> user: Tampil Peta dengan Marker Lokasi Produk
+    user -> app: Pilih Marker
+    
+    alt Marker Berisi > 1 Produk?
+    else Ya
+        app --> user: Tampil Pilihan Produk pada Marker
+        user -> app: Pilih Produk
+    else Tidak
+    end
+end
+
+== Detail Produk ==
+
+app -> server: Request Detail Produk
+server --> app: Nama, Deskripsi, Stok, Review
+app --> user: Halaman Detail Produk
+
+== Proses Peminjaman ==
+
+user -> app: Klik Sewa
+loop Pilih Tanggal
+    user -> app: Pilih Tanggal Mulai dan Akhir
+    app -> server: Cek Ketersediaan Stok
+    server --> app: Status Ketersediaan
+    
+    alt Stok Tersedia?
+    else Ya
+        break
+    else Tidak
+        app --> user: Stok Tidak Tersedia
+    end
+end
+
+app -> app: Tampilkan Waktu Penyewaan (disesuaikan zona waktu)
+user -> app: Klik Sewa
+app -> server: Buat Rental Request
+server --> app: Rental Berhasil Dibuat
+server -> server: Kirim Notifikasi ke Pemilik Barang
+app --> user: Konfirmasi Peminjaman
+
+@enduml

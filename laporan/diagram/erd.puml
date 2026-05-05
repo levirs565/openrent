@@ -1,0 +1,144 @@
+@startuml erd
+
+skinparam backgroundColor #FEFEFE
+skinparam classBackgroundColor #F0F0F0
+skinparam classBorderColor #333333
+
+entity Account {
+  * ID : uint (PK)
+  ---
+  * Email : string (UNIQUE)
+  * Name : string
+  * PasswordHash : string
+  * Role : string (NOT NULL)
+}
+
+entity UserAccount {
+  * AccountID : uint (PK, FK)
+  ---
+  AvatarName : string
+  * BirthDate : date (NOT NULL)
+  * BirthPlace : string (NOT NULL)
+  * NIK : string (NOT NULL)
+}
+
+entity AdminAccount {
+  * AccountID : uint (PK, FK)
+}
+
+entity UserAddress {
+  * ID : uint (PK)
+  * UserAccountID : uint (FK, UNIQUE)
+  ---
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  Name : string
+  Province : string
+  Regency : string
+  District : string
+  AddressDetail : string
+  Location : Point (Geometry)
+}
+
+entity Product {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  * UserAccountID : uint (FK)
+  * UserAddressID : uint (FK)
+  ---
+  Name : string
+  * PricePerDay : int
+  * LateFeePerDay : int
+  * Stock : int
+  Description : string
+  Embedding : vector(768)
+  ImageName : string
+}
+
+entity Rent {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  * ProductID : uint (FK)
+  * UserAccountID : uint (FK)
+  ---
+  * State : RentState
+  * StartDate : date
+  * EndDate : date
+  * Quantity : int
+  ApprovedAt : timestamp
+  ReturnedAt : timestamp
+  CancelReason : RentCancelReason
+  CancelReasonNote : string
+  RenterSnapshotName : string
+  OwnerSnapshotName : string
+  ProductSnapshot : JSON
+  InitialPayment : int
+  FinalPayment : int
+  LateFinePayment : int
+  DamageFinePayment : int
+}
+
+entity Review {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  * RentID : uint (FK, UNIQUE)
+  ---
+  * Rating : uint
+  Content : string
+  * Score : uint (NOT NULL, DEFAULT 0)
+}
+
+entity Message {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  * SenderID : uint (FK)
+  * ReceiverID : uint (FK)
+  ---
+  Message : string
+}
+
+entity RefreshToken {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  DeletedAt : timestamp (SOFT DELETE)
+  * AccountID : uint (FK)
+  * TokenHash : string (NOT NULL)
+  ReplacedByID : uint (FK)
+  * ExpiresAt : timestamp (NOT NULL)
+}
+
+entity FCMToken {
+  * ID : uint (PK)
+  CreatedAt : timestamp
+  UpdatedAt : timestamp
+  * UserAccountID : uint (FK)
+  * Token : string (NOT NULL, UNIQUE)
+}
+
+Account ||--|| UserAccount : "has"
+Account ||--|| AdminAccount : "has"
+Account ||--o{ RefreshToken : "has"
+
+UserAccount ||--o{ UserAddress : "has"
+UserAccount ||--o{ Product : "owns"
+UserAccount ||--o{ Rent : "rents"
+UserAccount ||--o{ Message : "sends"
+UserAccount ||--o{ Message : "receives"
+UserAccount ||--o{ FCMToken : "has"
+
+UserAddress ||--o{ Product : "located_at"
+Product ||--o{ Rent : "can_be_rented"
+Rent ||--|| Review : "has"
+RefreshToken o--|| RefreshToken : "replaced_by"
+
+@enduml
