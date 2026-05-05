@@ -8,6 +8,7 @@
 #image("diagram/output/search_and_rent.svg")
 #image("diagram/output/rental_management_owner.svg")
 #image("diagram/output/rental_management_borrower.svg")
+#image("diagram/output/rental_full_flow.svg")
 
 
 == Analisis Kebutuhan Sistem
