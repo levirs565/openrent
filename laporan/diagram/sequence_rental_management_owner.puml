@@ -1,0 +1,82 @@
+@startuml sequence_rental_management_owner
+title Sequence Diagram - Manajemen Peminjaman (Pemilik)
+
+actor Owner as owner
+participant "Mobile App" as app
+participant "Server" as server
+
+== Buka Halaman Daftar Peminjaman ==
+
+owner -> app: Buka Halaman Daftar Peminjaman
+app -> server: Request Daftar Peminjaman
+server --> app: Rental Data
+app --> owner: Melihat Daftar Peminjaman
+
+owner -> app: Pilih Peminjaman
+app -> server: Request Detail Peminjaman
+server --> app: Detail Peminjaman (Produk, Peminjam, Tanggal, Review, Biaya, Pembayaran)
+app --> owner: Melihat Detail Peminjaman
+
+== Status: Menunggu Persetujuan Pemilik ==
+
+alt Aksi Pemilik?
+else Terima
+    owner -> app: Klik Terima
+    app -> server: Update Status: Siap
+    server --> app: Status Updated
+    server -> server: Kirim Notifikasi ke Peminjam
+    app --> owner: Status Berubah ke Siap
+else Tolak
+    owner -> app: Klik Tolak
+    app --> owner: Form Alasan Penolakan
+    owner -> app: Isi Alasan Penolakan
+    owner -> app: Simpan
+    app -> server: Update Status: Ditolak + Alasan
+    server --> app: Status Updated
+    server -> server: Kirim Notifikasi ke Peminjam
+    app --> owner: Status Berubah ke Ditolak
+end
+
+== Status: Siap ==
+
+note right of owner: Menunggu Penyewa Klik Terima
+
+== Status: Menunggu Penyerahan dari Pemilik ==
+
+owner -> app: Klik Serahkan Barang
+app --> owner: Form Pilih Mata Uang Pembayaran
+owner -> app: Pilih Mata Uang
+app -> app: Tampil Estimasi Total Biaya & Setengah Total (IDR & Mata Uang)
+app --> owner: Masukkan Jumlah Uang yang Dibayarkan Peminjam
+owner -> app: Input Jumlah Pembayaran
+app -> app: Tampil Jumlah dalam IDR
+owner -> app: Simpan
+app -> server: Update Status: Dalam Peminjaman + Data Pembayaran Awal
+server --> app: Status Updated
+server -> server: Kirim Notifikasi ke Peminjam
+app --> owner: Status Berubah ke Dalam Peminjaman
+
+== Status: Dalam Peminjaman ==
+
+note right of owner: Menunggu Peminjam Klik Kembalikan
+
+== Status: Menunggu Konfirmasi Pengembalian ==
+
+owner -> app: Klik Konfirmasi Pengembalian
+app --> owner: Form Pilih Mata Uang
+owner -> app: Pilih Mata Uang
+app -> app: Tampil Detail Biaya (Total, Telat, Awal, Kurang) dalam IDR & Mata Uang
+app --> owner: Form Input Pembayaran Akhir, Denda Telat, Denda Kerusakan
+owner -> app: Input Data Pembayaran
+app -> app: Tampil Total Pembayaran (IDR & Mata Uang)
+owner -> app: Simpan
+app -> server: Update Status: Selesai + Data Pembayaran Akhir
+server --> app: Status Updated
+server -> server: Kirim Notifikasi ke Peminjam
+app --> owner: Status Berubah ke Selesai
+
+== Status: Selesai / Batal ==
+
+note right of owner: Tidak Ada Operasi yang Dapat Dilakukan
+
+@enduml
