@@ -3,8 +3,7 @@ title Sequence Diagram - Autentikasi
 
 actor User as user
 participant "Mobile App" as app
-participant "Auth Service" as auth
-participant "Database" as db
+participant "Server" as server
 
 == Inisialisasi ==
 
@@ -50,24 +49,19 @@ loop Tetap di Halaman Login?
         user -> app: Pilih Register
         user -> app: Halaman Register
         user -> app: Isi Data Registrasi
-        app -> auth: Proses Registrasi
-        auth -> db: Simpan Data User Baru
-        db --> auth: User Terdaftar
-        auth --> app: Registrasi Berhasil
+        app -> server: Proses Registrasi
+        server --> app: Registrasi Berhasil
         app --> user: Kembali ke Halaman Login
         note right of app: Ulangi loop login
     else Ya - Punya Kredensial
-        app -> auth: Cek Kredensial
-        auth -> db: Query User & Validasi
-        db --> auth: User Data
-        auth -> auth: Verifikasi Password
+        app -> server: Cek Kredensial
         
         alt Kredensial Valid?
         else Ya
-            auth --> app: Login Sukses
+            server --> app: Login Sukses
             app --> user: Masuk Halaman Utama
         else Tidak
-            auth --> app: Login Gagal
+            server --> app: Login Gagal
             app --> user: Tampilkan Error
             note right of app: Tetap di Halaman Login
         end
