@@ -45,8 +45,8 @@ class SearchCubit extends Cubit<SearchState> {
            currentPosition: null,
            startDate: null,
            endDate: null,
-           disableAISearch: false,
-           timeZone: tz.getLocation(settingsRepository.getTimeZone())
+           disableAISearch: true,
+           timeZone: tz.getLocation(settingsRepository.getTimeZone()),
          ),
        ) {
     _searchSubscription = _searchController.stream
@@ -112,7 +112,6 @@ class SearchCubit extends Cubit<SearchState> {
     _cancelToken?.cancel();
     final cancelToken = CancelToken();
     _cancelToken = cancelToken;
-
 
     emit(state.copyWith(isSearchLoading: true));
 

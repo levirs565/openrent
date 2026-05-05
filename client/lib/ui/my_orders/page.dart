@@ -23,7 +23,7 @@ class MyOrdersPage extends StatelessWidget {
       child: ScaffoldMessenger(
         child: Scaffold(
           body: const _Content(),
-          appBar: AppBar(title: const Text("My Orders")),
+          appBar: AppBar(title: const Text("Pesanan Saya"), centerTitle: true),
         ),
       ),
     );
@@ -79,7 +79,8 @@ class _Item extends StatelessWidget {
 
   const _Item({required this.item});
 
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy HH:mm').format(date);
+  String _formatDate(DateTime date) =>
+      DateFormat('dd MMM yyyy HH:mm').format(date);
 
   @override
   Widget build(BuildContext context) {

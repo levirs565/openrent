@@ -231,19 +231,21 @@ class _ProductDetailPageContent extends StatelessWidget {
                                 ),
                                 const Gap(8),
                                 SizedBox(
-                                  height: 240,
+                                  height: 280,
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: product!.recommendations.length,
                                     separatorBuilder: (context, index) =>
                                         const Gap(8),
                                     itemBuilder: (context, index) {
+                                      final recommendation =
+                                          product.recommendations[index];
                                       return ConstrainedBox(
                                         constraints: const BoxConstraints(
                                           maxWidth: 200,
                                         ),
                                         child: ProductCard(
-                                          item: product.recommendations[index],
+                                          item: recommendation,
                                           currency: state.selectedCurrency,
                                           convertToCurrency:
                                               state.convertToCurrency,
@@ -263,17 +265,24 @@ class _ProductDetailPageContent extends StatelessWidget {
                 ),
           bottomNavigationBar: product == null
               ? null
-              : SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        BlocBuilder<AuthBloc, AuthBlocState>(
-                          builder: (context, authState) {
-                            final user = authState.state;
-                            if (user is AuthStateSuccess &&
-                                user.user?.id != product.user.id) {
-                              return Expanded(
+              : BlocBuilder<AuthBloc, AuthBlocState>(
+                  builder: (context, authState) {
+                    final user = authState.state;
+                    final isOwner =
+                        user is AuthStateSuccess &&
+                        user.user?.id == product.user.id;
+
+                    if (isOwner) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            if (user is AuthStateSuccess) ...[
+                              Expanded(
                                 flex: 1,
                                 child: OutlinedButton.icon(
                                   icon: const Icon(Icons.chat_bubble_outline),
@@ -284,32 +293,32 @@ class _ProductDetailPageContent extends StatelessWidget {
                                   ),
                                   label: const Text('Chat'),
                                 ),
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
+                              ),
+                              const Gap(8),
+                            ],
+
+                            Expanded(
+                              flex: 2,
+                              child: FilledButton.icon(
+                                icon: const Icon(Icons.shopping_cart_outlined),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<ProductDetailCubit>(),
+                                      child: RentFormSheet(id: state.id),
+                                    ),
+                                  );
+                                },
+                                label: const Text('Sewa Sekarang'),
+                              ),
+                            ),
+                          ],
                         ),
-                        const Gap(8),
-                        Expanded(
-                          flex: 2,
-                          child: FilledButton.icon(
-                            icon: const Icon(Icons.shopping_cart_outlined),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (_) => BlocProvider.value(
-                                  value: context.read<ProductDetailCubit>(),
-                                  child: RentFormSheet(id: state.id),
-                                ),
-                              );
-                            },
-                            label: const Text('Sewa Sekarang'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
         );
       },

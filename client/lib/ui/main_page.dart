@@ -20,7 +20,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
+    SearchPage(),
     ChatsPage(),
     MyOrdersPage(),
     MyProductsPage(),
@@ -41,10 +41,16 @@ class _MainPageState extends State<MainPage> {
         type: BottomNavigationBarType.fixed,
         // selectedItemColor: Colors.black,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chats'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'My Orders'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'My Products'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Obrolan'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: 'Pesanan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2),
+            label: 'Produk',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun'),
         ],
         currentIndex: _selectedIndex,

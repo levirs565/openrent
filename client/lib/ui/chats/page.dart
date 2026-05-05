@@ -17,7 +17,7 @@ class ChatsPage extends StatelessWidget {
         settingsRepository: context.read(),
       ),
       child: Scaffold(
-        appBar: AppBar(title: Text("Chats")),
+        appBar: AppBar(title: Text("Obrolan"), centerTitle: true),
         body: _Content(),
       ),
     );
