@@ -2,6 +2,10 @@
 
 = Analisis dan Perancangan Sistem
 
+#image("diagram/output/auth.svg")
+#image("diagram/output/address_management.svg")
+#image("diagram/output/rental_management_owner.svg")
+
 == Analisis Kebutuhan Sistem
 
 Tahap analisis kebutuhan bertujuan untuk mengidentifikasi kebutuhan fungsional dan

@@ -15,24 +15,20 @@ start
 
 if (Ada Sesi Tersimpan?) then (Ya)
   if (Perlu Biometric?) then (Ya)
-    :Tampilkan Biometric;
-    if (Biometric Sukses?) then (Ya)
-      :Masuk Halaman Utama;
-      stop
-    else (Tidak)
-      :Halaman Biometric Gagal;
-      if (Pilihan User?) then (Coba Lagi)
-        :Tampilkan Biometric;
-        if (Biometric Sukses?) then (Ya)
-          :Masuk Halaman Utama;
-          stop
-        else (Tidak)
-          :Halaman Login;
+    repeat
+      :Tampilkan Biometric;
+      if (Biometric Sukses?) then (Ya)
+        :Masuk Halaman Utama;
+        stop
+      else (Tidak)
+        :Halaman Biometric Gagal;
+        if (Pilihan User?) then (Login)
+          break
+        else (Coba Lagi)
         endif
-      else (Login)
-        :Halaman Login;
       endif
-    endif
+    repeat while (Coba Lagi?) is (Ya)
+    :Halaman Login;
   else (Tidak)
     :Masuk Halaman Utama;
     stop

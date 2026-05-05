@@ -1,0 +1,52 @@
+@startuml search_and_rent
+title Diagram Activity - Pencarian dan Request Peminjaman
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Isi Keyword Pencarian;
+:Isi Tanggal Awal dan Akhir (Opsional);
+:Atur Opsi AI Search;
+:Tampil Hasil Pencarian;
+
+if (Mode Tampilan?) then (List)
+  :Tampil Daftar Produk;
+  :Pilih Produk;
+else (Map)
+  :Tampil Peta dengan Marker Lokasi Produk;
+  :Pilih Marker;
+  if (Marker Berisi > 1 Produk?) then (Ya)
+    :Tampil Pilihan Produk pada Marker;
+    :Pilih Produk;
+  else (Tidak)
+  endif
+endif
+
+:Halaman Detail Produk;
+note right
+  Menampilkan:
+  - Nama Produk
+  - Deskripsi
+  - Total Stok
+  - Review
+end note
+
+:Klik Sewa;
+
+repeat
+  :Pilih Tanggal Mulai dan Akhir;
+  :Sistem Cek Ketersediaan Stok;
+repeat while (Stok Tersedia?) is (Tidak)
+
+:Sistem Tampilkan Waktu Penyewaan\n(Disesuaikan Zona Waktu);
+:Klik Sewa;
+:Sewa Dibuat;
+:Sistem Kirim Notifikasi ke Pemilik Barang;
+
+stop
+@enduml

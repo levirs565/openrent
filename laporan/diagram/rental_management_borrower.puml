@@ -1,0 +1,59 @@
+@startuml rental_management_borrower
+title Diagram Activity - Manajemen Peminjaman (Peminjam)
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Buka Halaman Daftar Peminjaman;
+:Pilih Peminjaman;
+
+:Melihat Detail Peminjaman;
+note right
+  Menampilkan:
+  - Produk
+  - User Pemilik
+  - Tanggal Awal & Akhir
+  - Review (jika ada)
+  - Estimasi Biaya Awal
+  - Estimasi Biaya Telat
+  - Pembayaran Awal (jika ada)
+  - Pembayaran Akhir
+end note
+
+switch (Status Peminjaman?)
+case (Menunggu Persetujuan\nPemilik)
+
+  :Menunggu Keputusan Pemilik;
+
+case (Siap)
+
+  if (Tanggal Sekarang >=\nTanggal Awal Sewa?) then (Ya)
+    :Klik Terima;
+    :Status Berubah: Menunggu\nPenyerahan dari Pemilik;
+    :Sistem Kirim Notifikasi ke Pemilik;
+  else (Tidak)
+    :Menunggu Tanggal Mulai Sewa;
+  endif
+
+case (Dalam Peminjaman)
+
+  :Klik Kembalikan Barang;
+  :Status Berubah: Menunggu\nKonfirmasi Pengembalian;
+
+case (Selesai)
+
+  :Klik Tambahkan Review;
+  :Halaman Review;
+  :Isi Rating dan Deskripsi;
+  :Klik Simpan;
+  :Sistem Hitung Skor Review\nMenggunakan AI;
+
+endswitch
+
+stop
+@enduml

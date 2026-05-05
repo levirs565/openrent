@@ -1,0 +1,59 @@
+@startuml rental_management_owner
+title Diagram Activity - Manajemen Peminjaman (Pemilik)
+
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #f5f5f5
+skinparam ActivityDiamondBackgroundColor #fff8dc
+skinparam ActivityDiamondBorderColor #333333
+skinparam ArrowColor #333333
+
+start
+
+:Buka Halaman Daftar Peminjaman;
+:Pilih Peminjaman;
+
+:Melihat Detail Peminjaman;
+note right
+  Menampilkan:
+  - Produk
+  - User Peminjam
+  - Tanggal Awal & Akhir
+  - Review (jika ada)
+  - Estimasi Biaya Awal
+  - Estimasi Biaya Telat
+  - Pembayaran Awal (jika ada)
+  - Pembayaran Akhir (jika ada)
+end note
+
+switch (Status Peminjaman?)
+case (Menunggu Persetujuan\nPemilik)
+
+  if (Aksi Pemilik?) then (Terima)
+  else (Tolak)
+    :Isi Alasan Penolakan;
+    :Simpan;
+  endif
+
+case (Menunggu Penyerahan\ndari Pemilik)
+
+  :Klik Serahkan Barang;
+  :Pilih Mata Uang Pembayaran;
+  :Tampil Estimasi Total Biaya Peminjaman\ndan Setengah Total Biaya\n(IDR & Mata Uang Dipilih);
+  :Masukkan Jumlah Uang\nyang Dibayarkan Peminjam;
+  :Tampil Jumlah dalam IDR;
+  :Simpan;
+
+case (Menunggu Konfirmasi\nPengembalian)
+
+  :Klik Konfirmasi Pengembalian;
+  :Pilih Mata Uang;
+  :Tampil Total Biaya Peminjaman, Biaya Telat,\nBiaya Total, Pembayaran Awal,\ndan Pembayaran Kurang\n(IDR & Mata Uang Dipilih);
+  :Isi Pembayaran Akhir,\nDenda Telat, dan Denda Kerusakan;
+  :Sistem Tampilkan Total Pembayaran\n(IDR & Mata Uang Dipilih);
+  :Simpan;
+
+endswitch
+:Sistem Kirim Notifikasi ke Peminjam;
+
+stop
+@enduml
