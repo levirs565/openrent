@@ -1,0 +1,65 @@
+@startuml sequence_product
+title Sequence Diagram - Manajemen Produk
+
+actor User as user
+participant "Mobile App" as app
+participant "Server" as server
+
+== Buka Halaman Produk Saya ==
+
+user -> app: Buka Halaman Produk Saya
+app -> server: Request Daftar Produk
+server --> app: Produk Data
+app --> user: Melihat Daftar Produk
+
+== Buat Produk ==
+
+user -> app: Pilih Aksi: Buat Produk
+app --> user: Halaman Buat Produk
+user -> app: Isi Detail Produk
+
+alt Metode Pilih Alamat?
+else Pilih Manual
+    app --> user: Tampilkan Daftar Alamat
+    user -> app: Pilih Alamat dari Daftar
+else Alamat Terdekat
+    app -> app: Deteksi Lokasi Saat Ini
+    app -> app: Hitung Alamat Terdekat
+    app --> user: Pilih Alamat Terdekat (auto-selected)
+end
+
+user -> app: Simpan Produk
+app -> server: Kirim Data Produk
+server --> app: Produk Berhasil Dibuat
+app --> user: Kembali ke Daftar Produk
+
+== Lihat Detail Produk ==
+
+user -> app: Pilih Produk
+app -> server: Request Detail Produk
+server --> app: Detail Produk + Daftar Peminjaman + Review Teratas
+app --> user: Halaman Detail Produk
+
+alt Ubah Foto Produk?
+else Ya
+    user -> app: Upload Foto Produk
+    app -> server: Kirim Foto
+    server --> app: Foto Tersimpan
+    app --> user: Foto Berhasil Diupload
+else Tidak
+end
+
+alt Edit Produk?
+else Ya
+    app --> user: Halaman Edit Produk
+    user -> app: Ubah Detail Produk
+    user -> app: Submit
+    app -> server: Kirim Data Perubahan
+    server --> app: Produk Terupdate
+    app --> user: Kembali ke Detail Produk
+else Tidak
+end
+
+user -> app: Kembali ke Daftar Produk
+
+@enduml
