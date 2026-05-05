@@ -8,8 +8,8 @@ Berdasarkan hasil perancangan, implementasi, dan pengujian yang telah dilakukan,
 dapat ditarik kesimpulan sebagai berikut:
 
 + Aplikasi mobile OpenRent telah berhasil dibangun menggunakan Flutter untuk
-  sisi klien dan Node.js dengan Express.js untuk sisi server, dengan PostgreSQL
-  sebagai basis data melalui Prisma ORM.
+  sisi klien dan Go dan Echio untuk sisi server, dengan PostgreSQL
+  sebagai basis data melalui GORM.
 
 + Sistem autentikasi berbasis JWT telah berhasil diimplementasikan dengan aman,
   menggunakan enkripsi bcrypt untuk penyimpanan kata sandi dan mekanisme validasi
@@ -22,7 +22,7 @@ dapat ditarik kesimpulan sebagai berikut:
 + Antarmuka pengguna yang dibangun menggunakan Flutter menghasilkan tampilan
   yang responsif, intuitif, dan konsisten di berbagai ukuran layar Android.
 
-+ Hasil pengujian Black-Box Testing menunjukkan tingkat keberhasilan 100% pada
++ TODO: Hasil pengujian Black-Box Testing menunjukkan tingkat keberhasilan 100% pada
   17 test case yang mencakup seluruh modul fungsional aplikasi, membuktikan
   bahwa aplikasi berfungsi sesuai dengan spesifikasi kebutuhan yang telah
   ditetapkan.
@@ -40,21 +40,6 @@ dapat dipertimbangkan:
 + *Integrasi Pembayaran* — Menambahkan fitur pembayaran sewa secara online
   melalui integrasi dengan payment gateway seperti Midtrans atau Xendit, sehingga
   transaksi dapat dilakukan sepenuhnya di dalam aplikasi.
-
-+ *Notifikasi Real-time* — Mengimplementasikan notifikasi push berbasis
-  Firebase Cloud Messaging (FCM) untuk memberikan pemberitahuan instan
-  kepada pengguna mengenai pembaruan status pengajuan sewa atau pesan baru.
-
-+ *Fitur Chat* — Menambahkan fitur pesan langsung (direct message) antara
-  penyewa dan pemilik properti untuk memudahkan komunikasi negosiasi.
-
-+ *Peta Interaktif* — Mengintegrasikan Google Maps atau peta OpenStreetMap
-  untuk menampilkan lokasi properti secara visual dan memudahkan pencarian
-  berdasarkan area geografis.
-
-+ *Sistem Review dan Rating* — Mengembangkan sistem ulasan yang lebih
-  komprehensif dengan verifikasi bahwa hanya penyewa yang pernah menyewa
-  properti yang dapat memberikan ulasan.
 
 === Peningkatan Teknis
 

@@ -10,9 +10,9 @@ Setiap fitur diuji berdasarkan skenario kasus uji (_test case_) yang telah
 ditetapkan sebelumnya.
 
 Pengujian dilakukan pada:
-- *Perangkat:* Emulator Android API 33 dan perangkat fisik Android 12.
-- *Jaringan:* Jaringan lokal (Wi-Fi) dan simulasi jaringan lambat.
-- *Backend:* Server lokal (localhost) menggunakan Node.js.
+- *Perangkat:* Perangkat fisik Android 16.
+- *Jaringan:* Jaringan lokal (Wi-Fi).
+- *Backend:* Server lokal dalam 1 LAN.
 
 == Rencana Pengujian
 
@@ -55,7 +55,7 @@ Pengujian dilakukan pada:
   [✓ Lulus],
 )
 
-=== Modul Properti
+=== Modul Produk
 
 #table(
   columns: (0.6cm, 3.5cm, 4.5cm, 3cm, 1.5cm),
@@ -64,15 +64,9 @@ Pengujian dilakukan pada:
   fill: (col, row) => if row == 0 { luma(220) } else { white },
   [*No*], [*Skenario*], [*Langkah Uji*], [*Hasil yang Diharapkan*], [*Status*],
   [6],
-  [Melihat daftar properti],
-  [Buka halaman utama setelah login],
+  [Melihat daftar produk],
+  [Buka halaman daftar produk],
   [Daftar properti tersedia ditampilkan dengan benar],
-  [✓ Lulus],
-
-  [7],
-  [Pencarian properti],
-  [Ketik nama kota pada search bar],
-  [Daftar properti terfilter sesuai kota yang dicari],
   [✓ Lulus],
 
   [8],
@@ -82,21 +76,15 @@ Pengujian dilakukan pada:
   [✓ Lulus],
 
   [9],
-  [Tambah properti (Landlord)],
-  [Isi form tambah properti dengan data valid, tekan Simpan],
+  [Tambah produk)],
+  [Isi form tambah produk dengan data valid, tekan Simpan],
   [Properti baru berhasil ditambahkan dan muncul di daftar],
   [✓ Lulus],
 
   [10],
-  [Edit properti (Landlord)],
-  [Ubah salah satu informasi properti, tekan Perbarui],
+  [Edit produk],
+  [Ubah salah satu informasi produk, tekan Perbarui],
   [Data properti berhasil diperbarui],
-  [✓ Lulus],
-
-  [11],
-  [Hapus properti (Landlord)],
-  [Tekan ikon hapus pada properti milik sendiri],
-  [Properti berhasil dihapus dan tidak muncul di daftar],
   [✓ Lulus],
 )
 
@@ -111,19 +99,19 @@ Pengujian dilakukan pada:
   [12],
   [Ajukan sewa (Tenant)],
   [Isi form pengajuan sewa, tekan Ajukan],
-  [Pengajuan berhasil dikirim dengan status PENDING],
+  [Pengajuan berhasil dikirim dengan status Menuggu Persetujuan Pemilik],
   [✓ Lulus],
 
   [13],
-  [Terima pengajuan (Landlord)],
-  [Landlord tekan Terima pada pengajuan masuk],
-  [Status pengajuan berubah menjadi ACCEPTED],
+  [Terima pengajuan],
+  [Pemilik tekan Terima pada pengajuan masuk],
+  [Status pengajuan berubah menjadi Siap],
   [✓ Lulus],
 
   [14],
-  [Tolak pengajuan (Landlord)],
-  [Landlord tekan Tolak pada pengajuan masuk],
-  [Status pengajuan berubah menjadi REJECTED],
+  [Tolak pengajuan],
+  [Pemilik tekan Tolak pada pengajuan masuk],
+  [Status pengajuan berubah menjadi Dibatalkan],
   [✓ Lulus],
 
   [15],
@@ -148,9 +136,9 @@ Pengujian dilakukan pada:
   [✓ Lulus],
 
   [17],
-  [Edit profil],
-  [Ubah nama dan nomor telepon, tekan Simpan],
-  [Perubahan profil berhasil disimpan],
+  [Upload Foto Profil],
+  [Klik Ubah Foto Profil dan Pilih Gambar],
+  [Perubahan foto profil berhasil disimpan],
   [✓ Lulus],
 )
 
@@ -181,24 +169,3 @@ mencapai 100%.
 Hal ini menunjukkan bahwa aplikasi OpenRent telah berhasil mengimplementasikan
 seluruh fitur yang direncanakan dengan benar dan dapat berfungsi sesuai dengan
 spesifikasi kebutuhan yang telah ditetapkan pada tahap analisis.
-
-== Pengujian Performa
-
-Pengujian performa dilakukan untuk mengukur waktu respons aplikasi pada berbagai
-kondisi jaringan:
-
-#table(
-  columns: (5cm, 3cm, 2.5cm),
-  inset: 8pt,
-  align: (left, center, center),
-  fill: (col, row) => if row == 0 { luma(220) } else { white },
-  [*Operasi*], [*Rata-rata Waktu*], [*Status*],
-  [Login], [< 500 ms], [✓ Baik],
-  [Load daftar properti (10 item)], [< 800 ms], [✓ Baik],
-  [Load detail properti], [< 700 ms], [✓ Baik],
-  [Submit pengajuan sewa], [< 600 ms], [✓ Baik],
-  [Update profil], [< 500 ms], [✓ Baik],
-)
-
-Seluruh operasi utama memiliki waktu respons di bawah 3 detik, memenuhi kebutuhan
-non-fungsional performa yang telah ditetapkan.

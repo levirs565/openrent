@@ -71,21 +71,7 @@ Manfaat yang diharapkan dari pengembangan aplikasi OpenRent meliputi:
 Dalam pengembangan aplikasi OpenRent, ditetapkan batasan masalah sebagai berikut:
 
 + Aplikasi dikembangkan untuk platform Android menggunakan Flutter.
-+ Backend dikembangkan menggunakan teknologi Node.js dengan framework Express.
++ Backend dikembangkan menggunakan teknologi Go dan menggunakan PostgeeSQL sebagai database.
 + Fitur pembayaran sewa tidak termasuk dalam lingkup pengembangan aplikasi ini.
 + Aplikasi hanya mencakup wilayah Indonesia sebagai target pasar.
-+ Pengujian dilakukan pada perangkat Android dengan versi minimal Android 8.0 (Oreo).
-
-== Sistematika Penulisan
-
-Laporan ini disusun dengan sistematika penulisan sebagai berikut:
-
-- *BAB I PENDAHULUAN* — Membahas latar belakang, rumusan masalah, tujuan, manfaat,
-  batasan masalah, dan sistematika penulisan.
-- *BAB II ANALISIS DAN PERANCANGAN SISTEM* — Membahas analisis kebutuhan sistem,
-  perancangan arsitektur, desain database, dan desain antarmuka pengguna.
-- *BAB III IMPLEMENTASI DAN PEMBAHASAN* — Membahas implementasi aplikasi, penggunaan
-  teknologi, dan penjelasan kode program.
-- *BAB IV PENGUJIAN SISTEM* — Membahas skenario pengujian dan hasil pengujian
-  fungsional aplikasi.
-- *BAB V PENUTUP* — Membahas kesimpulan dan saran pengembangan ke depan.
++ Pengujian dilakukan pada perangkat Android dengan versi 16 (Baklava).
