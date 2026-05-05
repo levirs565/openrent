@@ -152,6 +152,18 @@ daftar endpoint utama:
 
 === Login dan Register
 
+Fungsi `CreateUserAccount` menangani pendaftaran pengguna baru. Fungsi ini menerima
+data pengguna, melakukan hashing pada password menggunakan algoritma `Argon2id`
+untuk keamanan, dan kemudian menyimpan data akun baru ke dalam database. Jika
+email sudah terdaftar, fungsi akan mengembalikan error `ErrEmailDuplicated`.
+
+Fungsi `Login` memverifikasi kredensial pengguna. Pertama, fungsi ini mencari
+akun berdasarkan email. Jika ditemukan, fungsi akan membandingkan hash password
+yang tersimpan di database dengan password yang diberikan oleh pengguna
+menggunakan fungsi `argon2id.ComparePasswordAndHash`. Jika cocok, fungsi akan
+menghasilkan sepasang _access token_ dan _refresh token_ yang kemudian
+dikembalikan ke client.
+
 #frame[
 ```go
 type CreateUserInput struct {
@@ -250,6 +262,13 @@ func (s *Service) Login(ctx context.Context, email string, password string) (Log
 
 === JWT
 
+Kode berikut bertanggung jawab untuk pembuatan token. Fungsi `GenerateToken`
+membuat sepasang _access token_ dan _refresh token_. _Access token_ berisi klaim
+standar JWT seperti ID pengguna dan role, dengan masa berlaku singkat. _Refresh
+token_ adalah string acak yang aman secara kriptografis dan memiliki masa
+berlaku lebih panjang. Untuk keamanan, hanya hash dari _refresh token_ yang
+disimpan di database, bukan token aslinya.
+
 #include_code_file("../server/core/token.go", "go")
 
 === Pencarian Berdasarkan Stok, Kata Kunci dan AI Search
@@ -300,6 +319,17 @@ if !parameters.StartDate.IsZero() && !parameters.EndDate.IsZero() {
 ]
 
 === Pengiriman Notifikasi Ke Perangkat Pengguna
+
+Fungsi `SendNotification` bertanggung jawab untuk mengirimkan notifikasi push ke
+perangkat pengguna menggunakan Firebase Cloud Messaging (FCM). Prosesnya dimulai
+dengan mengambil semua token FCM yang terdaftar untuk `userId` tertentu dari
+database. Kemudian, fungsi ini mengirimkan notifikasi ke semua token tersebut
+secara bersamaan (multicast).
+
+Sistem ini juga memiliki mekanisme pembersihan otomatis. Jika pengiriman ke
+sebuah token gagal (misalnya, karena aplikasi telah di-uninstall), token yang
+tidak valid tersebut akan dihapus dari database untuk mencegah upaya pengiriman
+yang sia-sia di masa mendatang.
 
 #frame[
 ```go
@@ -356,8 +386,18 @@ func (s *fcmService) SendNotification(ctx context.Context, userId uint, notifica
 ```
 ]
 
-=== Penghitungan Skor Review Berdasarkan Kegunaan
+=== Penghitungan Skor Review Berdasarkan Skor Relevansi AI
 
+Untuk mengurutkan review berdasarkan relevansinya, sistem menggunakan model AI
+generatif. Fungsi `getReviewScore` mengirimkan teks ulasan ke model AI bersama
+dengan sebuah _system prompt_ yang mendetail.
+
+_System prompt_ ini menginstruksikan AI untuk bertindak sebagai ahli analisis
+konten dan memberikan skor "Helpfulness" (kegunaan) dari 0 hingga 100. Prompt
+tersebut juga menyertakan kriteria penilaian yang jelas, seperti spesifisitas,
+konteks transaksi, dan objektivitas, beserta bobotnya masing-masing. AI kemudian
+mengembalikan skor dalam format JSON, yang diekstrak oleh fungsi untuk digunakan
+dalam pengurutan.
 
 #frame[
 ```go
@@ -399,6 +439,16 @@ func (s *Service) getReviewScore(ctx context.Context, text string) (uint, error)
 ]
 
 === Pengujian Stok Pada Permintaan Sewa
+
+Untuk mencegah _overbooking_, sistem melakukan validasi ketersediaan stok secara
+atomik setiap kali ada permintaan sewa baru. Logika ini menghitung jumlah stok
+yang sudah "dipesan" (`reservedStock`) pada rentang tanggal yang diminta.
+
+Perhitungan ini dilakukan dengan menjumlahkan kuantitas dari semua transaksi
+sewa aktif (yang statusnya bukan selesai atau dibatalkan) yang periode sewanya
+tumpang tindih dengan periode yang diajukan. Jika jumlah stok yang diminta ditambah
+stok yang sudah dipesan melebihi total stok produk, sistem akan mengembalikan
+error `ErrStockUnavailable` dan permintaan sewa akan ditolak.
 
 #frame[
 ```go
@@ -456,15 +506,54 @@ client/
 
 === JWT Interceptor
 
-Berikut adalah kode yang memasukkan header Access Token ke request dan merefreshnya jika expired.
+`AuthInterceptor` adalah komponen kunci dalam client Flutter untuk menangani
+autentikasi secara otomatis. Interceptor ini akan:
+1.  Menambahkan header `Authorization: Bearer <token>` ke setiap request API yang
+    memerlukan otentikasi.
+2.  Jika sebuah request gagal dengan status 401 (Unauthorized), yang menandakan
+    access token telah kedaluwarsa, interceptor akan secara otomatis mencoba
+    memperbarui token menggunakan refresh token yang tersimpan.
+3.  Setelah mendapatkan access token baru, interceptor akan mengulang kembali
+    request yang gagal tadi dengan token yang baru.
+
+Mekanisme ini memastikan sesi pengguna tetap berjalan lancar tanpa perlu login
+ulang, bahkan setelah access token kedaluwarsa.
 
 #include_code_file("../client/lib/data/remote/auth_interceptor.dart", "dart")
 
 === Autentikasi
 
+`AuthBloc` adalah BLoC global yang bertanggung jawab untuk mengelola state
+autentikasi di seluruh aplikasi. BLoC ini menjadi sumber tunggal untuk
+mengetahui apakah pengguna sedang dalam keadaan _loading_, berhasil
+terautentikasi, atau gagal.
+
+Berikut adalah alur kerjanya:
+1.  Saat aplikasi dimulai (`AuthBlocEventStart`), BLoC akan memeriksa apakah
+    pengguna mengaktifkan autentikasi biometrik. Jika ya, BLoC akan meminta
+    verifikasi biometrik terlebih dahulu.
+2.  Jika biometrik berhasil atau tidak diaktifkan, BLoC akan mendengarkan
+    perubahan status dari `AuthRepository` untuk mendapatkan data pengguna saat
+    ini.
+3.  Berdasarkan data dari repository, BLoC akan memancarkan state yang sesuai:
+    `AuthStateLoading` saat proses, atau `AuthStateSuccess` dengan data profil
+    pengguna jika berhasil (atau `null` jika tidak ada sesi).
+4.  Saat event `AuthBlocEventLogout` dipicu, BLoC akan menghapus sesi melalui
+    `AuthRepository` dan menonaktifkan pengaturan biometrik.
+
 #include_code_file("../client/lib/bloc/auth.dart", "dart")
 
-=== Mencari Alamat Terdekat dengan Pengguuna
+=== Mencari Alamat Terdekat dengan Pengguna
+
+Untuk membantu pengguna memilih alamat produk, terutama saat pemilik ingin
+menggunakan lokasi saat ini, aplikasi mengimplementasikan fitur pencarian alamat
+terdekat. Kode ini mengambil lokasi pengguna saat ini (`result.data`) dan daftar
+alamat yang sudah ada (`addressList`).
+
+Dengan menggunakan library `latlong2`, kode ini menghitung jarak (dalam meter)
+dari lokasi pengguna ke setiap alamat dalam daftar. Kemudian, kode ini melakukan
+iterasi untuk menemukan indeks dari alamat dengan jarak terpendek, yang kemudian
+dapat disarankan kepada pengguna.
 
 #frame[
 ```dart
@@ -485,7 +574,19 @@ for (int i = 1; i < distances.length; i++) {
 
 === Cek Stok di Tanggal atau Renttang Tanggal
 
-Digunakan untuk feedback UI yang cepat
+Untuk memberikan umpan balik yang cepat kepada pengguna di antarmuka, aplikasi
+melakukan pengecekan ketersediaan stok di sisi client sebelum mengirim
+permintaan ke server.
+
+- Fungsi `getAvailableStock` menghitung sisa stok pada satu hari tertentu dengan
+  mengurangi total stok dengan jumlah barang yang sedang disewa pada hari itu.
+- Fungsi `setSelectedRange` melakukan validasi untuk rentang tanggal yang
+  dipilih pengguna. Fungsi ini menghitung jumlah stok yang terpakai pada rentang
+  tersebut dan akan menampilkan pesan error jika stok tidak mencukupi, mencegah
+  pengguna melanjutkan ke proses pengajuan sewa.
+
+Logika ini memastikan pengguna mendapat informasi ketersediaan secara instan saat
+memilih tanggal di kalender.
 
 #frame[
 ```dart
@@ -536,5 +637,167 @@ void setSelectedRange(DateTime startDate, DateTime endDate) {
 
 === Mini Game
 
+Fitur mini-game "The Fragile Delivery" adalah permainan keseimbangan yang
+diimplementasikan menggunakan Flutter. Tujuan dari game ini adalah untuk menjaga
+sebuah kotak agar tetap seimbang di atas papan yang dibawa oleh karakter selama
+durasi waktu yang ditentukan.
+
+Logika utama game ini adalah sebagai berikut:
+- *Input Sensor:* Game memanfaatkan data dari `gyroscopeEvents` untuk mengontrol
+  kemiringan papan dan `userAccelerometerEvents` untuk mendeteksi guncangan.
+  Pemain kalah jika perangkat diguncang terlalu keras.
+- *Fisika Sederhana:* Posisi kotak di atas papan disimulasikan menggunakan loop
+  fisika yang berjalan setiap 16 milidetik. Kemiringan papan akan mempengaruhi
+  kecepatan dan posisi kotak. Pemain kalah jika kotak tergelincir dari papan.
+- *Sistem Skor:* Poin diberikan setiap detik berdasarkan seberapa dekat posisi
+  kotak dengan pusat papan.
+- *Visual:* Seluruh elemen game, seperti karakter, jalan, dan papan, digambar
+  menggunakan `CustomPainter`. Animasi berjalan pada karakter dan jalan dibuat
+  menggunakan `AnimationController` untuk memberikan ilusi pergerakan.
+- *Kondisi Kemenangan:* Pemain menang dengan cara bertahan hingga waktu yang
+  ditentukan habis. Skor akhir akan menentukan peringkat (_tier_) yang dicapai,
+  yang memberikan hadiah berupa _frame_ profil.
 
 #include_code_file("../client/lib/ui/game/page.dart", "dart")
+
+== Tampilan Antarmuka
+
+==== Modul Autentikasi
+
+#grid(
+  columns: (1fr, 1fr),
+  figure(
+    image("image/login.jpeg", width: 4.5cm),
+    caption: [Halaman Login]
+  ),
+  figure(
+    image("image/register.jpeg", width: 4.5cm),
+    caption: [Halaman Registrasi]
+  ),
+)
+
+==== Modul Alamat
+
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  figure(
+    image("image/alamat_daftar.jpeg", width: 4.5cm),
+    caption: [Daftar Alamat]
+  ),
+  figure(
+    image("image/alamat_pilih_lokasi.jpeg", width: 4.5cm),
+    caption: [Pilih Lokasi dari Peta]
+  ),
+  figure(
+    image("image/alamat_tambah.jpeg", width: 4.5cm),
+    caption: [Form Tambah Alamat]
+  ),
+)
+
+==== Modul Produk
+
+#grid(
+  columns: (1fr, 1fr),
+  figure(
+    image("image/pemilik_produk_daftar.jpeg", width: 4.5cm),
+    caption: [Daftar Produk (Pemilik)]
+  ),
+  figure(
+    image("image/pemilik_produk_detail.jpeg", width: 4.5cm),
+    caption: [Detail Produk (Pemilik)]
+  ),
+  figure(
+    image("image/pemilik_produk_tambah.jpeg", width: 4.5cm),
+    caption: [Form Tambah Produk]
+  ),
+  figure(
+    image("image/produk_detail.jpeg", width: 4.5cm),
+    caption: [Detail Produk (Pembeli)]
+  ),
+  figure(
+    image("image/search.jpeg", width: 4.5cm),
+    caption: [Pencarian Produk]
+  ),
+  figure(
+    image("image/search_map.jpeg", width: 4.5cm),
+    caption: [Pencarian di Peta]
+  ),
+)
+
+==== Modul Penyewaan
+
+#grid(
+  columns: (1fr, 1fr),
+  figure(
+    image("image/pemilik_pesanan_daftar.jpeg", width: 4.5cm),
+    caption: [Daftar Pesanan (Pemilik)]
+  ),
+  figure(
+    image("image/pemilik_pesanan_detail.jpeg", width: 4.5cm),
+    caption: [Detail Pesanan (Pemilik)]
+  ),
+  figure(
+    image("image/pemilik_pesanan_tolak.jpeg", width: 4.5cm),
+    caption: [Menolak Pesanan]
+  ),
+  figure(
+    image("image/pemilik_pesanan_serah_terima.jpeg", width: 4.5cm),
+    caption: [Serah Terima Barang]
+  ),
+  figure(
+    image("image/pemilik_pesanan_pengembalian.jpeg", width: 4.5cm),
+    caption: [Pengembalian Barang]
+  ),
+  figure(
+    image("image/peminjam_pesanan_daftar.jpeg", width: 4.5cm),
+    caption: [Riwayat Pesanan (Peminjam)]
+  ),
+  figure(
+    image("image/peminjam_pesanan_detail.jpeg", width: 4.5cm),
+    caption: [Detail Pesanan (Peminjam)]
+  ),
+  figure(
+    image("image/peminjam_request_sewa.jpeg", width: 4.5cm),
+    caption: [Form Request Sewa]
+  ),
+)
+
+==== Modul Chat
+
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  figure(
+    image("image/chat.jpeg", width: 4.5cm),
+    caption: [Daftar Percakapan]
+  ),
+  figure(
+    image("image/chat_message.jpeg", width: 4.5cm),
+    caption: [Tampilan Pesan]
+  ),
+  figure(
+    image("image/kesan_pesan.jpeg", width: 4.5cm),
+    caption: [Umpan Balik Pesan]
+  ),
+)
+
+==== Modul Profil
+
+#figure(
+  image("image/profil.jpeg", width: 4.5cm),
+  caption: [Halaman Profil]
+)
+
+==== Modul Pengaturan
+
+#figure(
+  image("image/settings.jpeg", width: 4.5cm),
+  caption: [Halaman Pengaturan]
+)
+
+==== Modul Mini Game
+
+#figure(
+  image("image/game.jpeg", width: 4.5cm),
+  caption: [Tampilan Mini Game]
+)
+

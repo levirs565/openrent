@@ -8,27 +8,24 @@ Berdasarkan hasil perancangan, implementasi, dan pengujian yang telah dilakukan,
 dapat ditarik kesimpulan sebagai berikut:
 
 + Aplikasi mobile OpenRent telah berhasil dibangun menggunakan Flutter untuk
-  sisi klien dan Go dan Echio untuk sisi server, dengan PostgreSQL
+  sisi klien dan Go dan Echo untuk sisi server, dengan PostgreSQL
   sebagai basis data melalui GORM.
 
 + Sistem autentikasi berbasis JWT telah berhasil diimplementasikan dengan aman,
   menggunakan enkripsi bcrypt untuk penyimpanan kata sandi dan mekanisme validasi
   token pada setiap request yang memerlukan otorisasi.
 
-+ Fitur manajemen properti untuk pemilik (landlord) dan fitur pencarian serta
++ Fitur manajemen produk untuk pemilik dan fitur pencarian serta
   pengajuan sewa untuk penyewa (tenant) telah berhasil diintegrasikan dalam
   satu platform mobile yang kohesif.
 
 + Antarmuka pengguna yang dibangun menggunakan Flutter menghasilkan tampilan
   yang responsif, intuitif, dan konsisten di berbagai ukuran layar Android.
 
-+ TODO: Hasil pengujian Black-Box Testing menunjukkan tingkat keberhasilan 100% pada
-  17 test case yang mencakup seluruh modul fungsional aplikasi, membuktikan
++ Hasil pengujian Black-Box Testing menunjukkan tingkat keberhasilan 100% pada
+  37 test case yang mencakup seluruh modul fungsional aplikasi, membuktikan
   bahwa aplikasi berfungsi sesuai dengan spesifikasi kebutuhan yang telah
   ditetapkan.
-
-+ Seluruh operasi utama aplikasi memiliki waktu respons di bawah 3 detik,
-  memenuhi standar performa yang ditetapkan dalam kebutuhan non-fungsional.
 
 == Saran
 

@@ -18,8 +18,29 @@ Terima kasih pula kami sampaikan kepada semua pihak yang telah memberikan dukung
 
 #align(right)[
   Yogyakarta, 4 Mei 2026
-
-  #v(2.5em)
-
-  Penyusun
 ]
+
+#v(2em)
+
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  [
+      Penyusun 1
+
+      #v(4em)
+
+      #text(weight: "bold")[Levi Rizki Saputra]
+
+      NIM. 123230127
+  ],
+  [],
+  [
+    Penyusun 2
+
+      #v(4em)
+
+      #text(weight: "bold")[M. Adel Harits Saifullah]
+
+      NIM. 123230156
+  ],
+)

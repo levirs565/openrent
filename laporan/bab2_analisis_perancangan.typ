@@ -25,15 +25,17 @@ oleh sistem:
 
 *Modul Produk:*
 - Pemilik dapat menambahkan produk baru beserta detail dan foto.
+- Pemilik dapat memilik alamat berdasarkan lokasi saat ini pada saat menambahkkan produk
 - Pemilik dapat mengedit produk yang dimiliki.
 - Peminjam dapat melihat daftar produk.
 - Peminjam dapat melihat detail lengkap suatu produk.
 - Peminjam dapat mencari produk berdasarkan kata kunci dan ketersedian stok di rentang tanggal tertentu
-- Peminjam dapat melihat daftar review yang telah diurutkan dari tingkat kebergunaan
+- Peminjam dapat melihat daftar review yang telah diurutkan dari tingkat skor relevansi AI
 - Peminjam dapat melihat harga estimasi yang telah disesuaikan dengan mata uang pilihan
 - Peminjam mendapatkan rekomendasi produk yang mirip
 
 *Modul Penyewaan:*
+- Penyewa dapat menentukan tanggal awal sewa dan akhir sewa
 - Penyewa dapat mengajukan permintaan sewa pada suatu produk.
 - Pemilik dapat menerima atau menolak permintaan sewa.
 - Peminjam dapat mengajukan permintaan pengambilan produk
