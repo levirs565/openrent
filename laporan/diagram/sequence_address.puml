@@ -1,0 +1,65 @@
+@startuml sequence_address
+title Sequence Diagram - Manajemen Alamat
+
+actor User as user
+participant "Mobile App" as app
+participant "Server" as server
+
+== Buka Halaman Alamat ==
+
+user -> app: Buka Halaman Alamat
+app -> server: Meminta Daftar Alamat
+server --> app: Alamat Data
+app --> user: Melihat Daftar Alamat
+
+== Tambah Alamat ==
+
+user -> app: Pilih Aksi: Tambah Alamat
+app --> user: Halaman Tambah Alamat
+
+alt Metode Pilih Lokasi?
+else Pilih di Peta
+    user -> app: Buka Peta
+    user -> app: Pilih Lokasi di Peta
+    app -> app: Ambil Koordinat dari Peta
+else Lokasi Saat Ini
+    user -> app: Gunakan Lokasi Saat Ini
+    app -> app: Request GPS
+    app -> app: Ambil Koordinat GPS
+end
+
+user -> app: Isi Detail Alamat (Alamat, Label, etc)
+user -> app: Simpan Alamat
+app -> server: Tambah Alamat Baru
+server --> app: Sukses
+app --> user: Kembali ke Daftar Alamat
+
+== Edit Alamat ==
+
+user -> app: Pilih Aksi: Edit Alamat
+app --> user: Halaman Detail Alamat
+
+user -> app: Edit Detail Alamat
+
+alt Set Ulang Lokasi?
+else Ya
+    alt Metode Pilih Lokasi?
+    else Pilih di Peta
+        user -> app: Buka Peta
+        user -> app: Pilih Lokasi di Peta
+        app -> app: Ambil Koordinat dari Peta
+    else Lokasi Saat Ini
+        user -> app: Gunakan Lokasi Saat Ini
+        app -> app: Request GPS
+        app -> app: Ambil Koordinat GPS
+    end
+else Tidak
+    note right of app: Gunakan lokasi lama
+end
+
+user -> app: Simpan Alamat
+app -> server: Ubah Alamat
+server --> app: Sukses
+app --> user: Kembali ke Daftar Alamat
+
+@enduml
