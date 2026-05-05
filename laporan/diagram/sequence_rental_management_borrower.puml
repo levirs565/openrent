@@ -1,0 +1,69 @@
+@startuml sequence_rental_management_borrower
+title Sequence Diagram - Manajemen Peminjaman (Peminjam)
+
+actor Borrower as borrower
+participant "Mobile App" as app
+participant "Server" as server
+
+== Buka Halaman Daftar Peminjaman ==
+
+borrower -> app: Buka Halaman Daftar Peminjaman
+app -> server: Request Daftar Peminjaman
+server --> app: Rental Data
+app --> borrower: Melihat Daftar Peminjaman
+
+borrower -> app: Pilih Peminjaman
+app -> server: Request Detail Peminjaman
+server --> app: Detail Peminjaman (Produk, Pemilik, Tanggal, Review, Biaya, Pembayaran)
+app --> borrower: Melihat Detail Peminjaman
+
+== Status: Menunggu Persetujuan Pemilik ==
+
+note right of borrower: Menunggu Keputusan Pemilik
+
+== Status: Siap ==
+
+alt Tanggal Sekarang >= Tanggal Awal Sewa?
+else Ya
+    borrower -> app: Klik Terima
+    app -> server: Update Status: Menunggu Penyerahan dari Pemilik
+    server --> app: Status Updated
+    server -> server: Kirim Notifikasi ke Pemilik
+    app --> borrower: Status Berubah ke Menunggu Penyerahan
+else Tidak
+    note right of borrower: Menunggu Tanggal Mulai Sewa
+end
+
+== Status: Menunggu Penyerahan dari Pemilik ==
+
+note right of borrower: Menunggu Pemilik Menyerahkan Barang
+
+== Status: Dalam Peminjaman ==
+
+borrower -> app: Klik Kembalikan Barang
+app -> server: Update Status: Menunggu Konfirmasi Pengembalian
+server --> app: Status Updated
+server -> server: Kirim Notifikasi ke Pemilik
+app --> borrower: Status Berubah ke Menunggu Konfirmasi
+
+== Status: Menunggu Konfirmasi Pengembalian ==
+
+note right of borrower: Menunggu Pemilik Mengkonfirmasi Pengembalian
+
+== Status: Selesai / Batal ==
+
+alt Status = Selesai?
+else Ya
+    borrower -> app: Klik Tambahkan Review
+    app --> borrower: Halaman Review
+    borrower -> app: Isi Rating dan Deskripsi
+    borrower -> app: Klik Simpan
+    app -> server: Submit Review Data
+    server -> server: Hitung Skor Review menggunakan AI
+    server --> app: Review Tersimpan
+    app --> borrower: Review Berhasil Ditambahkan
+else Batal
+    note right of borrower: Tidak Ada Operasi yang Dapat Dilakukan
+end
+
+@enduml
