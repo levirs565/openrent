@@ -10,6 +10,8 @@
 #image("diagram/output/rental_management_borrower.svg")
 #image("diagram/output/rental_full_flow.svg")
 
+#image("diagram/output/sequence_auth.svg")
+
 
 == Analisis Kebutuhan Sistem
 

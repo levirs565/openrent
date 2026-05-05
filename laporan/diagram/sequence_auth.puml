@@ -1,0 +1,77 @@
+@startuml sequence_auth
+title Sequence Diagram - Autentikasi
+
+actor User as user
+participant "Mobile App" as app
+participant "Auth Service" as auth
+participant "Database" as db
+
+== Inisialisasi ==
+
+user -> app: Membuka Aplikasi
+app -> app: Cek Sesi Tersimpan
+
+alt Ada Sesi Tersimpan
+    alt Perlu Biometric?
+        loop Tampilkan Biometric
+            user -> app: Biometric Prompt
+            
+            alt Biometric Sukses?
+                app -> app: Verifikasi Biometric
+                app --> user: Masuk Halaman Utama
+                deactivate app
+            else Biometric Gagal
+                app --> user: Halaman Biometric Gagal
+                user -> app: Pilihan User?
+                
+                alt Login
+                    note right of app: Lanjut ke Halaman Login
+                    break
+                else Coba Lagi
+                    note right of app: Loop Biometric lagi
+                end
+            end
+        end
+    else Tidak Perlu Biometric
+        app --> user: Masuk Halaman Utama
+    end
+else Tidak Ada Sesi Tersimpan
+    note right of app: Lanjut ke Halaman Login
+end
+
+== Halaman Login ==
+
+user -> app: Halaman Login
+loop Tetap di Halaman Login?
+    user -> app: Input Kredensial
+    
+    alt Punya Kredensial?
+    else Tidak Punya Kredensial
+        user -> app: Pilih Register
+        user -> app: Halaman Register
+        user -> app: Isi Data Registrasi
+        app -> auth: Proses Registrasi
+        auth -> db: Simpan Data User Baru
+        db --> auth: User Terdaftar
+        auth --> app: Registrasi Berhasil
+        app --> user: Kembali ke Halaman Login
+        note right of app: Ulangi loop login
+    else Ya - Punya Kredensial
+        app -> auth: Cek Kredensial
+        auth -> db: Query User & Validasi
+        db --> auth: User Data
+        auth -> auth: Verifikasi Password
+        
+        alt Kredensial Valid?
+        else Ya
+            auth --> app: Login Sukses
+            app --> user: Masuk Halaman Utama
+        else Tidak
+            auth --> app: Login Gagal
+            app --> user: Tampilkan Error
+            note right of app: Tetap di Halaman Login
+        end
+    end
+end
+
+@enduml
