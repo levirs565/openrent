@@ -20,7 +20,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
+    SearchPage(),
     ChatsPage(),
     MyOrdersPage(),
     MyProductsPage(),

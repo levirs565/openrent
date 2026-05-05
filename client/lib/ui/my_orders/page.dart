@@ -23,7 +23,7 @@ class MyOrdersPage extends StatelessWidget {
       child: ScaffoldMessenger(
         child: Scaffold(
           body: const _Content(),
-          appBar: AppBar(title: const Text("Pesanan Saya")),
+          appBar: AppBar(title: const Text("Pesanan Saya"), centerTitle: true),
         ),
       ),
     );
