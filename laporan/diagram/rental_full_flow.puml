@@ -8,63 +8,61 @@ skinparam ActivityDiamondBorderColor #333333
 skinparam ArrowColor #333333
 skinparam SwimlaneBorderColor #666666
 skinparam SwimlaneTitleFontStyle bold
-skinparam swimlaneWidth same
+skinparam defaultFontSize 11
 skinparam Padding 2
-skinparam ParticipantPadding 2
-skinparam defaultFontSize 12
 
 |Peminjam|
 start
 :Buka Halaman Produk;
-:Isi Tanggal Awal & Akhir;
+:Isi Tanggal\nAwal & Akhir;
 :Klik Sewa;
 
 |Sistem|
-:Status: Menunggu Persetujuan Pemilik\nNotifikasi dikirim ke Pemilik;
+:Status: Menunggu\nPersetujuan Pemilik\nNotifikasi ke Pemilik;
 
 |Pemilik|
 if (Keputusan?) then (Setuju)
 
   |Sistem|
-  :Status: Siap\nNotifikasi dikirim ke Peminjam;
+  :Status: Siap\nNotifikasi ke Peminjam;
 
   |Peminjam|
-  :Tunggu Waktu Mulai Sewa;
+  :Tunggu Waktu\nMulai Sewa;
   :Klik Terima;
 
   |Sistem|
-  :Status: Menunggu Penyerahan\nNotifikasi dikirim ke Pemilik;
+  :Status: Menunggu\nPenyerahan\nNotifikasi ke Pemilik;
 
   |Pemilik|
   :Isi Pembayaran Awal;
   :Submit;
 
   |Sistem|
-  :Status: Dalam Peminjaman\nNotifikasi dikirim ke Peminjam;
+  :Status: Dalam\nPeminjaman\nNotifikasi ke Peminjam;
 
   |Peminjam|
-  :Tunggu Masa Sewa Selesai;
-  :Klik Kembalikan Barang;
+  :Tunggu Masa\nSewa Selesai;
+  :Klik Kembalikan\nBarang;
 
   |Sistem|
-  :Status: Menunggu Konfirmasi Pengembalian\nNotifikasi dikirim ke Pemilik;
+  :Status: Menunggu\nKonfirmasi Pengembalian\nNotifikasi ke Pemilik;
 
   |Pemilik|
-  :Isi Pembayaran Akhir,\nDenda Telat & Kerusakan;
+  :Isi Pembayaran Akhir,\nDenda Telat\n& Kerusakan;
   :Submit;
 
   |Sistem|
-  :Status: Selesai\nNotifikasi dikirim ke Peminjam;
+  :Status: Selesai\nNotifikasi ke Peminjam;
   stop
 
 else (Tolak)
 
   |Pemilik|
-  :Isi Alasan Penolakan;
+  :Isi Alasan\nPenolakan;
   :Submit;
 
   |Sistem|
-  :Status: Batal\nNotifikasi dikirim ke Peminjam;
+  :Status: Batal\nNotifikasi ke Peminjam;
   stop
 
 endif
