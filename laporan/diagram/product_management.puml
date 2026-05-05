@@ -15,6 +15,12 @@ start
 if (Aksi User?) then (Buat Produk)
   :Halaman Buat Produk;
   :Isi Detail Produk;
+  if (Metode Pilih Alamat?) then (Pilih Manual)
+    :Pilih Alamat dari Daftar;
+  else (Alamat Terdekat)
+    :Sistem Deteksi Lokasi Saat Ini;
+    :Pilih Alamat Terdekat;
+  endif
   :Simpan Produk;
 else (Lihat Detail Produk)
   :Halaman Detail Produk;

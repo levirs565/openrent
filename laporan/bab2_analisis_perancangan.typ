@@ -4,7 +4,11 @@
 
 #image("diagram/output/auth.svg")
 #image("diagram/output/address_management.svg")
+#image("diagram/output/product_management.svg")
+#image("diagram/output/search_and_rent.svg")
 #image("diagram/output/rental_management_owner.svg")
+#image("diagram/output/rental_management_borrower.svg")
+
 
 == Analisis Kebutuhan Sistem
 

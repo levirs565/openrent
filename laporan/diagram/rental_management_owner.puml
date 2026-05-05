@@ -7,13 +7,22 @@ skinparam ActivityDiamondBackgroundColor #fff8dc
 skinparam ActivityDiamondBorderColor #333333
 skinparam ArrowColor #333333
 
+<style>
+element {
+  MaximumWidth 100
+}
+.notwrap {
+  MaximumWidth 500
+}
+</style>
+
 start
 
-:Buka Halaman Daftar Peminjaman;
+:Buka Halaman Daftar Peminjaman; <<notwrap>>
 :Pilih Peminjaman;
 
 :Melihat Detail Peminjaman;
-note right
+note right <<notwrap>>
   Menampilkan:
   - Produk
   - User Peminjam
@@ -29,10 +38,17 @@ switch (Status Peminjaman?)
 case (Menunggu Persetujuan\nPemilik)
 
   if (Aksi Pemilik?) then (Terima)
+    :Status Berubah: Siap;
   else (Tolak)
     :Isi Alasan Penolakan;
     :Simpan;
+    :Status Berubah: Ditolak;
   endif
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Siap)
+
+  :Menunggu Penyewa Klik Terima;
 
 case (Menunggu Penyerahan\ndari Pemilik)
 
@@ -42,18 +58,30 @@ case (Menunggu Penyerahan\ndari Pemilik)
   :Masukkan Jumlah Uang\nyang Dibayarkan Peminjam;
   :Tampil Jumlah dalam IDR;
   :Simpan;
+  :Status Berubah: Dalam Peminjaman;
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Dalam Peminjaman)
+
+  :Menunggu Peminjam Klik Kembalikan;
 
 case (Menunggu Konfirmasi\nPengembalian)
 
   :Klik Konfirmasi Pengembalian;
   :Pilih Mata Uang;
   :Tampil Total Biaya Peminjaman, Biaya Telat,\nBiaya Total, Pembayaran Awal,\ndan Pembayaran Kurang\n(IDR & Mata Uang Dipilih);
+  :Tampil Estimasi Biaya Awal, Biaya Telat,\nBiaya Total, Pembayaran Awal,\ndan Pembayaran Kurang\n(IDR & Mata Uang Dipilih);
   :Isi Pembayaran Akhir,\nDenda Telat, dan Denda Kerusakan;
   :Sistem Tampilkan Total Pembayaran\n(IDR & Mata Uang Dipilih);
   :Simpan;
+  :Status Berubah: Selesai;
+  :Sistem Kirim Notifikasi ke Peminjam;
+
+case (Selesai / Batal)
+
+  :Tidak Ada Operasi\nyang Dapat Dilakukan;
 
 endswitch
-:Sistem Kirim Notifikasi ke Peminjam;
 
 stop
 @enduml
