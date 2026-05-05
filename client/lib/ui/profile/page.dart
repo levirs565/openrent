@@ -9,6 +9,7 @@ import 'package:openrent_client/ui/profile/cubit.dart';
 import 'package:openrent_client/ui/profile/state.dart';
 import 'package:openrent_client/ui/game/page.dart';
 import 'package:openrent_client/ui/settings/page.dart';
+import 'package:openrent_client/ui/suggestion/page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -187,6 +188,15 @@ class _Content extends StatelessWidget {
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 14),
                 child: Text('Fragile Delivery Game'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(context).push(SuggestionPage.route()),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 14),
+                child: Text('Saran & Kesan TPM'),
               ),
             ),
             const SizedBox(height: 12),

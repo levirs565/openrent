@@ -43,8 +43,14 @@ class _MainPageState extends State<MainPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Obrolan'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Pesanan'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Produk'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: 'Pesanan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2),
+            label: 'Produk',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun'),
         ],
         currentIndex: _selectedIndex,
