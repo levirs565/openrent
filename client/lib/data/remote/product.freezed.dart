@@ -3754,4 +3754,267 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$ProductSummaryResponse {
+
+ String get summary;
+/// Create a copy of ProductSummaryResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProductSummaryResponseCopyWith<ProductSummaryResponse> get copyWith => _$ProductSummaryResponseCopyWithImpl<ProductSummaryResponse>(this as ProductSummaryResponse, _$identity);
+
+  /// Serializes this ProductSummaryResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductSummaryResponse&&(identical(other.summary, summary) || other.summary == summary));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,summary);
+
+@override
+String toString() {
+  return 'ProductSummaryResponse(summary: $summary)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProductSummaryResponseCopyWith<$Res>  {
+  factory $ProductSummaryResponseCopyWith(ProductSummaryResponse value, $Res Function(ProductSummaryResponse) _then) = _$ProductSummaryResponseCopyWithImpl;
+@useResult
+$Res call({
+ String summary
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProductSummaryResponseCopyWithImpl<$Res>
+    implements $ProductSummaryResponseCopyWith<$Res> {
+  _$ProductSummaryResponseCopyWithImpl(this._self, this._then);
+
+  final ProductSummaryResponse _self;
+  final $Res Function(ProductSummaryResponse) _then;
+
+/// Create a copy of ProductSummaryResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? summary = null,}) {
+  return _then(_self.copyWith(
+summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProductSummaryResponse].
+extension ProductSummaryResponsePatterns on ProductSummaryResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProductSummaryResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProductSummaryResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProductSummaryResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProductSummaryResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProductSummaryResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProductSummaryResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String summary)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProductSummaryResponse() when $default != null:
+return $default(_that.summary);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String summary)  $default,) {final _that = this;
+switch (_that) {
+case _ProductSummaryResponse():
+return $default(_that.summary);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String summary)?  $default,) {final _that = this;
+switch (_that) {
+case _ProductSummaryResponse() when $default != null:
+return $default(_that.summary);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ProductSummaryResponse implements ProductSummaryResponse {
+  const _ProductSummaryResponse({required this.summary});
+  factory _ProductSummaryResponse.fromJson(Map<String, dynamic> json) => _$ProductSummaryResponseFromJson(json);
+
+@override final  String summary;
+
+/// Create a copy of ProductSummaryResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProductSummaryResponseCopyWith<_ProductSummaryResponse> get copyWith => __$ProductSummaryResponseCopyWithImpl<_ProductSummaryResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProductSummaryResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductSummaryResponse&&(identical(other.summary, summary) || other.summary == summary));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,summary);
+
+@override
+String toString() {
+  return 'ProductSummaryResponse(summary: $summary)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProductSummaryResponseCopyWith<$Res> implements $ProductSummaryResponseCopyWith<$Res> {
+  factory _$ProductSummaryResponseCopyWith(_ProductSummaryResponse value, $Res Function(_ProductSummaryResponse) _then) = __$ProductSummaryResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ String summary
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProductSummaryResponseCopyWithImpl<$Res>
+    implements _$ProductSummaryResponseCopyWith<$Res> {
+  __$ProductSummaryResponseCopyWithImpl(this._self, this._then);
+
+  final _ProductSummaryResponse _self;
+  final $Res Function(_ProductSummaryResponse) _then;
+
+/// Create a copy of ProductSummaryResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? summary = null,}) {
+  return _then(_ProductSummaryResponse(
+summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 // dart format on

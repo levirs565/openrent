@@ -12,6 +12,7 @@ import 'package:openrent_client/ui/messages/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
 import 'package:openrent_client/ui/rent_form/sheet.dart';
 
+import 'summary/sheet.dart';
 import 'cubit.dart';
 import 'state.dart';
 
@@ -94,23 +95,29 @@ class _ProductDetailPageContent extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (product?.imageUrl != null)
-                          AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                bottom: Radius.circular(16),
-                              ),
-                              child: Image.network(
-                                product!.imageUrl!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Center(
-                                      child: Icon(Icons.broken_image),
-                                    ),
-                              ),
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(16),
                             ),
+                            child: product?.imageUrl != null
+                                ? Image.network(
+                                    product!.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Center(
+                                              child: Icon(Icons.broken_image),
+                                            ),
+                                  )
+                                : Icon(
+                                    Icons.photo,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    size: 72,
+                                  ),
                           ),
+                        ),
                         const Gap(16),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -179,7 +186,28 @@ class _ProductDetailPageContent extends StatelessWidget {
                                 ),
                               ),
                               const Gap(16),
-                              Text('Deskripsi', style: textTheme.titleLarge),
+                              Row(
+                                children: [
+                                  Text('Deskripsi', style: textTheme.titleLarge),
+                                  const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        showDragHandle: true,
+                                        isScrollControlled: true,
+                                        builder: (context) =>
+                                            ProductSummarySheet(id: state.id),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.auto_awesome,
+                                      color: colorScheme.primary,
+                                    ),
+                                    tooltip: 'Ringkasan AI',
+                                  ),
+                                ],
+                              ),
                               const Gap(8),
                               Text(
                                 product?.description ?? '-',

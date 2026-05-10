@@ -411,6 +411,14 @@ Map<String, dynamic> _$ProductImageConfirmRequestToJson(
   _ProductImageConfirmRequest instance,
 ) => <String, dynamic>{'name': instance.name};
 
+_ProductSummaryResponse _$ProductSummaryResponseFromJson(
+  Map<String, dynamic> json,
+) => _ProductSummaryResponse(summary: json['summary'] as String);
+
+Map<String, dynamic> _$ProductSummaryResponseToJson(
+  _ProductSummaryResponse instance,
+) => <String, dynamic>{'summary': instance.summary};
+
 // dart format off
 
 // **************************************************************************
@@ -505,6 +513,33 @@ class _ProductService implements ProductService {
     late ProductResponseItemDetail _value;
     try {
       _value = ProductResponseItemDetail.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ProductSummaryResponse> getSummary(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ProductSummaryResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/products/${id}/summary',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProductSummaryResponse _value;
+    try {
+      _value = ProductSummaryResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
