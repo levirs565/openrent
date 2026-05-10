@@ -208,11 +208,17 @@ func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (Res
 	model.UserAccountID = userId
 	// Check address is deleted or not
 
-	embed, err := s.embedProduct(ctx, model.Name, model.Description)
+	embed, err := s.embedSearchDocument(ctx, model.Name, model.Description)
 	if err != nil {
 		return ResponseItem{}, err
 	}
 	model.Embedding = pgvector.NewVector(embed)
+
+	similarity, err := s.embedSimilarity(ctx, model.Name)
+	if err != nil {
+		return ResponseItem{}, err
+	}
+	model.EmbeddingSimilarity = pgvector.NewVector(similarity)
 
 	err = gorm.G[models.Product](s.db).Create(ctx, &model)
 	if err != nil {
@@ -241,9 +247,13 @@ func (s *Service) Add(ctx context.Context, userId uint, product AddRequest) (Res
 	return modelToResponse(model), nil
 }
 
-func (s *Service) embedProduct(ctx context.Context, name string, description string) ([]float32, error) {
-	content := fmt.Sprintf("Product: %s, Description: %s", name, description)
-	return s.embedder.Embed(ctx, content)
+func (s *Service) embedSearchDocument(ctx context.Context, name string, description string) ([]float32, error) {
+	content := fmt.Sprintf("%s\n\n%s", name, description)
+	return s.embedder.EmbedSearchDocument(ctx, name, content)
+}
+
+func (s *Service) embedSimilarity(ctx context.Context, text string) ([]float32, error) {
+	return s.embedder.EmbedSimmiliarity(ctx, text)
 }
 
 func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest) (ResponseItem, error) {
@@ -251,11 +261,17 @@ func (s *Service) Update(ctx context.Context, userId uint, product UpdateRequest
 	model.UserAccountID = userId
 	model.ID = product.ID
 
-	embed, err := s.embedProduct(ctx, model.Name, model.Description)
+	embed, err := s.embedSearchDocument(ctx, model.Name, model.Description)
 	if err != nil {
 		return ResponseItem{}, err
 	}
 	model.Embedding = pgvector.NewVector(embed)
+
+	similarity, err := s.embedSimilarity(ctx, model.Name)
+	if err != nil {
+		return ResponseItem{}, err
+	}
+	model.EmbeddingSimilarity = pgvector.NewVector(similarity)
 
 	// TODO: Lock Stock
 	rows, err := gorm.G[models.Product](s.db).

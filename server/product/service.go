@@ -81,13 +81,13 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 			pattern := fmt.Sprintf("%%%s%%", parameters.Query)
 			q = q.Where("products.name ILIKE ? OR products.description ILIKE ?", pattern, pattern)
 		} else {
-			content := fmt.Sprintf("Product search: %s", parameters.Query)
-			vector, err := s.embedder.Embed(ctx, content)
+			vector, err := s.embedder.EmbedSearchQuery(ctx, parameters.Query)
 			if err != nil {
 				return []ResponseItemShort{}, err
 			}
 
-			q = q.Where("(products.embedding <=> ?) < 0.3", pgvector.NewVector(vector))
+			q = q.Where("(products.embedding <=> ?) <= 0.4", pgvector.NewVector(vector))
+			// Order("(products.embedding <=> ?)", pgvector.NewVector(vector));
 		}
 	}
 
@@ -138,7 +138,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id", "products.embedding", "products.image_name",
+			"products.user_address_id", "products.embedding_similarity", "products.image_name",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},
@@ -184,10 +184,10 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 				return nil
 			},
 		).
-		Where("(products.embedding <=> ?) < 0.2", model.Embedding).
+		Where("(products.embedding_similarity <=> ?) < 0.2", model.EmbeddingSimilarity).
 		Where("products.id <> ?", model.ID).
 		Order(clause.OrderBy{
-			Expression: gorm.Expr("(products.embedding <=> ?) ASC", model.Embedding),
+			Expression: gorm.Expr("(products.embedding_similarity <=> ?) ASC", model.EmbeddingSimilarity),
 		}).
 		Limit(10).
 		Find(ctx)
