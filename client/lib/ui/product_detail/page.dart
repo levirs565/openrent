@@ -230,24 +230,22 @@ class _ProductDetailPageContent extends StatelessWidget {
                                   ],
                                 ),
                                 const Gap(8),
-                                SizedBox(
-                                  height: 150,
-                                  child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: product!.topReviews.length,
-                                    separatorBuilder: (context, index) =>
-                                        const Gap(8),
-                                    itemBuilder: (context, index) {
-                                      return ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 300,
-                                        ),
-                                        child: ReviewCard(
-                                          item: product.topReviews[index],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                ListView.separated(
+                                  itemCount: product!.topReviews.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const Gap(8),
+                                  itemBuilder: (context, index) {
+                                    return ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 300,
+                                      ),
+                                      child: ReviewCard(
+                                        item: product.topReviews[index],
+                                      ),
+                                    );
+                                  },
                                 ),
                                 const Gap(24),
                               ],
@@ -258,29 +256,27 @@ class _ProductDetailPageContent extends StatelessWidget {
                                   style: textTheme.titleLarge,
                                 ),
                                 const Gap(8),
-                                SizedBox(
-                                  height: 280,
-                                  child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: product!.recommendations.length,
-                                    separatorBuilder: (context, index) =>
-                                        const Gap(8),
-                                    itemBuilder: (context, index) {
-                                      final recommendation =
-                                          product.recommendations[index];
-                                      return ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 200,
-                                        ),
-                                        child: ProductCard(
-                                          item: recommendation,
-                                          currency: state.selectedCurrency,
-                                          convertToCurrency:
-                                              state.convertToCurrency,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                ListView.separated(
+                                  itemCount: product!.recommendations.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const Gap(8),
+                                  itemBuilder: (context, index) {
+                                    final recommendation =
+                                        product.recommendations[index];
+                                    return ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 200,
+                                      ),
+                                      child: ProductCard(
+                                        item: recommendation,
+                                        currency: state.selectedCurrency,
+                                        convertToCurrency:
+                                            state.convertToCurrency,
+                                      ),
+                                    );
+                                  },
                                 ),
                                 const Gap(24),
                               ],

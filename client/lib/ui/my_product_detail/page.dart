@@ -75,7 +75,7 @@ class _MyProductDetailPageContent extends StatelessWidget {
           body: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (state.isLoading) const LinearProgressIndicator(),
                 const SizedBox(height: 16),
@@ -186,7 +186,7 @@ class _MyProductDetailPageContent extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           'Informasi Produk',
