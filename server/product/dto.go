@@ -132,6 +132,14 @@ type ListReviewRequest struct {
 	ID uint `param:"id"`
 }
 
+type SummaryRequest struct {
+	ID uint `param:"id"`
+}
+
+type SummaryResponse struct {
+	Summary string `json:"summary"`
+}
+
 // TODO: Refactor
 
 // TODO: Sort by, ASC or DES, Paging?

@@ -170,7 +170,7 @@ func main() {
 	notificationService := notification.NewFCMService(messaging, db)
 	authService := auth.NewService(db, s3Client, s3Bucket, tokenHelper)
 	addressService := address.NewService(db)
-	productService := product.NewService(db, embedder, notificationService, s3Client, s3Bucket)
+	productService := product.NewService(db, embedder, generative, notificationService, s3Client, s3Bucket)
 	myProductService := my_product.NewService(db, embedder, s3Client, s3Bucket)
 	ownerRentsService := owner_rent.NewService(db, notificationService, s3Client, s3Bucket)
 	rentsService := rent.NewService(db, notificationService, s3Client, s3Bucket, generative)

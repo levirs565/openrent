@@ -46,6 +46,20 @@ func (ct *Controller) getById(c *echo.Context) error {
 	return c.JSON(200, result)
 }
 
+func (ct *Controller) summary(c *echo.Context) error {
+	payload := SummaryRequest{}
+	if err := core.BindAndValidate(c, &payload); err != nil {
+		return err
+	}
+
+	result, err := ct.service.GetSummary(c.Request().Context(), payload.ID)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, result)
+}
+
 func (ct *Controller) rent(c *echo.Context) error {
 	payload := RentRequest{}
 	if err := core.BindAndValidate(c, &payload); err != nil {
@@ -81,6 +95,7 @@ func (ct *Controller) RegisterRoutes(g *echo.Group) {
 
 	g.GET("", ct.list)
 	g.GET("/:id", ct.getById)
+	g.GET("/:id/summary", ct.summary)
 	g.POST("/:id/rent", ct.rent)
 	g.GET("/:id/reviews", ct.listReview)
 }

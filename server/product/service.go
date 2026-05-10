@@ -9,6 +9,7 @@ import (
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
+	"strings"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -26,18 +27,24 @@ var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
 type Service struct {
 	db           *gorm.DB
 	embedder     ai.AIEmbedder
+	generative   ai.AIGenerative
 	notification notification.Service
 	s3           *s3.Client
 	s3Bucket     string
 }
 
 func NewService(
-	db *gorm.DB, embedder ai.AIEmbedder, notification notification.Service,
-	s3 *s3.Client, s3Bucket string,
+	db *gorm.DB,
+	embedder ai.AIEmbedder,
+	generative ai.AIGenerative,
+	notification notification.Service,
+	s3 *s3.Client,
+	s3Bucket string,
 ) *Service {
 	return &Service{
 		db:           db,
 		embedder:     embedder,
+		generative:   generative,
 		notification: notification,
 		s3:           s3,
 		s3Bucket:     s3Bucket,
@@ -215,6 +222,130 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 		}),
 		ImageURL:     core.FormatProductImageUrl(s.s3, s.s3Bucket, model.ID, model.ImageName),
 		Availability: availability,
+	}, nil
+}
+
+var summarySystemPrompt = `
+Anda adalah "OpenRent AI Concierge", asisten cerdas yang membantu calon peminjam memahami kualitas produk rental secara cepat dan objektif.
+
+Tugas utama Anda:
+1. Meringkas deskripsi produk yang panjang menjadi poin-poin esensial.
+2. Melakukan sintesis dari review pengguna untuk menemukan pola tersembunyi.
+3. Memberikan indikator kepercayaan (trust signals) berdasarkan data transaksi.
+
+Aturan Penulisan:\
+- Gunakan Bahasa Indonesia yang profesional, informatif, namun santai (user-friendly).
+- Gunakan format Markdown (bold, bullet points) agar mudah dibaca di aplikasi mobile.
+- Jika data review dibahas, WAJIB menggunakan prefix "Berdasarkan review teratas".
+- Jika ada kekurangan pada barang menurut review, sampaikan secara objektif sebagai tips bagi peminjam.
+`
+
+var summaryPromptTemplate = `
+Tolong berikan ringkasan cerdas untuk produk berikut ini:
+
+### DATA PRODUK
+- Nama Produk: %s
+- Deskripsi: %s
+
+### DATA TRANSAKSI & POPULARITAS
+- Total Transaksi Berhasil: %d
+- Total Transaksi Aktif: %d
+- Rata-rata Rating: %.1f/5.0
+
+### REVIEW PILIHAN
+
+%s
+
+---
+
+### INSTRUKSI OUTPUT
+Berikan respon dengan struktur berikut:
+
+1. **Ringkasan Kilas**: (Maksimal 2 kalimat ringkasan fitur utama barang).
+2. **Analisis Pengalaman**: (Gunakan prefix "Berdasarkan review teratas". Jelaskan mengenai kualitas barang, seberapa responsif pemilik, dan apakah ada kendala teknis yang sering dilaporkan).
+3. **Wawasan Ketersediaan**: (Gunakan data Total Transaksi Aktif. Jika angka tinggi, sarankan user untuk booking lebih awal karena jadwal padat).
+4. **Kesimpulan Akhir**: (Berikan rekomendasi apakah barang ini 'Pilihan Aman' atau 'Perlu Perhatian' berdasarkan total transaksi dan rating).
+`
+
+func (s *Service) GetSummary(ctx context.Context, id uint) (SummaryResponse, error) {
+	type productWithRating struct {
+		Name        string
+		Description string
+		AvgRating   float64
+	}
+	var products []productWithRating
+	err := gorm.G[models.Product](s.db).
+		Select(
+			"products.name", "products.description",
+			`COALESCE(AVG("Rent__Review".rating), 0) AS avg_rating`,
+		).
+		Joins(
+			clause.JoinTarget{Association: "Rent.Review", Type: clause.LeftJoin},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("")
+				return nil
+			},
+		).
+		Group(`products.id`).
+		Where("products.id = ?", id).
+		Scan(ctx, &products)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	if len(products) == 0 {
+		return SummaryResponse{}, ErrNotFound
+	}
+	product := products[0]
+	topReviews, err := core.GetProductTopReviews(ctx, s.db, id)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	type transactionCountResult struct {
+		ActiveRentCount int
+		CompletedCount  int
+	}
+	var transactionCount transactionCountResult
+	// When no row returned, transactionCount will be zero values
+	err = gorm.G[models.Rent](s.db).
+		Select(
+			`
+				? AS active_count,
+				? AS completed_count
+			`,
+			gorm.Expr(
+				`SUM (CASE WHEN rents.state IN ? THEN 1 ELSE 0 END)`,
+				[]models.RentState{
+					models.RentStateReadyForPickup,
+					models.RentStateAwaitingHandover,
+					models.RentStateOnRent,
+					models.RentStateAwaitingReturnConfirmation,
+				},
+			),
+			gorm.Expr(
+				`SUM (CASE WHEN rents.state = ? THEN 1 ELSE 0 END)`,
+				models.RentStateCompleted,
+			),
+		).
+		Group("rents.id").
+		Where("rents.product_id = ?", id).
+		Scan(ctx, &transactionCount)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	topReviewsStr := strings.Join(lo.Map(topReviews, func(review models.Review, index int) string {
+		return fmt.Sprintf("%d. [Rating: %d] %s", index+1, review.Rating, review.Content)
+	}), "\n")
+
+	prompt := fmt.Sprintf(summaryPromptTemplate,
+		product.Name, product.Description, transactionCount.CompletedCount,
+		transactionCount.ActiveRentCount, product.AvgRating, topReviewsStr,
+	)
+	generated, err := s.generative.Generate(ctx, summarySystemPrompt, prompt, "text/plain")
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	return SummaryResponse{
+		Summary: generated,
 	}, nil
 }
 
