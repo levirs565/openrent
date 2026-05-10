@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/core/date.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
@@ -47,6 +48,7 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
   }
 
   bool get isLoading => exchangeRateStatus == .loading || isSubmitLoading;
+
   bool get canEdit => exchangeRateStatus == .success && !isSubmitLoading;
 
   int? get paymentIdr => convertFromCurrency(payment);
@@ -76,8 +78,13 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
 
   // TODO: Check is right?
   int get estimatedLateFineIdr =>
-      rental.product.lateFeePerDay *
-      (DateUtils.dateOnly(DateTime.now()).difference(rental.endDate).inDays);
+      (rental.product.pricePerDay + rental.product.lateFeePerDay) *
+      max(
+        (toWibDate(
+          DateTime.now(),
+        ).difference(toWibDate(rental.endDate)).inDays),
+        0,
+      );
 
   double? get estimatedPrice => convertToCurrency(estimatedPriceIdr);
 

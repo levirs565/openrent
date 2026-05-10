@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/remote/product.dart';
@@ -180,6 +181,23 @@ class _ProductDetailPageContent extends StatelessWidget {
                                               ? _formatAddress(product.address)
                                               : '-',
                                         ),
+                                        trailing: product != null
+                                            ? IconButton(
+                                                onPressed: () async {
+                                                  final url = Uri.parse(
+                                                    'https://www.google.com/maps/search/?api=1&query=${product.address.lat},${product.address.lng}',
+                                                  );
+                                                  if (await canLaunchUrl(url)) {
+                                                    await launchUrl(
+                                                      url,
+                                                      mode: LaunchMode.externalApplication,
+                                                    );
+                                                  }
+                                                },
+                                                icon: const Icon(Icons.map),
+                                                tooltip: 'Buka di Google Maps',
+                                              )
+                                            : null,
                                       ),
                                     ],
                                   ),

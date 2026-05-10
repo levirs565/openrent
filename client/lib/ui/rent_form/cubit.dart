@@ -31,8 +31,16 @@ class RentFormCubit extends Cubit<RentFormState> {
          RentFormState(
            id: id,
            data: null,
-           startDate: DateUtils.dateOnly(DateTime.now()),
-           endDate: DateUtils.dateOnly(DateTime.now()),
+           startDate: DateUtils.dateOnly(
+             tz.TZDateTime.now(
+               tz.getLocation(settingsRepository.getTimeZone()),
+             ),
+           ),
+           endDate: DateUtils.dateOnly(
+             tz.TZDateTime.now(
+               tz.getLocation(settingsRepository.getTimeZone()),
+             ),
+           ),
            quantity: 1,
            dataStatus: .initial,
            actionStatus: .idle,

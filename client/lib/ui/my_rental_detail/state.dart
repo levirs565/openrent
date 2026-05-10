@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/ui/core/date.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -58,11 +59,11 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
   // TODO: Check is right?
   int get estimatedLateFine => data == null
       ? 0
-      : data!.product.lateFeePerDay *
+      : (data!.product.lateFeePerDay + data!.product.pricePerDay) *
             max(
-              (DateUtils.dateOnly(
+              (toWibDate(
                 data!.returnedAt ?? DateTime.now(),
-              ).difference(data!.endDate).inDays),
+              ).difference(toWibDate(data!.endDate)).inDays),
               0,
             );
 

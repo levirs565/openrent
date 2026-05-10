@@ -133,6 +133,7 @@ class _RentFormSheetContent extends StatelessWidget {
                     calendarBuilders: createCalenderBuilderWithStock(
                       (day) =>
                           context.read<RentFormCubit>().getAvailableStock(day),
+                        state.timeZone
                     ),
                   ),
                 ),
@@ -169,6 +170,7 @@ class _RentFormSheetContent extends StatelessWidget {
                       ),
                       const Gap(8),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Estimated conversion:',

@@ -279,6 +279,7 @@ class _MyProductDetailPageContent extends StatelessWidget {
                   )
                 else
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: product!.rents
                         .map(
                           (item) => Padding(

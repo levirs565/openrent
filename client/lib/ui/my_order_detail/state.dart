@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/order.dart';
+import 'package:openrent_client/ui/core/date.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -11,7 +12,12 @@ import '../core/enum.dart';
 
 part 'state.freezed.dart';
 
-enum MyOrderDetailErrorSource { data, exchangeRate, actionReceive, actionReturn }
+enum MyOrderDetailErrorSource {
+  data,
+  exchangeRate,
+  actionReceive,
+  actionReturn,
+}
 
 typedef MyOrderDetailError = ErrorData<MyOrderDetailErrorSource>;
 
@@ -42,7 +48,8 @@ abstract class MyOrderDetailState with _$MyOrderDetailState {
       exchangeRateStatus == .success;
 
   double? convertToCurrency(int? amount) {
-    if (amount == null || exchangeRate == null ||
+    if (amount == null ||
+        exchangeRate == null ||
         !exchangeRate!.conversionRates.containsKey(selectedCurrency)) {
       return null;
     }
@@ -58,10 +65,13 @@ abstract class MyOrderDetailState with _$MyOrderDetailState {
   // TODO: Check is right?
   int get estimatedLateFine => data == null
       ? 0
-      : data!.product.lateFeePerDay *
-            max((DateUtils.dateOnly(
-              data!.returnedAt ?? DateTime.now(),
-            ).difference(data!.endDate).inDays), 0);
+      : (data!.product.pricePerDay + data!.product.lateFeePerDay) *
+            max(
+              (toWibDate(
+                data!.returnedAt ?? DateTime.now(),
+              ).difference(toWibDate(data!.endDate)).inDays),
+              0,
+            );
 
   int get estimatedTotalPrice => estimatedPrice + estimatedLateFine;
 

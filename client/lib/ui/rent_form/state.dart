@@ -56,7 +56,7 @@ abstract class RentFormState with _$RentFormState {
   bool get isValid =>
       quantity != null &&
       quantity! > 0 &&
-      !startDate.isBefore(DateUtils.dateOnly(DateTime.now())) &&
+      !startDate.toLocal().isBefore(DateUtils.dateOnly(tz.TZDateTime.now(timeZone))) &&
       !endDate.isBefore(startDate);
 
   int get priceIdr => data == null
