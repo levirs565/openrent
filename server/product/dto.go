@@ -140,6 +140,10 @@ type SummaryResponse struct {
 	Summary string `json:"summary"`
 }
 
+type RentResponse struct {
+	ID uint `json:"id"`
+}
+
 // TODO: Refactor
 
 // TODO: Sort by, ASC or DES, Paging?

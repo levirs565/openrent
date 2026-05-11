@@ -67,12 +67,12 @@ func (ct *Controller) rent(c *echo.Context) error {
 	}
 
 	user := core.GetUserSession(c)
-	err := ct.service.Rent(c.Request().Context(), user.ID, payload)
+	result, err := ct.service.Rent(c.Request().Context(), user.ID, payload)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(200, core.CreateActionResponse(true))
+	return c.JSON(200, result)
 }
 
 func (ct *Controller) listReview(c *echo.Context) error {

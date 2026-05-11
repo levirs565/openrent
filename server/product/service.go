@@ -349,7 +349,7 @@ func (s *Service) GetSummary(ctx context.Context, id uint) (SummaryResponse, err
 	}, nil
 }
 
-func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) error {
+func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) (RentResponse, error) {
 	// TODO: Buffern?
 	// TODO: Cron expired rent
 	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
@@ -478,7 +478,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	})
 
 	if err != nil {
-		return err
+		return RentResponse{}, err
 	}
 
 	err = s.notification.SendNotification(ctx, ownerId, notification.Notification{
@@ -493,9 +493,9 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 		},
 	})
 	if err != nil {
-		return err
+		return RentResponse{}, err
 	}
-	return nil
+	return RentResponse{ID: rentalId}, nil
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
