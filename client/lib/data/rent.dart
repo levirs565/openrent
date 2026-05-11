@@ -1,6 +1,7 @@
 import 'package:openrent_client/data/remote/rent.dart';
 import 'package:openrent_client/data/resource.dart';
 
+// TODO: Merge with OrderRepository
 abstract interface class RentRepository {
   Future<Result<ProductRentResponse>> startRent({
     required int productId,
@@ -10,7 +11,6 @@ abstract interface class RentRepository {
   });
 }
 
-// TODO: Rent is not noun, change to either Booking or Ordering
 class RentDataSource extends RentRepository {
   final RentService _rentService;
 

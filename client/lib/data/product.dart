@@ -58,6 +58,7 @@ abstract interface class ProductRepository {
 
   Future<Result<void>> uploadImage({required int id, required XFile file});
 
+  // TODO: ALSO Sync with My Product by ID
   Stream<void> watchMyProductChanged();
 
   void dispose();

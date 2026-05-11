@@ -178,7 +178,7 @@ class _RentFormSheetContent extends StatelessWidget {
                             style: theme.textTheme.bodyMedium,
                           ),
                           Text(
-                            '${state.price} ${state.selectedCurrency}',
+                            '${state.price?.toStringAsFixed(2)} ${state.selectedCurrency}',
                             style: theme.textTheme.bodyLarge!.copyWith(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w600,

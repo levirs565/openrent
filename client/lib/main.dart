@@ -70,6 +70,7 @@ void main() async {
   final locationIQService = LocationIQService(Dio());
 
   final newChatController = StreamController<void>();
+  final orderReviewController = StreamController<int>();
 
   runApp(
     MultiRepositoryProvider(
@@ -92,7 +93,10 @@ void main() async {
           dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<ReviewRepository>(
-          create: (_) => ReviewDataSource(reviewService: reviewService),
+          create: (_) => ReviewDataSource(
+            reviewService: reviewService,
+            orderUpdateController: orderReviewController,
+          ),
         ),
         RepositoryProvider<LocationRepository>(
           create: (_) =>
@@ -105,7 +109,10 @@ void main() async {
           create: (_) => RentalDataSource(rentalService: rentalService),
         ),
         RepositoryProvider<OrderRepository>(
-          create: (_) => OrderDataSource(service: orderService),
+          create: (_) => OrderDataSource(
+            service: orderService,
+            reviewStream: orderReviewController.stream,
+          ),
         ),
         RepositoryProvider<MessageRepository>(
           create: (_) => MessageDataSource(

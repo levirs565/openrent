@@ -485,7 +485,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) (R
 		Data: map[string]string{
 			"type":       "rent_request",
 			"product_id": strconv.FormatUint(uint64(request.ID), 10),
-			"rentals_id": strconv.FormatUint(uint64(rentalId), 10),
+			"rent_id":    strconv.FormatUint(uint64(rentalId), 10),
 		},
 		Notification: &messaging.Notification{
 			Title: fmt.Sprintf("New rent request for product %s", productName),

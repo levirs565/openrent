@@ -14,7 +14,7 @@ import 'package:timezone/timezone.dart' as tz;
 class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
   final RentalRepository _rentalRepository;
   final ExchangeRatesRepository _exchangeRatesRepository;
-  StreamSubscription? _fcmSubscription;
+  StreamSubscription? _changedSubscription;
 
   MyRentalDetailCubit({
     required int id,
@@ -37,9 +37,8 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
          ),
        ) {
     onRefreshExchangeRate();
-    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
-      if (event.data["type"].toString().startsWith("rent_") &&
-          int.tryParse(event.data["rent_id"]) == id) {
+    _changedSubscription = rentalRepository.watchChanged().listen((event) {
+      if (event == id) {
         onRefresh();
       }
     });
@@ -47,7 +46,7 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
 
   @override
   Future<void> close() {
-    _fcmSubscription?.cancel();
+    _changedSubscription?.cancel();
     return super.close();
   }
 
@@ -122,7 +121,6 @@ class MyRentalDetailCubit extends Cubit<MyRentalDetailState> {
     switch (result) {
       case ResultSuccess<void>():
         emit(state.copyWith(isActionLoading: false));
-        onRefresh();
       case ResultError<void>():
         emit(
           state.copyWith(

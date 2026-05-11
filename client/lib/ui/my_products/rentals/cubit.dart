@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/data/rental.dart';
@@ -13,7 +12,7 @@ import 'state.dart';
 
 class MyRentalsCubit extends Cubit<MyRentalsState> {
   final RentalRepository _rentalRepository;
-  StreamSubscription? _fcmSubscription;
+  StreamSubscription? _changeSubscription;
 
   MyRentalsCubit({
     required RentalRepository rentalRepository,
@@ -28,16 +27,14 @@ class MyRentalsCubit extends Cubit<MyRentalsState> {
          ),
        ) {
     onRefresh();
-    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
-      if (event.data["type"].toString().startsWith("rent_")) {
-        onRefresh();
-      }
+    _changeSubscription = rentalRepository.watchChanged().listen((event) {
+      onRefresh();
     });
   }
 
   @override
   Future<void> close() {
-    _fcmSubscription?.cancel();
+    _changeSubscription?.cancel();
     return super.close();
   }
 
