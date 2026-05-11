@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:openrent_client/ui/components/calendar.dart';
 import 'package:openrent_client/ui/components/currency_format.dart';
 import 'package:openrent_client/ui/components/loading_button.dart';
+import 'package:openrent_client/ui/my_order_detail/page.dart';
 import 'package:openrent_client/ui/rent_form/cubit.dart';
 import 'package:openrent_client/ui/rent_form/state.dart';
 import 'package:path/path.dart';
@@ -53,7 +54,7 @@ class _RentFormSheetContent extends StatelessWidget {
     return BlocConsumer<RentFormCubit, RentFormState>(
       listener: (context, state) {
         if (state.actionStatus == .finished) {
-          Navigator.pop(context);
+          Navigator.pushReplacement(context, MyOrderDetailPage.route(state.rentId!));
           context.read<RentFormCubit>().onActionSuccessHandled();
         }
         if (state.error != null) {

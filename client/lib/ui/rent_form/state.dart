@@ -29,7 +29,7 @@ abstract class RentFormState with _$RentFormState {
     required DateTime endDate,
     required int? quantity,
     required DataStatus dataStatus,
-    // TODO: must send rent id after succcess
+    required int? rentId,
     required ActionStatus actionStatus,
     required RentFormError? error,
     required tz.Location timeZone,

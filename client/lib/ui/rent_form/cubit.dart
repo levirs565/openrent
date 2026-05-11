@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openrent_client/data/remote/rent.dart';
 import 'package:openrent_client/ui/core/date.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:openrent_client/data/exchange_rates.dart';
@@ -41,6 +42,7 @@ class RentFormCubit extends Cubit<RentFormState> {
                tz.getLocation(settingsRepository.getTimeZone()),
              ),
            ),
+           rentId: null,
            quantity: 1,
            dataStatus: .initial,
            actionStatus: .idle,
@@ -162,9 +164,9 @@ class RentFormCubit extends Cubit<RentFormState> {
     );
 
     switch (result) {
-      case ResultSuccess<void>():
-        emit(state.copyWith(actionStatus: .finished));
-      case ResultError<void>():
+      case ResultSuccess<ProductRentResponse>():
+        emit(state.copyWith(actionStatus: .finished, rentId: result.data.id));
+      case ResultError<ProductRentResponse>():
         emit(
           state.copyWith(
             actionStatus: .idle,
@@ -182,7 +184,7 @@ class RentFormCubit extends Cubit<RentFormState> {
 
   void onActionSuccessHandled() {
     if (state.actionStatus == .finished) {
-      emit(state.copyWith(actionStatus: .idle));
+      emit(state.copyWith(actionStatus: .idle, rentId: null));
     }
   }
 }

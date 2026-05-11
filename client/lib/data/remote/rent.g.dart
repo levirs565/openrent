@@ -22,6 +22,13 @@ Map<String, dynamic> _$ProductRentRequestToJson(ProductRentRequest instance) =>
       'quantity': instance.quantity,
     };
 
+_ProductRentResponse _$ProductRentResponseFromJson(Map<String, dynamic> json) =>
+    _ProductRentResponse(id: (json['id'] as num).toInt());
+
+Map<String, dynamic> _$ProductRentResponseToJson(
+  _ProductRentResponse instance,
+) => <String, dynamic>{'id': instance.id};
+
 // dart format off
 
 // **************************************************************************
@@ -40,13 +47,16 @@ class _RentService implements RentService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ActionResponse> rent(int productId, ProductRentRequest request) async {
+  Future<ProductRentResponse> rent(
+    int productId,
+    ProductRentRequest request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
-    final _options = _setStreamType<ActionResponse>(
+    final _options = _setStreamType<ProductRentResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -57,9 +67,9 @@ class _RentService implements RentService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ActionResponse _value;
+    late ProductRentResponse _value;
     try {
-      _value = ActionResponse.fromJson(_result.data!);
+      _value = ProductRentResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
