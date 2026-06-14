@@ -22,7 +22,7 @@ func NewService(db *gorm.DB) *Service {
 }
 
 func (s *Service) Update(ctx context.Context, userId uint, request UpdateReviewRequest) error {
-	count, err := gorm.G[models.Review](s.db.Debug()).
+	count, err := gorm.G[models.Review](s.db).
 		Joins(clause.JoinTarget{Association: "Rent"}, nil).
 		Where("reviews.id = ?", request.ID).
 		Where(`"Rent".user_account_id = ?`, userId).
@@ -48,7 +48,7 @@ func (s *Service) Update(ctx context.Context, userId uint, request UpdateReviewR
 }
 
 func (s *Service) Delete(ctx context.Context, userId uint, id uint) error {
-	count, err := gorm.G[models.Review](s.db.Debug()).
+	count, err := gorm.G[models.Review](s.db).
 		Joins(clause.JoinTarget{Association: "Rent"}, nil).
 		Where("reviews.id = ?", id).
 		Where(`"Rent".user_account_id = ?`, userId).

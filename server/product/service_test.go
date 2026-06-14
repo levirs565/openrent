@@ -14,9 +14,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/pgvector/pgvector-go"
-	"gorm.io/gorm"
 )
 
 func TestRentRace(t *testing.T) {
@@ -29,48 +26,19 @@ func TestRentRace(t *testing.T) {
 	sqlDB, _ := db.Db.DB()
 	sqlDB.SetMaxOpenConns(0)
 
-	err := gorm.G[models.Account](db.Db).Create(context.Background(), &models.Account{
-		ID:           1,
-		Email:        "user@rent.com",
-		Name:         "User",
-		PasswordHash: "has-no-password",
-		Role:         string(models.AccountRoleUser),
-		User: &models.UserAccount{
-			UserAddresses: []models.UserAddress{{ID: 1}},
-		},
-	})
-	if err != nil {
-		t.Error("Cannot create owner User", err)
-		return
+	if err := testutils.CreateAccount(db.Db, 1, "User"); err != nil {
+		t.Fatal(err)
 	}
-	err = gorm.G[models.Account](db.Db).Create(context.Background(), &models.Account{
-		ID:           2,
-		Email:        "renter@rent.com",
-		Name:         "renter",
-		PasswordHash: "has-no-password",
-		Role:         string(models.AccountRoleUser),
-		User: &models.UserAccount{
-			UserAddresses: []models.UserAddress{{ID: 2}},
-		},
-	})
-	if err != nil {
-		t.Error("Cannot create renter User", err)
-		return
+	if err := testutils.CreateAccount(db.Db, 2, "renter"); err != nil {
+		t.Fatal(err)
+	}
+	if err := testutils.CreateAddress(db.Db, 1, 1, "Address"); err != nil {
+		t.Fatal(err)
 	}
 
-	var embeddings [768]float32
-	var stock int32 = 5
-	err = gorm.G[models.Product](db.Db).Create(context.Background(), &models.Product{
-		Model:               gorm.Model{ID: 1},
-		UserAccountID:       1,
-		UserAddressID:       1,
-		Stock:               int(stock),
-		Embedding:           pgvector.NewVector(embeddings[:]),
-		EmbeddingSimilarity: pgvector.NewVector(embeddings[:]),
-	})
-	if err != nil {
-		t.Error("Cannot create Product", err)
-		return
+	stock := 5
+	if err := testutils.CreateProduct(db.Db, 1, 1, 1, "Product", stock); err != nil {
+		t.Fatal(err)
 	}
 
 	service := NewService(db.Db, ai.NewNoopEmbedder(), nil, notification.NewNoopService(), nil, "")
@@ -84,7 +52,9 @@ func TestRentRace(t *testing.T) {
 	endDate := startDate.AddDate(0, 0, 1)
 
 	for i := 1; i <= requestCount; i++ {
-		wg.Go(func() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
 			<-start
 			_, err := service.Rent(context.Background(), 2, RentRequest{
 				StartDate: startDate,
@@ -97,13 +67,13 @@ func TestRentRace(t *testing.T) {
 			} else if !errors.Is(err, ErrStockUnavailable) {
 				t.Log(err)
 			}
-		})
+		}()
 	}
 
 	close(start)
 	wg.Wait()
 
-	if usedStock != stock {
+	if int(usedStock) != stock {
 		t.Errorf("Error used stock, Expected: %d, Actual: %d", stock, usedStock)
 		return
 	}
@@ -118,32 +88,16 @@ func TestRentOverlap(t *testing.T) {
 
 	ctx := context.Background()
 
-	err := gorm.G[models.Account](db.Db).Create(ctx, &models.Account{
-		ID: 1, Email: "owner@test.com", Name: "Owner", Role: string(models.AccountRoleUser),
-		User: &models.UserAccount{UserAddresses: []models.UserAddress{{ID: 1}}},
-	})
-	if err != nil {
+	if err := testutils.CreateAccount(db.Db, 1, "Owner"); err != nil {
 		t.Fatal(err)
 	}
-
-	err = gorm.G[models.Account](db.Db).Create(ctx, &models.Account{
-		ID: 2, Email: "renter@test.com", Name: "Renter", Role: string(models.AccountRoleUser),
-		User: &models.UserAccount{UserAddresses: []models.UserAddress{{ID: 2}}},
-	})
-	if err != nil {
+	if err := testutils.CreateAccount(db.Db, 2, "Renter"); err != nil {
 		t.Fatal(err)
 	}
-
-	var embeddings [768]float32
-	err = gorm.G[models.Product](db.Db).Create(ctx, &models.Product{
-		Model:               gorm.Model{ID: 1},
-		UserAccountID:       1,
-		UserAddressID:       1,
-		Stock:               1,
-		Embedding:           pgvector.NewVector(embeddings[:]),
-		EmbeddingSimilarity: pgvector.NewVector(embeddings[:]),
-	})
-	if err != nil {
+	if err := testutils.CreateAddress(db.Db, 1, 1, "Address"); err != nil {
+		t.Fatal(err)
+	}
+	if err := testutils.CreateProduct(db.Db, 1, 1, 1, "Product", 1); err != nil {
 		t.Fatal(err)
 	}
 

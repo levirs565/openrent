@@ -312,7 +312,7 @@ func (s *Service) AddReview(ctx context.Context, userId uint, reqest AddReviewRe
 	err = gorm.G[models.Review](s.db).Create(ctx, &model)
 	if err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			rows, err := gorm.G[models.Review](s.db.Debug()).
+			rows, err := gorm.G[models.Review](s.db).
 				Scopes(func(db *gorm.Statement) {
 					db.Unscoped = true
 				}).

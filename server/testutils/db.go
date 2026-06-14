@@ -1,6 +1,7 @@
 package testutils
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"math/rand"
@@ -9,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pgvector/pgvector-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -122,4 +124,44 @@ func CleanupTestDb(t *testing.T, src *TestDb) {
 	}()
 
 	defer closeDb(src.Db)
+}
+
+func CreateAccount(db *gorm.DB, id uint, name string) error {
+	return gorm.G[models.Account](db).Create(context.Background(), &models.Account{
+		ID:           id,
+		Email:        fmt.Sprintf("user%d@test.com", id),
+		Name:         name,
+		PasswordHash: "noop",
+		Role:         string(models.AccountRoleUser),
+		User: &models.UserAccount{
+			AccountID: id,
+		},
+	})
+}
+
+func CreateAddress(db *gorm.DB, id uint, ownerID uint, name string) error {
+	return gorm.G[models.UserAddress](db).Create(context.Background(), &models.UserAddress{
+		ID:            id,
+		UserAccountID: ownerID,
+		Name:          name,
+		Province:      "Province",
+		Regency:       "Regency",
+		District:      "District",
+		AddressDetail: "Detail",
+	})
+}
+
+func CreateProduct(db *gorm.DB, id uint, ownerID uint, addressID uint, name string, stock int) error {
+	var embeddings [768]float32
+	return gorm.G[models.Product](db).Create(context.Background(), &models.Product{
+		Model:               gorm.Model{ID: id},
+		UserAccountID:       ownerID,
+		UserAddressID:       addressID,
+		Name:                name,
+		Stock:               stock,
+		PricePerDay:         10000,
+		LateFeePerDay:       1000,
+		Embedding:           pgvector.NewVector(embeddings[:]),
+		EmbeddingSimilarity: pgvector.NewVector(embeddings[:]),
+	})
 }

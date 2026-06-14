@@ -507,7 +507,7 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) (R
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
-	reviews, err := gorm.G[models.Review](s.db.Debug()).
+	reviews, err := gorm.G[models.Review](s.db).
 		Select("reviews.id", "reviews.rating", "reviews.content", "reviews.score").
 		Joins(
 			clause.JoinTarget{Association: "Rent"},
