@@ -10,6 +10,7 @@ import (
 	"openrent-server/notification"
 	"strconv"
 	"strings"
+	"time"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -23,6 +24,7 @@ import (
 var ErrNotFound = errors.New("product not found")
 var ErrStockUnavailable = errors.New("stock unavailable")
 var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
+var ErrCannotRentPastDue = errors.New("cannot rent past due")
 
 type Service struct {
 	db           *gorm.DB
@@ -353,6 +355,12 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) (R
 	// TODO: Buffern?
 	// TODO: Cron expired rent
 	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
+
+	if core.ConvertDateToTime(core.ConvertTimeToDate(request.StartDate)).
+		Before(core.ConvertDateToTime(core.ConvertTimeToDate(time.Now()))) {
+		return RentResponse{}, ErrCannotRentPastDue
+	}
+
 	var ownerId uint
 	var productName string
 	var renterName string

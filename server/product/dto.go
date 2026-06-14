@@ -124,7 +124,7 @@ type GetByIdRequest struct {
 type RentRequest struct {
 	ID        uint      `param:"id"`
 	StartDate time.Time `json:"start_date" validate:"required"`
-	EndDate   time.Time `json:"end_date" validate:"required"`
+	EndDate   time.Time `json:"end_date" validate:"required,gtefield=StartDate"`
 	Quantity  int       `json:"quantity" validate:"required"`
 }
 

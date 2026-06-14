@@ -44,6 +44,7 @@ var error_codes map[error]int = map[error]int{
 	product.ErrNotFound:               http.StatusNotFound,
 	product.ErrStockUnavailable:       http.StatusConflict,
 	product.ErrCannotRentOwnedProduct: http.StatusConflict,
+	product.ErrCannotRentPastDue:      http.StatusBadRequest,
 
 	my_product.ErrNotFound:             http.StatusNotFound,
 	my_product.ErrInvalidContentType:   http.StatusBadRequest,

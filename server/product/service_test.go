@@ -164,30 +164,31 @@ func TestRentRace(t *testing.T) {
 		Model: gorm.Model{
 			ID: 1,
 		},
-		UserAccountID: 1,
-		UserAddressID: 1,
-		Stock:         int(stock),
-		Embedding:     pgvector.NewVector(embeddings[:]),
+		UserAccountID:       1,
+		UserAddressID:       1,
+		Stock:               int(stock),
+		Embedding:           pgvector.NewVector(embeddings[:]),
+		EmbeddingSimilarity: pgvector.NewVector(embeddings[:]),
 	})
 	if err != nil {
 		t.Error("Cannot create Product", err)
 		return
 	}
 
-	service := NewService(db.db, ai.NewNoopEmbedder(), notification.NewNoopService(), nil, "")
+	service := NewService(db.db, ai.NewNoopEmbedder(), nil, notification.NewNoopService(), nil, "")
 
 	var wg sync.WaitGroup
 	start := make(chan struct{})
 	requestCount := 100
 	var usedStock int32 = 0
 
-	endDate := time.Now()
-	startDate := endDate.AddDate(0, 0, -6)
+	startDate := time.Now()
+	endDate := startDate.AddDate(0, 0, 1)
 
 	for i := 1; i <= requestCount; i++ {
 		wg.Go(func() {
 			<-start
-			err := service.Rent(context.Background(), 2, RentRequest{
+			_, err := service.Rent(context.Background(), 2, RentRequest{
 				StartDate: startDate,
 				EndDate:   endDate,
 				ID:        1,
