@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
-import 'package:openrent_client/ui/core/date.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -59,14 +59,23 @@ abstract class RentFormState with _$RentFormState {
       !startDate.toLocal().isBefore(DateUtils.dateOnly(tz.TZDateTime.now(timeZone))) &&
       !endDate.isBefore(startDate);
 
-  int get priceIdr => data == null
-      ? 0
-      : data!.pricePerDay * (endDate.difference(startDate).inDays + 1);
+  int get priceIdr {
+    if (data == null || quantity == null) return 0;
+    return data!
+        .toCalculator(
+          startDate: DateTimeUtils.toWib(startDate),
+          endDate: DateTimeUtils.toWib(endDate),
+          quantity: quantity!,
+        )
+        .estimatedPrice;
+  }
 
   double? get price => convertToCurrency(priceIdr);
 
   bool get canSubmit => canEdit && isValid;
 
-  DateTime get normalizedStart => normalizeStartDate(timeZone, startDate);
-  DateTime get normalizedEnd => normalizeEndDate(timeZone, endDate);
+  DateTime get normalizedStart =>
+      DateTimeUtils.normalizeStartDate(timeZone, startDate);
+  DateTime get normalizedEnd =>
+      DateTimeUtils.normalizeEndDate(timeZone, endDate);
 }

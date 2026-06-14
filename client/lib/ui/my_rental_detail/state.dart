@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
-import 'package:openrent_client/ui/core/date.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -51,23 +51,13 @@ abstract class MyRentalDetailState with _$MyRentalDetailState {
         exchangeRate!.conversionRates[selectedCurrency]!);
   }
 
-  int get estimatedPrice => data == null
-      ? 0
-      : data!.product.pricePerDay *
-            (data!.endDate.difference(data!.startDate).inDays + 1);
+  RentalCalculator? get calculator => data?.toCalculator();
 
-  // TODO: Check is right?
-  int get estimatedLateFine => data == null
-      ? 0
-      : (data!.product.lateFeePerDay + data!.product.pricePerDay) *
-            max(
-              (toWibDate(
-                data!.returnedAt ?? DateTime.now(),
-              ).difference(toWibDate(data!.endDate)).inDays),
-              0,
-            );
+  int get estimatedPrice => calculator?.estimatedPrice ?? 0;
 
-  int get estimatedTotalPrice => estimatedPrice + estimatedLateFine;
+  int get estimatedLateFine => calculator?.estimatedLateFine ?? 0;
+
+  int get estimatedTotalPrice => calculator?.estimatedTotalPrice ?? 0;
 
   int get estimatedPendingPrice =>
       max(estimatedTotalPrice - (data?.payment.initial ?? 0), 0);

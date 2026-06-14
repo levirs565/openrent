@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openrent_client/data/remote/rent.dart';
-import 'package:openrent_client/ui/core/date.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:openrent_client/data/exchange_rates.dart';
 import 'package:openrent_client/data/product.dart';
@@ -57,7 +57,7 @@ class RentFormCubit extends Cubit<RentFormState> {
   }
 
   int getAvailableStock(DateTime day) {
-    final normalized = normalizeStartDate(state.timeZone, day);
+    final normalized = DateTimeUtils.normalizeStartDate(state.timeZone, day);
     final stateSnapshot = state;
     if (stateSnapshot.data == null) return 0;
 
@@ -73,8 +73,8 @@ class RentFormCubit extends Cubit<RentFormState> {
   }
 
   void setSelectedRange(DateTime startDate, DateTime endDate) {
-    final start = normalizeStartDate(state.timeZone, startDate);
-    final end = normalizeEndDate(state.timeZone, endDate);
+    final start = DateTimeUtils.normalizeStartDate(state.timeZone, startDate);
+    final end = DateTimeUtils.normalizeEndDate(state.timeZone, endDate);
 
     final stateSnapshot = state;
     if (stateSnapshot.data == null) return;
@@ -153,8 +153,8 @@ class RentFormCubit extends Cubit<RentFormState> {
 
     emit(state.copyWith(actionStatus: .loading));
 
-    final start = normalizeStartDate(state.timeZone, state.startDate);
-    final end = normalizeEndDate(state.timeZone, state.endDate);
+    final start = DateTimeUtils.normalizeStartDate(state.timeZone, state.startDate);
+    final end = DateTimeUtils.normalizeEndDate(state.timeZone, state.endDate);
 
     final result = await _rentRepository.startRent(
       productId: state.data!.id,

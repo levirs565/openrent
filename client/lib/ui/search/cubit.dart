@@ -10,7 +10,7 @@ import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/product.dart';
 import 'package:openrent_client/data/resource.dart';
 import 'package:openrent_client/data/settings.dart';
-import 'package:openrent_client/ui/core/date.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 import 'package:openrent_client/ui/search/state.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -122,8 +122,8 @@ class SearchCubit extends Cubit<SearchState> {
       dateRange: state.startDate == null || state.endDate == null
           ? null
           : ProductDateRangeSearchParameter(
-              start: normalizeStartDate(state.timeZone, state.startDate!),
-              end: normalizeEndDate(state.timeZone, state.endDate!),
+              start: DateTimeUtils.normalizeStartDate(state.timeZone, state.startDate!),
+              end: DateTimeUtils.normalizeEndDate(state.timeZone, state.endDate!),
               quantity: 1,
             ),
     );
