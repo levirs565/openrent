@@ -49,7 +49,7 @@ func NewService(
 	}
 }
 
-func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error) {
+func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItem, error) {
 	result, err := gorm.G[models.Rent](s.db).
 		Select(
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
@@ -86,7 +86,7 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 	return list, nil
 }
 
-func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseItemDetails, error) {
+func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseItemDetails, error) {
 	result, err := gorm.G[models.Rent](s.db).
 		Select(
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
@@ -133,7 +133,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 	return response, nil
 }
 
-func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
+func (s *Service) Receive(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.product_snapshot_name", "rents.start_date").
 		Joins(
@@ -192,7 +192,7 @@ func (s *Service) receive(ctx context.Context, userId uint, id uint) error {
 	return nil
 }
 
-func (s *Service) requestReturn(ctx context.Context, userId uint, id uint) error {
+func (s *Service) RequestReturn(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.product_snapshot_name").
 		Joins(
@@ -281,7 +281,7 @@ func (s *Service) getReviewScore(ctx context.Context, text string) (uint, error)
 	return resultObject.Score, nil
 }
 
-func (s *Service) addReview(ctx context.Context, userId uint, reqest AddReviewRequest) error {
+func (s *Service) AddReview(ctx context.Context, userId uint, reqest AddReviewRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("state").
 		Where("id = ?", reqest.ID).
