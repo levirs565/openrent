@@ -1,8 +1,9 @@
 import 'package:openrent_client/data/remote/rent.dart';
 import 'package:openrent_client/data/resource.dart';
 
+// TODO: Merge with OrderRepository
 abstract interface class RentRepository {
-  Future<Result<void>> startRent({
+  Future<Result<ProductRentResponse>> startRent({
     required int productId,
     required DateTime startDate,
     required DateTime endDate,
@@ -10,7 +11,6 @@ abstract interface class RentRepository {
   });
 }
 
-// TODO: Rent is not noun, change to either Booking or Ordering
 class RentDataSource extends RentRepository {
   final RentService _rentService;
 
@@ -18,15 +18,15 @@ class RentDataSource extends RentRepository {
     : _rentService = rentService;
 
   @override
-  Future<Result<void>> startRent({
+  Future<Result<ProductRentResponse>> startRent({
     required int productId,
     required DateTime startDate,
     required DateTime endDate,
     required int quantity,
   }) async {
     try {
-      await _rentService.rent(productId, ProductRentRequest(startDate: startDate, endDate: endDate, quantity: quantity));
-      return ResultSuccess(null);
+      final result = await _rentService.rent(productId, ProductRentRequest(startDate: startDate, endDate: endDate, quantity: quantity));
+      return ResultSuccess(result);
     } catch (e) {
       return mapDioErrorToResult(e);
     }

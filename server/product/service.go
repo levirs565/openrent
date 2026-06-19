@@ -9,6 +9,8 @@ import (
 	"openrent-server/models"
 	"openrent-server/notification"
 	"strconv"
+	"strings"
+	"time"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -22,22 +24,29 @@ import (
 var ErrNotFound = errors.New("product not found")
 var ErrStockUnavailable = errors.New("stock unavailable")
 var ErrCannotRentOwnedProduct = errors.New("cannnot rent owned product")
+var ErrCannotRentPastDue = errors.New("cannot rent past due")
 
 type Service struct {
 	db           *gorm.DB
 	embedder     ai.AIEmbedder
+	generative   ai.AIGenerative
 	notification notification.Service
 	s3           *s3.Client
 	s3Bucket     string
 }
 
 func NewService(
-	db *gorm.DB, embedder ai.AIEmbedder, notification notification.Service,
-	s3 *s3.Client, s3Bucket string,
+	db *gorm.DB,
+	embedder ai.AIEmbedder,
+	generative ai.AIGenerative,
+	notification notification.Service,
+	s3 *s3.Client,
+	s3Bucket string,
 ) *Service {
 	return &Service{
 		db:           db,
 		embedder:     embedder,
+		generative:   generative,
 		notification: notification,
 		s3:           s3,
 		s3Bucket:     s3Bucket,
@@ -81,13 +90,13 @@ func (s *Service) List(ctx context.Context, userId uint, parameters ListRequest)
 			pattern := fmt.Sprintf("%%%s%%", parameters.Query)
 			q = q.Where("products.name ILIKE ? OR products.description ILIKE ?", pattern, pattern)
 		} else {
-			content := fmt.Sprintf("Product search: %s", parameters.Query)
-			vector, err := s.embedder.Embed(ctx, content)
+			vector, err := s.embedder.EmbedSearchQuery(ctx, parameters.Query)
 			if err != nil {
 				return []ResponseItemShort{}, err
 			}
 
-			q = q.Where("(products.embedding <=> ?) < 0.3", pgvector.NewVector(vector))
+			q = q.Where("(products.embedding <=> ?) <= 0.4", pgvector.NewVector(vector))
+			// Order("(products.embedding <=> ?)", pgvector.NewVector(vector));
 		}
 	}
 
@@ -138,7 +147,7 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 			"products.id", "products.created_at", "products.updated_at",
 			"products.name", "products.price_per_day", "products.late_fee_per_day",
 			"products.stock", "products.description", "products.user_account_id",
-			"products.user_address_id", "products.embedding", "products.image_name",
+			"products.user_address_id", "products.embedding_similarity", "products.image_name",
 		).
 		Joins(
 			clause.JoinTarget{Association: "UserAccount.Account"},
@@ -184,10 +193,10 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 				return nil
 			},
 		).
-		Where("(products.embedding <=> ?) < 0.2", model.Embedding).
+		Where("(products.embedding_similarity <=> ?) < 0.2", model.EmbeddingSimilarity).
 		Where("products.id <> ?", model.ID).
 		Order(clause.OrderBy{
-			Expression: gorm.Expr("(products.embedding <=> ?) ASC", model.Embedding),
+			Expression: gorm.Expr("(products.embedding_similarity <=> ?) ASC", model.EmbeddingSimilarity),
 		}).
 		Limit(10).
 		Find(ctx)
@@ -218,10 +227,140 @@ func (s *Service) GetById(ctx context.Context, id uint) (ResponseItemDetail, err
 	}, nil
 }
 
-func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) error {
+var summarySystemPrompt = `
+Anda adalah "OpenRent AI Concierge", asisten cerdas yang membantu calon peminjam memahami kualitas produk rental secara cepat dan objektif.
+
+Tugas utama Anda:
+1. Meringkas deskripsi produk yang panjang menjadi poin-poin esensial.
+2. Melakukan sintesis dari review pengguna untuk menemukan pola tersembunyi.
+3. Memberikan indikator kepercayaan (trust signals) berdasarkan data transaksi.
+
+Aturan Penulisan:\
+- Gunakan Bahasa Indonesia yang profesional, informatif, namun santai (user-friendly).
+- Gunakan format Markdown (bold, bullet points) agar mudah dibaca di aplikasi mobile.
+- Jika data review dibahas, WAJIB menggunakan prefix "Berdasarkan review teratas".
+- Jika ada kekurangan pada barang menurut review, sampaikan secara objektif sebagai tips bagi peminjam.
+`
+
+var summaryPromptTemplate = `
+Tolong berikan ringkasan cerdas untuk produk berikut ini:
+
+### DATA PRODUK
+- Nama Produk: %s
+- Deskripsi: %s
+
+### DATA TRANSAKSI & POPULARITAS
+- Total Transaksi Berhasil: %d
+- Total Transaksi Aktif: %d
+- Rata-rata Rating: %.1f/5.0
+
+### REVIEW PILIHAN
+
+%s
+
+---
+
+### INSTRUKSI OUTPUT
+Berikan respon dengan struktur berikut:
+
+1. **Ringkasan Kilas**: (Maksimal 2 kalimat ringkasan fitur utama barang).
+2. **Analisis Pengalaman**: (Gunakan prefix "Berdasarkan review teratas". Jelaskan mengenai kualitas barang, seberapa responsif pemilik, dan apakah ada kendala teknis yang sering dilaporkan).
+3. **Wawasan Ketersediaan**: (Gunakan data Total Transaksi Aktif. Jika angka tinggi, sarankan user untuk booking lebih awal karena jadwal padat).
+4. **Kesimpulan Akhir**: (Berikan rekomendasi apakah barang ini 'Pilihan Aman' atau 'Perlu Perhatian' berdasarkan total transaksi dan rating).
+`
+
+func (s *Service) GetSummary(ctx context.Context, id uint) (SummaryResponse, error) {
+	type productWithRating struct {
+		Name        string
+		Description string
+		AvgRating   float64
+	}
+	var products []productWithRating
+	err := gorm.G[models.Product](s.db).
+		Select(
+			"products.name", "products.description",
+			`COALESCE(AVG("Rent__Review".rating), 0) AS avg_rating`,
+		).
+		Joins(
+			clause.JoinTarget{Association: "Rent.Review", Type: clause.LeftJoin},
+			func(db gorm.JoinBuilder, joinTable, curTable clause.Table) error {
+				db.Select("")
+				return nil
+			},
+		).
+		Group(`products.id`).
+		Where("products.id = ?", id).
+		Scan(ctx, &products)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	if len(products) == 0 {
+		return SummaryResponse{}, ErrNotFound
+	}
+	product := products[0]
+	topReviews, err := core.GetProductTopReviews(ctx, s.db, id)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	type transactionCountResult struct {
+		ActiveRentCount int
+		CompletedCount  int
+	}
+	var transactionCount transactionCountResult
+	// When no row returned, transactionCount will be zero values
+	err = gorm.G[models.Rent](s.db).
+		Select(
+			`
+				? AS active_count,
+				? AS completed_count
+			`,
+			gorm.Expr(
+				`SUM (CASE WHEN rents.state IN ? THEN 1 ELSE 0 END)`,
+				[]models.RentState{
+					models.RentStateReadyForPickup,
+					models.RentStateAwaitingHandover,
+					models.RentStateOnRent,
+					models.RentStateAwaitingReturnConfirmation,
+				},
+			),
+			gorm.Expr(
+				`SUM (CASE WHEN rents.state = ? THEN 1 ELSE 0 END)`,
+				models.RentStateCompleted,
+			),
+		).
+		Group("rents.id").
+		Where("rents.product_id = ?", id).
+		Scan(ctx, &transactionCount)
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	topReviewsStr := strings.Join(lo.Map(topReviews, func(review models.Review, index int) string {
+		return fmt.Sprintf("%d. [Rating: %d] %s", index+1, review.Rating, review.Content)
+	}), "\n")
+
+	prompt := fmt.Sprintf(summaryPromptTemplate,
+		product.Name, product.Description, transactionCount.CompletedCount,
+		transactionCount.ActiveRentCount, product.AvgRating, topReviewsStr,
+	)
+	generated, err := s.generative.Generate(ctx, summarySystemPrompt, prompt, "text/plain")
+	if err != nil {
+		return SummaryResponse{}, err
+	}
+	return SummaryResponse{
+		Summary: generated,
+	}, nil
+}
+
+func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) (RentResponse, error) {
 	// TODO: Buffern?
 	// TODO: Cron expired rent
 	// TODO: Lock timeour? Maybe not needed, because of ctx timeout
+
+	if core.ConvertDateToTime(core.ConvertTimeToDate(request.StartDate)).
+		Before(core.ConvertDateToTime(core.ConvertTimeToDate(time.Now()))) {
+		return RentResponse{}, ErrCannotRentPastDue
+	}
+
 	var ownerId uint
 	var productName string
 	var renterName string
@@ -347,14 +486,14 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 	})
 
 	if err != nil {
-		return err
+		return RentResponse{}, err
 	}
 
 	err = s.notification.SendNotification(ctx, ownerId, notification.Notification{
 		Data: map[string]string{
 			"type":       "rent_request",
 			"product_id": strconv.FormatUint(uint64(request.ID), 10),
-			"rentals_id": strconv.FormatUint(uint64(rentalId), 10),
+			"rent_id":    strconv.FormatUint(uint64(rentalId), 10),
 		},
 		Notification: &messaging.Notification{
 			Title: fmt.Sprintf("New rent request for product %s", productName),
@@ -362,13 +501,13 @@ func (s *Service) Rent(ctx context.Context, userId uint, request RentRequest) er
 		},
 	})
 	if err != nil {
-		return err
+		return RentResponse{}, err
 	}
-	return nil
+	return RentResponse{ID: rentalId}, nil
 }
 
 func (s *Service) ListReview(ctx context.Context, userId uint, request ListReviewRequest) ([]core.ReviewDetail, error) {
-	reviews, err := gorm.G[models.Review](s.db.Debug()).
+	reviews, err := gorm.G[models.Review](s.db).
 		Select("reviews.id", "reviews.rating", "reviews.content", "reviews.score").
 		Joins(
 			clause.JoinTarget{Association: "Rent"},

@@ -18,7 +18,7 @@ func NewController(s *Service) *Controller {
 
 func (ct *Controller) list(c *echo.Context) error {
 	userId := core.GetUserSession(c).ID
-	result, err := ct.service.list(c.Request().Context(), userId)
+	result, err := ct.service.List(c.Request().Context(), userId)
 	if err != nil {
 		return err
 	}
@@ -32,7 +32,7 @@ func (ct *Controller) getById(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	result, err := ct.service.getById(c.Request().Context(), userId, payload.ID)
+	result, err := ct.service.GetById(c.Request().Context(), userId, payload.ID)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (ct *Controller) receive(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.receive(c.Request().Context(), userId, payload.ID)
+	err := ct.service.Receive(c.Request().Context(), userId, payload.ID)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (ct *Controller) requestReturn(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.requestReturn(c.Request().Context(), userId, payload.ID)
+	err := ct.service.RequestReturn(c.Request().Context(), userId, payload.ID)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (ct *Controller) addReview(c *echo.Context) error {
 	}
 
 	userId := core.GetUserSession(c).ID
-	err := ct.service.addReview(c.Request().Context(), userId, payload)
+	err := ct.service.AddReview(c.Request().Context(), userId, payload)
 	if err != nil {
 		return err
 	}

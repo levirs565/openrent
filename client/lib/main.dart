@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -51,6 +55,53 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.requestPermission(provisional: true);
 
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin.initialize(settings: InitializationSettings(
+    android: AndroidInitializationSettings('@mipmap/ic_launcher')
+  ));
+
+  if (!kIsWeb) {
+    if (Platform.isAndroid) {
+      const channel = AndroidNotificationChannel(
+        'high_importance_channel',
+        'High Importance Notifications',
+        description: 'This channel is used for important notifications.',
+        importance: Importance.high,
+      );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+      >()
+          ?.createNotificationChannel(channel);
+      log("Notification channel created");
+    }
+  }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    final notification = message.notification;
+    final android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      log("Notification ${notification.title} received");
+      flutterLocalNotificationsPlugin.show(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel',
+            'High Importance Notifications',
+            channelDescription:
+                'This channel is used for important notifications.',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+        ),
+      );
+    }
+  });
+
   await openSettingsBox();
 
   final tokenStorage = SecureTokenStorage();
@@ -70,6 +121,7 @@ void main() async {
   final locationIQService = LocationIQService(Dio());
 
   final newChatController = StreamController<void>();
+  final orderReviewController = StreamController<int>();
 
   runApp(
     MultiRepositoryProvider(
@@ -92,7 +144,10 @@ void main() async {
           dispose: (repository) => repository.dispose(),
         ),
         RepositoryProvider<ReviewRepository>(
-          create: (_) => ReviewDataSource(reviewService: reviewService),
+          create: (_) => ReviewDataSource(
+            reviewService: reviewService,
+            orderUpdateController: orderReviewController,
+          ),
         ),
         RepositoryProvider<LocationRepository>(
           create: (_) =>
@@ -105,7 +160,10 @@ void main() async {
           create: (_) => RentalDataSource(rentalService: rentalService),
         ),
         RepositoryProvider<OrderRepository>(
-          create: (_) => OrderDataSource(service: orderService),
+          create: (_) => OrderDataSource(
+            service: orderService,
+            reviewStream: orderReviewController.stream,
+          ),
         ),
         RepositoryProvider<MessageRepository>(
           create: (_) => MessageDataSource(

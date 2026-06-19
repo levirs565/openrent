@@ -39,7 +39,7 @@ func NewService(db *gorm.DB, notification notification.Service, s3 *s3.Client, s
 	}
 }
 
-func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error) {
+func (s *Service) List(ctx context.Context, userId uint) ([]ResponseItem, error) {
 	result, err := gorm.G[models.Rent](s.db).
 		Select(
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
@@ -69,7 +69,7 @@ func (s *Service) list(ctx context.Context, userId uint) ([]ResponseItem, error)
 	return list, nil
 }
 
-func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseItemDetails, error) {
+func (s *Service) GetById(ctx context.Context, userId uint, id uint) (ResponseItemDetails, error) {
 	result, err := gorm.G[models.Rent](s.db).
 		Select(
 			"rents.id", "rents.state", "rents.start_date", "rents.end_date",
@@ -116,7 +116,7 @@ func (s *Service) getById(ctx context.Context, userId uint, id uint) (ResponseIt
 	return response, nil
 }
 
-func (s *Service) approve(ctx context.Context, userId uint, id uint) error {
+func (s *Service) Approve(ctx context.Context, userId uint, id uint) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -174,7 +174,7 @@ func (s *Service) approve(ctx context.Context, userId uint, id uint) error {
 	return nil
 }
 
-func (s *Service) reject(ctx context.Context, userId uint, request RejectRequest) error {
+func (s *Service) Reject(ctx context.Context, userId uint, request RejectRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -232,7 +232,7 @@ func (s *Service) reject(ctx context.Context, userId uint, request RejectRequest
 	return nil
 }
 
-func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest) error {
+func (s *Service) Cancel(ctx context.Context, userId uint, request CancelRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -291,7 +291,7 @@ func (s *Service) cancel(ctx context.Context, userId uint, request CancelRequest
 	return nil
 }
 
-func (s *Service) handover(ctx context.Context, userId uint, request HandoverRequest) error {
+func (s *Service) Handover(ctx context.Context, userId uint, request HandoverRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(
@@ -348,7 +348,7 @@ func (s *Service) handover(ctx context.Context, userId uint, request HandoverReq
 	return nil
 }
 
-func (s *Service) confirmReturn(ctx context.Context, userId uint, request ConfirmReturnRequest) error {
+func (s *Service) ConfirmReturn(ctx context.Context, userId uint, request ConfirmReturnRequest) error {
 	data, err := gorm.G[models.Rent](s.db).
 		Select("rents.state", "rents.user_account_id", "rents.product_snapshot_name").
 		Joins(

@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 CalendarBuilders<dynamic> createCalenderBuilderWithStock(
   int Function(DateTime day) stockGetter,
+  tz.Location timeZone,
 ) {
   return CalendarBuilders(
     defaultBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day),
+        _buildCalendarCell(context, stockGetter, timeZone, day),
     disabledBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isDisabled: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isDisabled: true),
     todayBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isToday: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isToday: true),
     rangeStartBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isRangeStart: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isRangeStart: true),
     rangeEndBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isRangeEnd: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isRangeEnd: true),
     withinRangeBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isWithinRange: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isWithinRange: true),
     outsideBuilder: (context, day, focusedDay) =>
-        _buildCalendarCell(context, stockGetter, day, isOutside: true),
+        _buildCalendarCell(context, stockGetter, timeZone, day, isOutside: true),
   );
 }
 
@@ -32,6 +34,7 @@ bool _isWeekend(
 Widget? _buildCalendarCell(
   BuildContext context,
   int Function(DateTime day) stockGetter,
+  tz.Location timeZone,
   DateTime day, {
   bool isToday = false,
   bool isRangeStart = false,
@@ -94,7 +97,7 @@ Widget? _buildCalendarCell(
                       : calendarStyle.defaultTextStyle)
                   .copyWith(height: 0),
         ),
-        if (!isDisabled || (!day.isBefore(DateUtils.dateOnly(DateTime.now()))))
+        if (!isDisabled || (!day.isBefore(DateUtils.dateOnly(tz.TZDateTime.now(timeZone)))))
           Text(
             isAvailable ? '$stock sisa' : 'Habis',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(

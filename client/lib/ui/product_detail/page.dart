@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:openrent_client/bloc/auth.dart';
 import 'package:openrent_client/data/auth.dart';
 import 'package:openrent_client/data/remote/product.dart';
@@ -12,6 +13,7 @@ import 'package:openrent_client/ui/messages/page.dart';
 import 'package:openrent_client/ui/product_reviews/page.dart';
 import 'package:openrent_client/ui/rent_form/sheet.dart';
 
+import 'summary/sheet.dart';
 import 'cubit.dart';
 import 'state.dart';
 
@@ -94,23 +96,29 @@ class _ProductDetailPageContent extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (product?.imageUrl != null)
-                          AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                bottom: Radius.circular(16),
-                              ),
-                              child: Image.network(
-                                product!.imageUrl!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Center(
-                                      child: Icon(Icons.broken_image),
-                                    ),
-                              ),
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(16),
                             ),
+                            child: product?.imageUrl != null
+                                ? Image.network(
+                                    product!.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Center(
+                                              child: Icon(Icons.broken_image),
+                                            ),
+                                  )
+                                : Icon(
+                                    Icons.photo,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    size: 72,
+                                  ),
                           ),
+                        ),
                         const Gap(16),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -173,13 +181,51 @@ class _ProductDetailPageContent extends StatelessWidget {
                                               ? _formatAddress(product.address)
                                               : '-',
                                         ),
+                                        trailing: product != null
+                                            ? IconButton(
+                                                onPressed: () async {
+                                                  final url = Uri.parse(
+                                                    'https://www.google.com/maps/search/?api=1&query=${product.address.lat},${product.address.lng}',
+                                                  );
+                                                  if (await canLaunchUrl(url)) {
+                                                    await launchUrl(
+                                                      url,
+                                                      mode: LaunchMode.externalApplication,
+                                                    );
+                                                  }
+                                                },
+                                                icon: const Icon(Icons.map),
+                                                tooltip: 'Buka di Google Maps',
+                                              )
+                                            : null,
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
                               const Gap(16),
-                              Text('Deskripsi', style: textTheme.titleLarge),
+                              Row(
+                                children: [
+                                  Text('Deskripsi', style: textTheme.titleLarge),
+                                  const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        showDragHandle: true,
+                                        isScrollControlled: true,
+                                        builder: (context) =>
+                                            ProductSummarySheet(id: state.id),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.auto_awesome,
+                                      color: colorScheme.primary,
+                                    ),
+                                    tooltip: 'Ringkasan AI',
+                                  ),
+                                ],
+                              ),
                               const Gap(8),
                               Text(
                                 product?.description ?? '-',
@@ -202,24 +248,22 @@ class _ProductDetailPageContent extends StatelessWidget {
                                   ],
                                 ),
                                 const Gap(8),
-                                SizedBox(
-                                  height: 150,
-                                  child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: product!.topReviews.length,
-                                    separatorBuilder: (context, index) =>
-                                        const Gap(8),
-                                    itemBuilder: (context, index) {
-                                      return ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 300,
-                                        ),
-                                        child: ReviewCard(
-                                          item: product.topReviews[index],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                ListView.separated(
+                                  itemCount: product!.topReviews.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const Gap(8),
+                                  itemBuilder: (context, index) {
+                                    return ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 300,
+                                      ),
+                                      child: ReviewCard(
+                                        item: product.topReviews[index],
+                                      ),
+                                    );
+                                  },
                                 ),
                                 const Gap(24),
                               ],
@@ -230,29 +274,27 @@ class _ProductDetailPageContent extends StatelessWidget {
                                   style: textTheme.titleLarge,
                                 ),
                                 const Gap(8),
-                                SizedBox(
-                                  height: 280,
-                                  child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: product!.recommendations.length,
-                                    separatorBuilder: (context, index) =>
-                                        const Gap(8),
-                                    itemBuilder: (context, index) {
-                                      final recommendation =
-                                          product.recommendations[index];
-                                      return ConstrainedBox(
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 200,
-                                        ),
-                                        child: ProductCard(
-                                          item: recommendation,
-                                          currency: state.selectedCurrency,
-                                          convertToCurrency:
-                                              state.convertToCurrency,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                ListView.separated(
+                                  itemCount: product!.recommendations.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const Gap(8),
+                                  itemBuilder: (context, index) {
+                                    final recommendation =
+                                        product.recommendations[index];
+                                    return ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 200,
+                                      ),
+                                      child: ProductCard(
+                                        item: recommendation,
+                                        currency: state.selectedCurrency,
+                                        convertToCurrency:
+                                            state.convertToCurrency,
+                                      ),
+                                    );
+                                  },
                                 ),
                                 const Gap(24),
                               ],

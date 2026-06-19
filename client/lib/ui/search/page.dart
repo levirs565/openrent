@@ -223,6 +223,7 @@ class _SearchResult extends StatelessWidget {
             list: state.result,
             onClusterClicked: (list) => showModalBottomSheet(
               isScrollControlled: true,
+              showDragHandle: true,
               context: context,
               builder: (context) => DraggableScrollableSheet(
                 expand: false,
@@ -339,7 +340,7 @@ class _SearchResultMapState extends State<_SearchResultMap> {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(50),
             maxZoom: 20,
-            disableClusteringAtZoom: 16,
+            disableClusteringAtZoom: 21,
             spiderfyCluster: false,
             onClusterTap: (cluster) {
               widget.onClusterClicked(

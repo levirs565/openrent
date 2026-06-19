@@ -2,7 +2,6 @@ package ai
 
 import (
 	"context"
-	"errors"
 )
 
 type noopEmbedder struct{}
@@ -13,7 +12,17 @@ func NewNoopEmbedder() AIEmbedder {
 
 var _ AIEmbedder = (*noopEmbedder)(nil)
 
-// Embed implements [AIEmbedder].
-func (n *noopEmbedder) Embed(ctx context.Context, text string) ([]float32, error) {
-	return []float32{}, errors.New("unimplemented")
+// EmbedSearchDocument implements [AIEmbedder].
+func (n *noopEmbedder) EmbedSearchDocument(ctx context.Context, title string, content string) ([]float32, error) {
+	return make([]float32, ExpectedSize), nil
+}
+
+// EmbedSearchQuery implements [AIEmbedder].
+func (n *noopEmbedder) EmbedSearchQuery(ctx context.Context, text string) ([]float32, error) {
+	return make([]float32, ExpectedSize), nil
+}
+
+// EmbedSimmiliarity implements [AIEmbedder].
+func (n *noopEmbedder) EmbedSimmiliarity(ctx context.Context, text string) ([]float32, error) {
+	return make([]float32, ExpectedSize), nil
 }

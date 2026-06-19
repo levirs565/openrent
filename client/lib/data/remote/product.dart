@@ -32,6 +32,9 @@ abstract class ProductService {
   @GET("/products/{id}")
   Future<ProductResponseItemDetail> getProduct(@Path("id") int id);
 
+  @GET("/products/{id}/summary")
+  Future<ProductSummaryResponse> getSummary(@Path("id") int id);
+
   @GET("/me/products/")
   Future<List<MyProductResponseItemShort>> getMyProductList();
 
@@ -357,3 +360,12 @@ abstract class ProductImageConfirmRequest with _$ProductImageConfirmRequest {
       _$ProductImageConfirmRequestFromJson(json);
 }
 
+@freezed
+abstract class ProductSummaryResponse with _$ProductSummaryResponse {
+  const factory ProductSummaryResponse({
+    required String summary,
+  }) = _ProductSummaryResponse;
+
+  factory ProductSummaryResponse.fromJson(Map<String, dynamic> json) =>
+      _$ProductSummaryResponseFromJson(json);
+}

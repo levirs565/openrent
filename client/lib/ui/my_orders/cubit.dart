@@ -12,7 +12,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 class MyOrdersCubit extends Cubit<MyOrdersState> {
   final OrderRepository _orderRepository;
-  StreamSubscription? _fcmSubscription;
+  StreamSubscription? _changedSubscription;
 
   MyOrdersCubit({
     required OrderRepository orderRepository,
@@ -27,16 +27,14 @@ class MyOrdersCubit extends Cubit<MyOrdersState> {
          ),
        ) {
     onRefresh();
-    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
-      if (event.data["type"].toString().startsWith("rent_")) {
+    _changedSubscription = orderRepository.watchChanged().listen((event) {
         onRefresh();
-      }
     });
   }
 
   @override
   Future<void> close() {
-    _fcmSubscription?.cancel();
+    _changedSubscription?.cancel();
     return super.close();
   }
 

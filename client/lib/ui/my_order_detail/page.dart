@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:openrent_client/data/remote/order.dart';
 import 'package:openrent_client/data/remote/rental.dart';
 import 'package:openrent_client/ui/components/currency_format.dart';
@@ -190,8 +191,23 @@ class _Content extends StatelessWidget {
                                       'Denda ${formatCurrencyAmount(product.lateFeePerDay, 'IDR')}/hr',
                                 ),
                               if (product != null)
-                                InfoChip(
-                                  label: _formatAddress(product.address),
+                                // TODO: Icon?
+                                InkWell(
+                                  onTap: () async {
+                                    final url = Uri.parse(
+                                      'https://www.google.com/maps/search/?api=1&query=${product.address.latitude},${product.address.longitude}',
+                                    );
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(
+                                        url,
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    }
+                                  },
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: InfoChip(
+                                    label: _formatAddress(product.address),
+                                  ),
                                 ),
                             ],
                           ),

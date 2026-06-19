@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 tz.TZDateTime normalizeStartDate(tz.Location timeZone, DateTime startDate) {
@@ -16,3 +17,9 @@ tz.TZDateTime normalizeEndDate(tz.Location timeZone, DateTime endDate) {
     endDate,
   ).add(Duration(days: 1)).subtract(Duration(microseconds: 1));
 }
+
+tz.TZDateTime toWib(DateTime date) =>
+    tz.TZDateTime.from(date, tz.getLocation('Asia/Jakarta'));
+
+
+DateTime toWibDate(DateTime date) => DateUtils.dateOnly(toWib(date));

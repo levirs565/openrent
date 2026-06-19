@@ -15,7 +15,7 @@ import 'state.dart';
 class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
   final OrderRepository _orderRepository;
   final ExchangeRatesRepository _exchangeRatesRepository;
-  StreamSubscription? _fcmSubscription;
+  StreamSubscription? _changedSubscription;
 
   MyOrderDetailCubit({
     required int id,
@@ -38,9 +38,8 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
          ),
        ) {
     onRefreshExchangeRate();
-    _fcmSubscription = FirebaseMessaging.onMessage.listen((event) {
-      if (event.data["type"].toString().startsWith("rent_") &&
-          int.tryParse(event.data["rent_id"]) == id) {
+    _changedSubscription = orderRepository.watchChanged().listen((event) {
+      if (event == id) {
         onRefresh();
       }
     });
@@ -72,7 +71,7 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
 
   @override
   Future<void> close() {
-    _fcmSubscription?.cancel();
+    _changedSubscription?.cancel();
     return super.close();
   }
 
@@ -123,7 +122,6 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
     switch (result) {
       case ResultSuccess<void>():
         emit(state.copyWith(isActionLoading: false));
-        onRefresh();
       case ResultError<void>():
         emit(
           state.copyWith(
@@ -147,7 +145,6 @@ class MyOrderDetailCubit extends Cubit<MyOrderDetailState> {
     switch (result) {
       case ResultSuccess<void>():
         emit(state.copyWith(isActionLoading: false));
-        onRefresh();
       case ResultError<void>():
         emit(
           state.copyWith(

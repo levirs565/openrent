@@ -3,191 +3,60 @@ package product
 import (
 	"context"
 	"errors"
-	"fmt"
-	"math/rand"
 	"openrent-server/ai"
+	"openrent-server/core"
 	"openrent-server/models"
 	"openrent-server/notification"
-	"os"
+	"openrent-server/owner_rent"
+	"openrent-server/rent"
+	"openrent-server/testutils"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/pgvector/pgvector-go"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-type testDb struct {
-	rootDb *gorm.DB
-	dbName string
-	db     *gorm.DB
-}
-
-func initTestDb(t *testing.T, dest *testDb) bool {
-	dbUrl := os.Getenv("TEST_PG_CONN")
-
-	rootDb, err := gorm.Open(postgres.Open(dbUrl))
-	if err != nil {
-		t.Error("Cannot open root connection", err)
-		return false
-	}
-	dest.rootDb = rootDb
-
-	// TODO check if exists
-	dbName := fmt.Sprintf("openrent_test_%d", rand.Intn(1000000))
-	result := rootDb.Exec(fmt.Sprintf("CREATE DATABASE %s;", dbName))
-	if result.Error != nil {
-		t.Error("Cannot create database", result.Error)
-		return false
-	}
-	dest.dbName = dbName
-
-	db, err := gorm.Open(postgres.Open(fmt.Sprintf("%s/%s", dbUrl, dbName)), &gorm.Config{
-		TranslateError: true,
-	})
-	dest.db = db
-
-	if err != nil {
-		t.Error("Cannot open database", err)
-		return false
-	}
-
-	result = db.Exec("CREATE EXTENSION postgis;")
-	if result.Error != nil {
-		t.Error("Cannot create extension postgis", result.Error)
-		return false
-	}
-
-	result = db.Exec("CREATE EXTENSION vector;")
-	if result.Error != nil {
-		t.Error("Cannot create extension vector", result.Error)
-		return false
-	}
-
-	err = db.AutoMigrate(
-		&models.AdminAccount{}, &models.UserAccount{}, &models.Account{},
-		&models.UserAddress{},
-		&models.Product{},
-		&models.Rent{},
-	)
-	if err != nil {
-		t.Error("Cannot AutoMigrate models", err)
-		return false
-	}
-
-	return true
-}
-
-func cleanupTestDb(t *testing.T, src *testDb) {
-	closeDb := func(db *gorm.DB) {
-		if db == nil {
-			return
-		}
-		sqlDB, err := db.DB()
-		if err != nil {
-			t.Error("Cannot close DB", err)
-			return
-		}
-		err = sqlDB.Close()
-		if err != nil {
-			t.Log("Cannot close DB", err)
-		}
-	}
-
-	defer closeDb(src.rootDb)
-
-	defer func() {
-		if len(src.dbName) == 0 {
-			return
-		}
-
-		dropResult := src.rootDb.Exec(fmt.Sprintf("DROP DATABASE %s", src.dbName))
-		if dropResult.Error != nil {
-			t.Error("Cannot drop database", dropResult.Error)
-		}
-	}()
-
-	defer closeDb(src.db)
-}
-
 func TestRentRace(t *testing.T) {
-	db := testDb{}
-	defer cleanupTestDb(t, &db)
-	if !initTestDb(t, &db) {
+	db := testutils.TestDb{}
+	defer testutils.CleanupTestDb(t, &db)
+	if !testutils.InitTestDb(t, &db) {
 		return
 	}
 
-	sqlDB, _ := db.db.DB()
+	sqlDB, _ := db.Db.DB()
 	sqlDB.SetMaxOpenConns(0)
 
-	err := gorm.G[models.Account](db.db).Create(context.Background(), &models.Account{
-		ID:           1,
-		Email:        "user@rent.com",
-		Name:         "User",
-		PasswordHash: "has-no-password",
-		Role:         string(models.AccountRoleUser),
-		User: &models.UserAccount{
-			UserAddresses: []models.UserAddress{
-				models.UserAddress{
-					ID: 1,
-				},
-			},
-		},
-	})
-	if err != nil {
-		t.Error("Cannot create owner User", err)
-		return
+	if err := testutils.CreateAccount(db.Db, 1, "User"); err != nil {
+		t.Fatal(err)
 	}
-	err = gorm.G[models.Account](db.db).Create(context.Background(), &models.Account{
-		ID:           2,
-		Email:        "renter@rent.com",
-		Name:         "renter",
-		PasswordHash: "has-no-password",
-		Role:         string(models.AccountRoleUser),
-		User: &models.UserAccount{
-			UserAddresses: []models.UserAddress{
-				models.UserAddress{
-					ID: 2,
-				},
-			},
-		},
-	})
-	if err != nil {
-		t.Error("Cannot create renter User", err)
-		return
+	if err := testutils.CreateAccount(db.Db, 2, "renter"); err != nil {
+		t.Fatal(err)
 	}
-	var embeddings [768]float32
-	var stock int32 = 5
-	err = gorm.G[models.Product](db.db).Create(context.Background(), &models.Product{
-		Model: gorm.Model{
-			ID: 1,
-		},
-		UserAccountID: 1,
-		UserAddressID: 1,
-		Stock:         int(stock),
-		Embedding:     pgvector.NewVector(embeddings[:]),
-	})
-	if err != nil {
-		t.Error("Cannot create Product", err)
-		return
+	if err := testutils.CreateAddress(db.Db, 1, 1, "Address"); err != nil {
+		t.Fatal(err)
 	}
 
-	service := NewService(db.db, ai.NewNoopEmbedder(), notification.NewNoopService(), nil, "")
+	stock := 5
+	if err := testutils.CreateProduct(db.Db, 1, 1, 1, "Product", stock); err != nil {
+		t.Fatal(err)
+	}
+
+	service := NewService(db.Db, ai.NewNoopEmbedder(), nil, notification.NewNoopService(), nil, "")
 
 	var wg sync.WaitGroup
 	start := make(chan struct{})
 	requestCount := 100
 	var usedStock int32 = 0
 
-	endDate := time.Now()
-	startDate := endDate.AddDate(0, 0, -6)
+	startDate := time.Now()
+	endDate := startDate.AddDate(0, 0, 1)
 
 	for i := 1; i <= requestCount; i++ {
-		wg.Go(func() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
 			<-start
-			err := service.Rent(context.Background(), 2, RentRequest{
+			_, err := service.Rent(context.Background(), 2, RentRequest{
 				StartDate: startDate,
 				EndDate:   endDate,
 				ID:        1,
@@ -198,14 +67,155 @@ func TestRentRace(t *testing.T) {
 			} else if !errors.Is(err, ErrStockUnavailable) {
 				t.Log(err)
 			}
-		})
+		}()
 	}
 
 	close(start)
 	wg.Wait()
 
-	if usedStock != stock {
+	if int(usedStock) != stock {
 		t.Errorf("Error used stock, Expected: %d, Actual: %d", stock, usedStock)
 		return
 	}
+}
+
+func TestRentOverlap(t *testing.T) {
+	db := testutils.TestDb{}
+	defer testutils.CleanupTestDb(t, &db)
+	if !testutils.InitTestDb(t, &db) {
+		return
+	}
+
+	ctx := context.Background()
+
+	if err := testutils.CreateAccount(db.Db, 1, "Owner"); err != nil {
+		t.Fatal(err)
+	}
+	if err := testutils.CreateAccount(db.Db, 2, "Renter"); err != nil {
+		t.Fatal(err)
+	}
+	if err := testutils.CreateAddress(db.Db, 1, 1, "Address"); err != nil {
+		t.Fatal(err)
+	}
+	if err := testutils.CreateProduct(db.Db, 1, 1, 1, "Product", 1); err != nil {
+		t.Fatal(err)
+	}
+
+	productService := NewService(db.Db, ai.NewNoopEmbedder(), nil, notification.NewNoopService(), nil, "")
+	ownerRentService := owner_rent.NewService(db.Db, notification.NewNoopService(), nil, "")
+	rentService := rent.NewService(db.Db, notification.NewNoopService(), nil, "", ai.NewNoopAIGenerative())
+
+	t.Run("DateOverlap", func(t *testing.T) {
+		now := time.Now()
+		baseStart := now.AddDate(0, 0, 5)
+		baseEnd := now.AddDate(0, 0, 10)
+
+		_, err := productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: baseStart, EndDate: baseEnd})
+		if err != nil {
+			t.Fatalf("Failed to create base rent: %v", err)
+		}
+
+		tests := []struct {
+			name      string
+			start     time.Time
+			end       time.Time
+			wantError error
+		}{
+			{"Exact Match", baseStart, baseEnd, ErrStockUnavailable},
+			{"Inside", baseStart.Add(24 * time.Hour), baseEnd.Add(-24 * time.Hour), ErrStockUnavailable},
+			{"Partial Start", baseStart.Add(-2 * 24 * time.Hour), baseStart.Add(2 * 24 * time.Hour), ErrStockUnavailable},
+			{"Partial End", baseEnd.Add(-2 * 24 * time.Hour), baseEnd.Add(2 * 24 * time.Hour), ErrStockUnavailable},
+			{"Surrounding", baseStart.Add(-2 * 24 * time.Hour), baseEnd.Add(2 * 24 * time.Hour), ErrStockUnavailable},
+			{"Touching Start", baseStart.Add(-2 * 24 * time.Hour), baseStart, ErrStockUnavailable},
+			{"Touching End", baseEnd, baseEnd.Add(2 * 24 * time.Hour), ErrStockUnavailable},
+			{"Before", baseStart.Add(-4 * 24 * time.Hour), baseStart.Add(-2 * 24 * time.Hour), nil},
+			{"After", baseEnd.Add(2 * 24 * time.Hour), baseEnd.Add(4 * 24 * time.Hour), nil},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				_, err := productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: tt.start, EndDate: tt.end})
+				if !errors.Is(err, tt.wantError) {
+					t.Errorf("Rent() error = %v, wantError %v", err, tt.wantError)
+				}
+			})
+		}
+
+		db.Db.Exec("DELETE FROM rents")
+	})
+
+	t.Run("StateTransitions", func(t *testing.T) {
+		now := time.Now()
+		start := now.AddDate(0, 0, 5)
+		end := now.AddDate(0, 0, 10)
+
+		res, err := productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: start, EndDate: end})
+		if err != nil {
+			t.Fatal(err)
+		}
+		rentID := res.ID
+
+		checkOverlap := func(expectedError error) {
+			_, err := productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: start, EndDate: end})
+			if !errors.Is(err, expectedError) {
+				t.Errorf("State overlap check failed: got %v, want %v", err, expectedError)
+			}
+		}
+
+		checkOverlap(ErrStockUnavailable)
+
+		if err := ownerRentService.Approve(ctx, 1, rentID); err != nil {
+			t.Fatal(err)
+		}
+		checkOverlap(ErrStockUnavailable)
+
+		db.Db.Model(&models.Rent{}).Where("id = ?", rentID).Update("start_date", core.ConvertTimeToDate(now))
+
+		if err := rentService.Receive(ctx, 2, rentID); err != nil {
+			t.Fatal(err)
+		}
+		checkOverlap(ErrStockUnavailable)
+
+		payment := 0
+		if err := ownerRentService.Handover(ctx, 1, owner_rent.HandoverRequest{ID: rentID, Payment: &payment}); err != nil {
+			t.Fatal(err)
+		}
+		checkOverlap(ErrStockUnavailable)
+
+		if err := rentService.RequestReturn(ctx, 2, rentID); err != nil {
+			t.Fatal(err)
+		}
+		checkOverlap(ErrStockUnavailable)
+
+		zero := 0
+		if err := ownerRentService.ConfirmReturn(ctx, 1, owner_rent.ConfirmReturnRequest{
+			ID:                rentID,
+			FinalPayment:      &zero,
+			LateFinePayment:   &zero,
+			DamageFinePayment: &zero,
+		}); err != nil {
+			t.Fatal(err)
+		}
+		checkOverlap(nil)
+	})
+
+	t.Run("Cancellation", func(t *testing.T) {
+		now := time.Now()
+		start := now.AddDate(0, 0, 20)
+		end := now.AddDate(0, 0, 25)
+
+		res, err := productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: start, EndDate: end})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := ownerRentService.Reject(ctx, 1, owner_rent.RejectRequest{ID: res.ID, Note: "Not available"}); err != nil {
+			t.Fatal(err)
+		}
+
+		_, err = productService.Rent(ctx, 2, RentRequest{ID: 1, Quantity: 1, StartDate: start, EndDate: end})
+		if err != nil {
+			t.Errorf("Should be able to rent after cancellation, got: %v", err)
+		}
+	})
 }

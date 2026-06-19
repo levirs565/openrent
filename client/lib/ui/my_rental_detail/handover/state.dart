@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
@@ -48,11 +49,10 @@ abstract class MyRentalHandoverState with _$MyRentalHandoverState {
 
   bool get canSubmit => isValid && !isLoading;
 
-  int get estimatedPriceIdr =>
-      rental.product.pricePerDay *
-          (rental.endDate
-              .difference(rental.startDate)
-              .inDays + 1);
+  RentalCalculator get calculator => rental.toCalculator();
+
+  int get estimatedPriceIdr => calculator.estimatedPrice;
+
   int get estimatedHalfPriceIdr => (estimatedPriceIdr / 2).round();
 
   double? get estimatedPrice => convertToCurrency(estimatedPriceIdr);

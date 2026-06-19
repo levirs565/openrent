@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openrent_client/data/remote/exchange_rate.dart';
 import 'package:openrent_client/data/remote/rental.dart';
+import 'package:openrent_client/rental_calculator.dart';
 import 'package:openrent_client/ui/core/enum.dart';
 import 'package:openrent_client/ui/core/error_data.dart';
 
@@ -47,6 +48,7 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
   }
 
   bool get isLoading => exchangeRateStatus == .loading || isSubmitLoading;
+
   bool get canEdit => exchangeRateStatus == .success && !isSubmitLoading;
 
   int? get paymentIdr => convertFromCurrency(payment);
@@ -67,17 +69,14 @@ abstract class MyRentalConfirmReturnState with _$MyRentalConfirmReturnState {
 
   bool get canSubmit => isValid && !isLoading;
 
-  int get estimatedPriceIdr =>
-      rental.product.pricePerDay *
-      (rental.endDate.difference(rental.startDate).inDays + 1);
+  RentalCalculator get calculator => rental.toCalculator();
+
+  int get estimatedPriceIdr => calculator.estimatedPrice;
 
   int get estimatedFinalPaymentIdr =>
       max(estimatedPriceIdr - rental.payment.initial!, 0);
 
-  // TODO: Check is right?
-  int get estimatedLateFineIdr =>
-      rental.product.lateFeePerDay *
-      (DateUtils.dateOnly(DateTime.now()).difference(rental.endDate).inDays);
+  int get estimatedLateFineIdr => calculator.estimatedLateFine;
 
   double? get estimatedPrice => convertToCurrency(estimatedPriceIdr);
 
